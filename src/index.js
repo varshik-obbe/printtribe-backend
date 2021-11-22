@@ -19,7 +19,7 @@ mongoose
   .connect(
 //     `mongodb+srv://scaffolding:scaffolding@cluster0-cqgrr.mongodb.net/test?retryWrites=true&w=majority`,
 //     { useNewUrlParser: true }
-    "mongodb://127.0.0.1:27017/printtribe",{ useNewUrlParser: true }
+    "mongodb://localhost:27017/printtribe",{ useNewUrlParser: true }
   )
   .then(client => {
     console.log("connected to database");
