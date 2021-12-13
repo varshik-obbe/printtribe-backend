@@ -15,4 +15,6 @@ router.get('/getUserbyid', Authentication, UserController.getUserById);
 
 router.patch("/updateuser",Authentication, UserController.updateUser);
 
+router.put("/updateuser",Authentication, UserController.updateUser);
+
 export default router
