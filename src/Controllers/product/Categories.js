@@ -3,7 +3,7 @@ import Categories from "../../models/categories";
 import ParseErrors from "../../utils/ParseErrors";
 
 
-export const add_Categories = (req, res) => {
+export const add_Categories = async (req, res) => {
     const { data } = req.body;
     console.log(data);
     const categories = new Categories({
@@ -14,10 +14,23 @@ export const add_Categories = (req, res) => {
         maincat: data.maincat,
         subcat: data.subcat
     });
-    categories.save().then(async (categoriesValue) => {
-        res.status(201).json({ categoriesValue })
+    const result_display = await categories.save().then((categoriesValue) => {
+        console.log('categories response ->'+categoriesValue)
+        return categoriesValue;
     })
         .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }));
+        console.log(result_display);
+        if(result_display) {
+            const categoriesValue = {
+                id: result_display._id,
+                name: result_display.category,
+                url: result_display.url,
+                img: result_display.img,
+                maincat: result_display.maincat,
+                subcat: result_display.subcat
+            };
+            res.status(201).json({ categoriesValue });
+        }
 }
 
 export const get_Categories = async (req, res) => {
@@ -85,6 +98,29 @@ export const get_Categories = async (req, res) => {
     res.status(201).json({ maincat });
 }
 
+export const get_CategoryById = (req,res) => {
+    Categories.find({'_id':req.params.id})
+    .exec().
+    then((categorydata)=>{
+        const response = {
+            count:categorydata.length,
+            categorydata:categorydata.map((categoryrecord)=>({
+                id:categoryrecord._id,
+                name: categoryrecord.category,
+                url: categoryrecord.url,
+                img: categoryrecord.img,
+                maincat: categoryrecord.maincat,
+                subcat: categoryrecord.subcat
+            
+            }))
+        }
+        res.status(200).json({category:response});
+    })
+    .catch((err)=>{
+        res.status(500).json({error:{global:"something went wrong"}});
+    });
+}
+
 export const update_categories = (req,res) => {
     const data = req.body.data;
     const id = data['id'];
@@ -117,5 +153,5 @@ export const delete_Category = (req,res) => {
     });
 }
 
-export default { add_Categories, get_Categories, update_categories, delete_Category }
+export default { add_Categories, get_Categories, update_categories, delete_Category, get_CategoryById }
 

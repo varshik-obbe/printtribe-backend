@@ -76,4 +76,19 @@ export const updateUser = (req,res) => {
     })
 }
 
-export default { add_user, login, getUsers, getUserById, updateUser }
+export const delete_User = (req,res) => {
+    const id = req.params.id;
+    User.deleteOne({_id: id},function(err,data){
+        if(err){
+            console.log(err);
+            res.send('error');
+        }
+        else
+        {
+            console.log(data);
+            return res.send('success')
+        }
+    });
+}
+
+export default { add_user, login, getUsers, getUserById, updateUser, delete_User }

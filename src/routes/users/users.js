@@ -17,4 +17,6 @@ router.patch("/updateuser",Authentication, UserController.updateUser);
 
 router.put("/updateuser",Authentication, UserController.updateUser);
 
+router.delete('/deleteUser/:id', Authentication, UserController.delete_User);
+
 export default router

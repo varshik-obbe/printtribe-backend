@@ -8,6 +8,8 @@ router.post('/addCategories', Authentication, CategoriesController.add_Categorie
 
 router.get('/getCategories', Authentication, CategoriesController.get_Categories);
 
+router.get('/getCategoryById/:id', Authentication, CategoriesController.get_CategoryById);
+
 router.patch('/updateCategorie', Authentication, CategoriesController.update_categories);
 
 router.put('/updateCategorie', Authentication, CategoriesController.update_categories);
