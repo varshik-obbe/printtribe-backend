@@ -91,8 +91,8 @@ export const get_products = async (req,res) => {
                                     title: subproductsData.title,
                                     description: subproductsData.description,
                                     price: subproductsData.price,
-                                    productsizes: subproductsData.sizes,
-                                    productcolors: subproductsData.colors,
+                                    productsizes: subproductsData.productsizes,
+                                    productcolors: subproductsData.productcolors,
                                     cover_img: subproductsData.cover_img,
                                     category_id: subproductsData.category_id,
                                     img: subproductsData.img,
@@ -113,8 +113,8 @@ export const get_products = async (req,res) => {
                                             title: subsubProductsData.title,
                                             description: subsubProductsData.description,
                                             price: subsubProductsData.price,
-                                            productsizes: subsubProductsData.sizes,
-                                            productcolors: subsubProductsData.colors,
+                                            productsizes: subsubProductsData.productsizes,
+                                            productcolors: subsubProductsData.productcolors,
                                             cover_img: subsubProductsData.cover_img,
                                             category_id: subsubProductsData.category_id,
                                             img: subsubProductsData.img,
@@ -143,8 +143,8 @@ export const get_SingleProduct = (req,res) => {
                 title: productrecord.title,
                 description: productrecord.description,
                 price: productrecord.price,
-                productsizes: productrecord.sizes,
-                productcolors: productrecord.colors,
+                productsizes: productrecord.productsizes,
+                productcolors: productrecord.productcolors,
                 cover_img: productrecord.cover_img,
                 category_id: productrecord.category_id,
                 img: productrecord.img,
@@ -169,4 +169,19 @@ export const update_product = (req,res) => {
     })
 }
 
-export default { add_Products, get_products, get_SingleProduct, update_product }
+export const delete_Products = (req,res) => {
+    const id = req.params.id;
+    Products.deleteOne({_id: id},function(err,data){
+        if(err){
+            console.log(err);
+            res.send('error');
+        }
+        else
+        {
+            console.log(data);
+            return res.send('success')
+        }
+    });
+}
+
+export default { add_Products, get_products, get_SingleProduct, update_product, delete_Products }

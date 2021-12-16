@@ -18,4 +18,6 @@ router.put('/updateProduct', Authentication, ProductsController.update_product)
 
 router.patch('/updateProduct', Authentication, ProductsController.update_product);
 
+router.delete('/deleteProduct/:id', Authentication, ProductsController.delete_Products);
+
 export default router

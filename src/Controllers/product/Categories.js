@@ -98,8 +98,8 @@ export const get_Categories = async (req, res) => {
     res.status(201).json({ maincat });
 }
 
-export const get_CategoryById = (req,res) => {
-    Categories.find({'_id':req.params.id})
+export const get_CategoryById = async (req,res) => {
+    const category = await Categories.find({'_id':req.params.id})
     .exec().
     then((categorydata)=>{
         const response = {
@@ -110,15 +110,92 @@ export const get_CategoryById = (req,res) => {
                 url: categoryrecord.url,
                 img: categoryrecord.img,
                 maincat: categoryrecord.maincat,
-                subcat: categoryrecord.subcat
-            
+                subcat: categoryrecord.subcat,
+                subCategories: [],
+                subsubCategories: []
             }))
         }
-        res.status(200).json({category:response});
+        return response;
     })
     .catch((err)=>{
         res.status(500).json({error:{global:"something went wrong"}});
     });
+    if (Array.isArray(category.categorydata) && category.count) {
+        console.log('main category id:'+category.categorydata[0].maincat);
+        if(category.categorydata[0].maincat == '0' && category.categorydata[0].subcat == '0')
+        {
+            delete category.categorydata[0].subsubCategories;
+            await Promise.all(category.categorydata.map(async (item, key) => {
+                const subcat = await Categories.find()
+                    .where('maincat', item.id)
+                    .where('subcat', '0')
+                    .exec()
+                    .then((resultsub) => {
+                        const response = {
+                            subcategories: resultsub.map((subcategoriesdata) => ({
+                                id: subcategoriesdata._id,
+                                name: subcategoriesdata.category,
+                                url: subcategoriesdata.url,
+                                img: subcategoriesdata.img,
+                                maincat: subcategoriesdata.maincat,
+                                subcat: subcategoriesdata.subcat
+                            }))
+                        }
+                        category.categorydata[key]["subCategories"] = response.subcategories;
+                    });
+                    if (Array.isArray(category.categorydata[key].subCategories) && category.categorydata[key].subCategories.length) {
+                        await Promise.all(category.categorydata[key].subCategories.map(async (itemsub, keysub) => {
+                            const subsubcat = await Categories.find()
+                            .where('maincat', item.id)
+                            .where('subcat', itemsub.id)
+                            .exec()
+                            .then((resultsubsub) => {
+                                const responsesub = {
+                                    subsubcategories: resultsubsub.map((subsubcategoriesdata) => ({
+                                        id: subsubcategoriesdata._id,
+                                        name: subsubcategoriesdata.category,
+                                        url: subsubcategoriesdata.url,
+                                        img: subsubcategoriesdata.img,
+                                        maincat: subsubcategoriesdata.maincat,
+                                        subcat: subsubcategoriesdata.subcat
+                                    }))
+                                }
+                                category.categorydata[key].subCategories[keysub]["subsubCategories"] = responsesub.subsubcategories;                          
+                            });
+                        }))
+                    }
+            }))
+        }
+        else if(category.categorydata[0].maincat != '0' && category.categorydata[0].subcat == '0')
+        {
+            delete category.categorydata[0].subCategories;
+            await Promise.all(category.categorydata.map(async (itemsub, key) => {
+                const subsubcat = await Categories.find()
+                .where('maincat', category.categorydata[0].maincat)
+                .where('subcat', itemsub.id)
+                .exec()
+                .then((resultsubsub) => {
+                    const responsesub = {
+                        subsubcategories: resultsubsub.map((subsubcategoriesdata) => ({
+                            id: subsubcategoriesdata._id,
+                            name: subsubcategoriesdata.category,
+                            url: subsubcategoriesdata.url,
+                            img: subsubcategoriesdata.img,
+                            maincat: subsubcategoriesdata.maincat,
+                            subcat: subsubcategoriesdata.subcat
+                        }))
+                    }
+                    category.categorydata[key]["subsubCategories"] = responsesub.subsubcategories;                          
+                });
+            }))
+        }
+        else if(category.categorydata[0].maincat != '0' && category.categorydata[0].subcat != '0')
+        {
+            delete category.categorydata[0].subsubCategories;
+            delete category.categorydata[0].subCategories;
+        }
+    }
+    res.status(200).json({category:category});
 }
 
 export const update_categories = (req,res) => {
