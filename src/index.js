@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import categories from './routes/products/categories';
 import products from './routes/products/products';
 import users from './routes/users/users';
+import vendors from './routes/vendors/vendors';
 
 dotenv.config();
 const app = express();
@@ -27,7 +28,7 @@ mongoose
     console.log("connected to database");
   })
 //   )
-// mongoose.connect("mongodb://localhost:27017/scaffolding",{ useNewUrlParser: true })
+// mongoose.connect("mongodb://localhost:27017/printtribe",{ useNewUrlParser: true })
   .catch(err => {
     console.log(err);
   });
@@ -35,6 +36,7 @@ mongoose
   app.use('/api/users/', users);
   app.use('/api/categories', categories);
   app.use('/api/products', products);
+  app.use('/api/vendors', vendors);
 
 app.listen(500, function() {
     console.log('listening on 500')
