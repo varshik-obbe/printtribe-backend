@@ -8,6 +8,8 @@ import categories from './routes/products/categories';
 import products from './routes/products/products';
 import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
+import zakekeConfig from './routes/zakeke/zakekeConfig';
+import zakekeproducts from './routes/zakeke/zakekeProducts';
 
 dotenv.config();
 const app = express();
@@ -37,6 +39,8 @@ mongoose
   app.use('/api/categories', categories);
   app.use('/api/products', products);
   app.use('/api/vendors', vendors);
+  app.use('/api/zakekeConfig', zakekeConfig);
+  app.use('/api/zakekeVariant', zakekeproducts);
 
 app.listen(500, function() {
     console.log('listening on 500')
