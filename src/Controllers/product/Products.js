@@ -4,24 +4,31 @@ import Products from "../../models/products";
 import ParseErrors from "../../utils/ParseErrors";
 
 
-export const add_Products = (req, res) => {
-    const { data } = req.body;
-    const categories = new Products({
-        _id: mongoose.Types.ObjectId(),
-        title: data.title,
-        description: data.description,
-        price: data.price,
-        productsizes: data.sizes,
-        productcolors: data.colors,
-        cover_img: data.cover_img,
-        category_id: data.category_id,
-        img: data.img,
-        quantity: data.quantity
-    });
-    categories.save().then(async (productsValue) => {
-        res.status(201).json({ productsValue })
-    })
-        .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }));
+export const add_Products = (req, res, err) => {
+        const  { data } = req.body;
+        if(req.file == "undefined")
+        {
+            res.status(400).json({errors: {'error':'image is not selected'}});   
+        }
+        else {
+            console.log(data);
+            const categories = new Products({
+                _id: mongoose.Types.ObjectId(),
+                title: data.title,
+                description: data.description,
+                price: data.price,
+                productsizes: data.sizes,
+                productcolors: data.colors,
+                cover_img: req.files.cover_img[0].path,
+                category_id: data.category_id,
+                img: req.files.img[0].path,
+                quantity: data.quantity
+            });
+            categories.save().then(async (productsValue) => {
+                res.status(201).jsonp({ productsValue })
+            })
+                .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }));
+        }
 }
 
 export const get_products = async (req,res) => {
@@ -161,7 +168,24 @@ export const get_SingleProduct = (req,res) => {
 
 export const update_product = (req,res) => {
     const id = req.query.id;
-    const { data } = req.body;
+    let cover_img = "";	    
+    let img = "";
+    if(req.files){	    
+        cover_img = req.files.cover_img[0].path;
+        img = req.files.img[0].path;
+    }else{	    
+        cover_img = "";
+        img = "";	    
+    }
+    
+    let { data } = req.body;
+    if(data == undefined) {
+        data = {};
+    }
+    if(cover_img.trim().length >0 || img.trim().length >0) {
+        data.cover_img = cover_img;
+        data.img = img;
+    }
     Products.updateOne({_id: id}, {$set: data}).exec().then((productRecord)=>{
         res.status(200).json({success:{global:"Product details is updated successfully"}})
     }).catch((err)=>{
