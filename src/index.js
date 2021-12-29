@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import customers from './routes/customers/customers';
+import payment_methods from './routes/payment_methods/payment_methods';
 import categories from './routes/products/categories';
 import products from './routes/products/products';
 import users from './routes/users/users';
@@ -41,6 +43,8 @@ mongoose
   app.use('/api/vendors', vendors);
   app.use('/api/zakekeConfig', zakekeConfig);
   app.use('/api/zakekeVariant', zakekeproducts);
+  app.use('/api/customers', customers);
+  app.use('/api/payment_methods', payment_methods);
 
 app.listen(500, function() {
     console.log('listening on 500')
