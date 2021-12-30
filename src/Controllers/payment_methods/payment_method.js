@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { decode } from 'node-base64-image';
 import Payment_methods from "../../models/payment_method";
+import DeleteFile from "../../utils/DelteFileExists";
 import ParseErrors from "../../utils/ParseErrors";
 
 
@@ -64,9 +65,32 @@ export const get_SinglePaymentMethod = (req,res) => {
     });
 }
 
-export const update_paymentMethod = (req,res) => {
+export const update_paymentMethod = async (req,res) => {
     const id = req.query.id;
-    const { data } = req.body;
+    let { data } = req.body;
+    if(data.logo) {
+        await Payment_methods.find({'_id':id})
+        .exec().
+        then(async (paymentdata)=>{
+            await Promise.all(paymentdata.map(async (paymentmethodrecord) => {
+                console.log('payment data: '+paymentmethodrecord);
+                await DeleteFile(paymentmethodrecord.name+".jpg");
+                if(data.name)
+                {
+                    await decode(data.logo, { fname: './uploads/'+data.name, ext: 'jpg' });
+                    data.logo = "uploads/"+data.name+".jpg";                    
+                }
+                else {
+                    await decode(data.logo, { fname: './uploads/'+paymentmethodrecord.name, ext: 'jpg' });
+                    data.logo = "uploads/"+paymentmethodrecord.name+".jpg";
+                }
+                console.log('logo url is'+data.logo);
+            }));
+        })
+        .catch((err)=>{
+            res.status(500).json({error:{global:"could not find existing payment"}});
+        });
+    }
     Payment_methods.updateOne({_id: id}, {$set: data}).exec().then((paymentRecord)=>{
         res.status(200).json({success:{global:"Payment Method is updated successfully"}})
     }).catch((err)=>{
