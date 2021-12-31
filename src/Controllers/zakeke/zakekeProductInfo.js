@@ -1,10 +1,21 @@
 import mongoose from "mongoose";
+import { decode } from 'node-base64-image';
 import ZakekeProducts from "../../models/zakekeProductInfo";
 import ParseErrors from "../../utils/ParseErrors";
 
 
-export const add_ProductInfo = (req,res)=>{
-    const { productdata } = req.body;
+export const add_ProductInfo = async (req,res)=>{
+    let { productdata } = req.body;
+    console.log(productdata);
+    if(Array.isArray(productdata.variant) && productdata.variant.length > 0) {
+        await Promise.all(productdata.variant.map(async (item,key) => {
+            let dateVal = Date.now();
+            await decode(item.backImgURL, { fname: './uploads/'+ dateVal + item.colorName + "back" + productdata.productId, ext: 'jpg' });
+            await decode(item.frontImgURL, { fname: './uploads/'+ dateVal + item.colorName + "front" + productdata.productId, ext: 'jpg' });
+            productdata.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName + "back" + productdata.productId +".jpg";
+            productdata.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName + "front" + productdata.productId +".jpg";
+        }))
+    }
     console.log(productdata);
     const zakekeProduct = new ZakekeProducts({
         _id:mongoose.Types.ObjectId(),
