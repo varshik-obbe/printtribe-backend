@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { decode } from 'node-base64-image';
 import ZakekeProducts from "../../models/zakekeProductInfo";
 import ParseErrors from "../../utils/ParseErrors";
+import zakekeCSV from '../../utils/ZakekeCreateCSV';
 
 
 export const add_ProductInfo = async (req,res)=>{
@@ -17,6 +18,7 @@ export const add_ProductInfo = async (req,res)=>{
         }))
     }
     console.log(productdata);
+    zakekeCSV(productdata.productId, productdata.variant);
     const zakekeProduct = new ZakekeProducts({
         _id:mongoose.Types.ObjectId(),
         productId: productdata.productId,

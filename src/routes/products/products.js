@@ -46,6 +46,7 @@ router.put('/updateProduct', Authentication, upload.fields([ { name: 'cover_img'
 
 router.patch('/updateProduct', Authentication, ProductsController.update_product);
 
+
 router.delete('/deleteProduct/:id', Authentication, ProductsController.delete_Products);
 
 export default router

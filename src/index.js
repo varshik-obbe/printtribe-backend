@@ -11,6 +11,7 @@ import products from './routes/products/products';
 import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
 import zakekeConfig from './routes/zakeke/zakekeConfig';
+import zakekeCSV from './routes/zakeke/zakekeCSV';
 import zakekeproducts from './routes/zakeke/zakekeProducts';
 
 dotenv.config();
@@ -18,6 +19,7 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
+app.use('/ZakekeFiles', express.static('ZakekeFiles'));
 app.use(bodyParser.json({limit: '50mb'}));
 
 
@@ -45,6 +47,7 @@ mongoose
   app.use('/api/zakekeVariant', zakekeproducts);
   app.use('/api/customers', customers);
   app.use('/api/payment_methods', payment_methods);
+  app.use('/api/zakekeCSV', zakekeCSV);
 
 app.listen(500, function() {
     console.log('listening on 500')
