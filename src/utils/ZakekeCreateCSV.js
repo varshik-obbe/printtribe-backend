@@ -199,7 +199,7 @@ async function writeToFile(rows,rowsSides,rowsAreas,rowsPrintTypes,rowsSidesPrin
                 CanIgnoreQualityWarning: zakekerecord.CanIgnoreQualityWarning,
                 EnableUserImageUpload: zakekerecord.EnableUserImageUpload,
                 EnableJpgUpload: zakekerecord.EnableJpgUpload,
-                panEnablePngUpload: zakekerecord.panEnablePngUpload,
+                EnablePngUpload: zakekerecord.panEnablePngUpload,
                 EnableSvgUpload: zakekerecord.EnableSvgUpload,
                 EnablePdfUpload: zakekerecord.EnablePdfUpload,
                 EnablePdfWithRasterUpload: zakekerecord.EnablePdfWithRasterUpload,
