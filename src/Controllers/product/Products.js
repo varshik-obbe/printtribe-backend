@@ -4,21 +4,37 @@ import Products from "../../models/products";
 import ParseErrors from "../../utils/ParseErrors";
 
 
-export const add_Products = (req, res, err) => {
-        const  data = req.body;
+export const add_Products = async (req, res, err) => {
+        const   data = req.body;
         if(req.file == "undefined")
         {
             res.status(400).json({errors: {'error':'image is not selected'}});   
         }
         else {
             console.log(data);
+
+
+            let sizes_json_obj = JSON.parse(data.sizes);
+            let colors_json_obj = JSON.parse(data.colors);
+
+
+            // await Promise.all(sizes_json_obj.map((item, key) => {
+            //     sizes_arr.push(item);
+            // })
+            // )
+            // await Promise.all(colors_json_obj.map((item, key) => {
+            //     colors_arr.push(item);
+            // })
+            // )
+
+
             const categories = new Products({
                 _id: mongoose.Types.ObjectId(),
                 title: data.title,
                 description: data.description,
                 price: data.price,
-                productsizes: data.sizes,
-                productcolors: data.colors,
+                productsizes: sizes_json_obj,
+                productcolors: colors_json_obj,
                 cover_img: req.files.cover_img[0].path,
                 category_id: data.category_id,
                 img: req.files.img[0].path,
@@ -186,6 +202,15 @@ export const update_product = (req,res) => {
         data.cover_img = cover_img;
         data.img = img;
     }
+
+    if(data.sizes)
+    {
+        data.sizes = JSON.parse(data.sizes);
+    }
+    if(data.colors) {
+        data.colors = JSON.parse(data.colors);
+    }
+
     Products.updateOne({_id: id}, {$set: data}).exec().then((productRecord)=>{
         res.status(200).json({success:{global:"Product details is updated successfully"}})
     }).catch((err)=>{
