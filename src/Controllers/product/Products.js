@@ -6,7 +6,7 @@ import ParseErrors from "../../utils/ParseErrors";
 
 export const add_Products = async (req, res, err) => {
         const   data = req.body;
-        if(req.file == "undefined")
+        if(req.file == undefined)
         {
             res.status(400).json({errors: {'error':'image is not selected'}});   
         }
@@ -186,12 +186,13 @@ export const update_product = (req,res) => {
     const id = req.query.id;
     let cover_img = "";	    
     let img = "";
-    if(req.files){	    
-        cover_img = req.files.cover_img[0].path;
-        img = req.files.img[0].path;
-    }else{	    
+    console.log("request file is:"+ req.file)
+    if(req.file == undefined){	    
         cover_img = "";
         img = "";	    
+    }else{	    
+        cover_img = req.files.cover_img[0].path;
+        img = req.files.img[0].path;
     }
     
     let  data = req.body;
