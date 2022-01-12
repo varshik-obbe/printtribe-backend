@@ -41,6 +41,7 @@ customerSchema.methods.generateJWT = function generateJWT(){
 customerSchema.methods.toAuthJSON = function toAuthJSON(){
     return{
         email: this.email,
+        id: this._id,
         role: this.role,
         token: this.generateJWT()
     }
