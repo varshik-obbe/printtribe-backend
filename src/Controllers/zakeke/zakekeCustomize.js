@@ -43,7 +43,7 @@ export const getUpdatedPrice = (req,res)=>{
 
 }
 
-export const get_token = (req,res) => {
+export const get_token = async (req,res) => {
     let returndata = {}
     let sendData = qs.stringify({
         'grant_type':'client_credentials',
