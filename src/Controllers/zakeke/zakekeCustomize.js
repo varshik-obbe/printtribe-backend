@@ -105,7 +105,7 @@ export const getCartURL = async (req,res) => {
             customerUniqueId: data.additionaldata.customerUniqueId,
             designId: data.designid,
         });
-        designSave.save().then((saveddata) => {
+        designSave.save().then(async (saveddata) => {
               const Cartheaders = {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + returndata.access_token
