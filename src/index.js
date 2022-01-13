@@ -12,6 +12,7 @@ import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
 import zakekeConfig from './routes/zakeke/zakekeConfig';
 import zakekeCSV from './routes/zakeke/zakekeCSV';
+import zakekeCustomize from './routes/zakeke/zakekeCustomize';
 import zakekeproducts from './routes/zakeke/zakekeProducts';
 
 dotenv.config();
@@ -48,6 +49,7 @@ mongoose
   app.use('/api/customers', customers);
   app.use('/api/payment_methods', payment_methods);
   app.use('/api/zakekeCSV', zakekeCSV);
+  app.use('/api/zakekeCustomize', zakekeCustomize);
 
 app.listen(500, function() {
     console.log('listening on 500')
