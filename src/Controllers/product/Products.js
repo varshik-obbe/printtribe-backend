@@ -4,9 +4,9 @@ import Products from "../../models/products";
 import ParseErrors from "../../utils/ParseErrors";
 
 
-export const add_Products = async (req, res, err) => {
-        const   data = req.body;
-        if(req.file == undefined)
+export const add_Products = (req, res, err) => {
+        const data = req.body;
+        if(!req.files.cover_img)
         {
             res.status(400).json({errors: {'error':'image is not selected'}});   
         }
@@ -40,7 +40,7 @@ export const add_Products = async (req, res, err) => {
                 img: req.files.img[0].path,
                 quantity: data.quantity
             });
-            categories.save().then(async (productsValue) => {
+            categories.save().then((productsValue) => {
                 res.status(201).jsonp({ productsValue })
             })
                 .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }));
@@ -182,12 +182,11 @@ export const get_SingleProduct = (req,res) => {
     });
 }
 
-export const update_product = (req,res) => {
+export const update_product = async (req,res) => {
     const id = req.query.id;
     let cover_img = "";	    
     let img = "";
-    console.log("request file is:"+ req.file)
-    if(req.file == undefined){	    
+    if(!req.files.cover_img && !req.files.cover_img){	    
         cover_img = "";
         img = "";	    
     }else{	    
@@ -212,11 +211,37 @@ export const update_product = (req,res) => {
         data.colors = JSON.parse(data.colors);
     }
 
-    Products.updateOne({_id: id}, {$set: data}).exec().then((productRecord)=>{
-        res.status(200).json({success:{global:"Product details is updated successfully"}})
-    }).catch((err)=>{
-        res.status(400).json({error:{global:"something went wrong"}});
-    })
+    if(data.sizes || data.colors) {
+        if(data.sizes && !data.colors) {
+            console.log("entered sizes part")
+            await Products.updateOne({_id: id}, {$set: {"productsizes": data.sizes}}).exec().then((productRecord)=>{
+            }).catch((err)=>{
+                res.status(400).json({error:{global:"something went wrong while updating sizes"+err}});
+            })
+        }
+        else if(!data.sizes || data.colors) {
+            await Products.updateOne({_id: id}, {$set: {"productcolors": data.colors}}).exec().then((productRecord)=>{
+            }).catch((err)=>{
+                res.status(400).json({error:{global:"something went wrong while updating colors"}});
+            })            
+        }
+        else if(data.sizes || data.colors) {
+            await Products.updateOne({_id: id}, {$set: {"productcolors": data.colors, "productsizes": data.sizes}}).exec().then((productRecord)=>{
+            }).catch((err)=>{
+                res.status(400).json({error:{global:"something went wrong while updating colors and sizes"}});
+            })                        
+        }
+    }
+        await Products.updateOne({_id: id}, {$set: data}).exec().then((productRecord)=>{
+        }).catch((err)=>{
+            res.status(400).json({error:{global:"something went wrong"}});
+        })
+
+        if(res.headersSent) { 
+         }
+         else {
+            res.status(200).json({success:{global:"product updated successfully"}})
+         }
 }
 
 export const delete_Products = (req,res) => {

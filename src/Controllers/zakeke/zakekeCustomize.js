@@ -1,0 +1,144 @@
+import designId from "../../models/customDesign_id";
+import Products from "../../models/products";
+
+
+export const getUpdatedPrice = (req,res)=>{
+    let reqBody = req.body
+
+    Products.find({'_id': reqBody.additionaldata.mainProductid})
+    .exec()
+    .then((productsData)=>{
+        const response = {
+            products: productsData.map((productsres)=>({
+                id:productsres._id,
+                title: productsres.title,
+                description: productsres.description,
+                price: productsres.price,
+                productsizes: productsres.productsizes,
+                productcolors: productsres.productcolors,
+                cover_img: productsres.cover_img,
+                category_id: productsres.category_id,
+                img: productsres.img,
+                quantity: productsres.quantity
+                }))
+        }
+        let finalPrice = (response.products.price + reqBody.zakekeprice) * reqBody.quantity;
+
+        if (reqBody.zakekepercentageprice > 0)
+        {
+            finalPrice += (response.products.price *
+ reqBody.zakekepercentageprice * reqBody.quantity) / 100;
+        }
+        let isoutofstock = false;
+        if(response.products.quantity < reqBody.quantity)
+        {
+            isoutofstock = true;
+        }
+        res.status(200).json({finalprice: finalPrice, isoutofstock: isoutofstock});
+    })
+    .catch(()=>{
+        res.status(500).json({error:{global:"something went wrong"}});
+    }); 
+
+
+}
+
+export const get_token = (req,res) => {
+    let returndata = {}
+    let sendData = qs.stringify({
+        'grant_type':'client_credentials',
+        'access_type':'S2S'
+      });
+      const token = `${process.env.ZAKEKE_CLIENT_ID}:${process.env.ZAKEKE_SECRET}`;
+      const encodedToken = Buffer.from(token).toString('base64');
+      const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + encodedToken
+      }
+      await axios({
+        url: 'https://api.zakeke.com/token',
+        method: "POST",
+        data: sendData,
+        headers: headers
+       })
+       .then((data) => {
+         returndata= data.data
+       })
+       .catch((err) => {
+        res.status(400).json({error:{global:"error while generating token"}});
+       })
+
+       res.status(200).json({returndata})
+}
+
+export const getCartURL = async (req,res) => {
+    const data = req.body
+    if(data.designid)
+    {
+        let returndata = {}
+        let sendData = qs.stringify({
+            'grant_type':'client_credentials',
+            'access_type':'S2S'
+          });
+          const token = `${process.env.ZAKEKE_CLIENT_ID}:${process.env.ZAKEKE_SECRET}`;
+          const encodedToken = Buffer.from(token).toString('base64');
+          const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + encodedToken
+          }
+          await axios({
+            url: 'https://api.zakeke.com/token',
+            method: "POST",
+            data: sendData,
+            headers: headers
+           })
+           .then((data) => {
+             returndata= data.data
+           })
+           .catch((err) => {
+            res.status(400).json({error:{global:"error while generating token"}});
+           })
+        const designSave = new designId({
+            variantProductId: data.productid,
+            customerUniqueId: data.additionaldata.customerUniqueId,
+            designId: data.designid,
+        });
+        designSave.save().then((saveddata) => {
+              const Cartheaders = {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + returndata.access_token
+              }
+              let responseCart = {}
+              await axios({
+                url: "https://api.zakeke.com/v1/designs/"+saveddata.designId,
+                method: "GET",
+                headers: Cartheaders
+               })
+               .then((data) => {
+                 responseCart = data.data
+               })
+               .catch((err) => {
+                res.status(400).json({error:{global:"error while getting cart url"}});
+               })
+
+               if(responseCart)
+               {
+                res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+               }
+        })
+    }
+    else
+    {
+        res.status(400).json({error:{global:"design id was not provided"}});
+    }
+}
+
+export const edit_cart = (req,res) => {
+    let data = req.body
+
+    res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+}
+
+export default { getUpdatedPrice, get_token, edit_cart, getCartURL }
