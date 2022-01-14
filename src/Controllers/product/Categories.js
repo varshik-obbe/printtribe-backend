@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
+import { decode } from 'node-base64-image';
 import Categories from "../../models/categories";
 import ParseErrors from "../../utils/ParseErrors";
 
 
 export const add_Categories = async (req, res) => {
-    const { data } = req.body;
-    console.log(data);
+    let { data } = req.body;
+    let dateVal = Date.now();
+    await decode(data.img, { fname: './uploads/'+ dateVal + data.name, ext: 'jpg' });
+    data.img = '/uploads/'+ dateVal + data.name+'.jpg'
     const categories = new Categories({
         _id: mongoose.Types.ObjectId(),
         category: data.name,
@@ -198,17 +201,18 @@ export const get_CategoryById = async (req,res) => {
     res.status(200).json({category:category});
 }
 
-export const update_categories = (req,res) => {
-    const data = req.body.data;
-    const id = data['id'];
-    const insData = {
-        category: data['name'],
-        url: data['url'],
-        img: data['img'],
-        maincat: data['maincat'],
-        subcat: data['subcat']
-    };
-    Categories.updateOne({_id: id}, {$set: insData}).exec().then((userRecord)=>{
+export const update_categories = async (req,res) => {
+    let data = req.body.data;
+    const id = data.id;
+    if(data.name) {
+        data.category = data.name
+    }
+    if(data.img) {
+        let dateVal = Date.now();
+        await decode(data.img, { fname: './uploads/'+ dateVal + data.name, ext: 'jpg' });
+        data.img = '/uploads/'+ dateVal + data.name+'.jpg'
+    }
+    Categories.updateOne({_id: id}, {$set: data}).exec().then((userRecord)=>{
         res.status(200).json({success:{global:"Categorie updated successfully"}})
     }).catch((err)=>{
         res.status(400).json({error:{global:"something went wrong"}});
