@@ -216,7 +216,7 @@ async function writeToFile(rows,rowsSides,rowsAreas,rowsPrintTypes,rowsSidesPrin
 
 
   for (let i = 0; i < variants.length; i++){
-    rows.push([`${response.productdata[0].id}`, `${variants[i].colorName.replace(/ /g,"_")+productid}`, `${response.productdata[0].title}`, `${process.env.PROJ_DEV_HOST+response.productdata[0].img}`, `Color = ${i + 1}`, `${variants[i].colorName}`, ``])
+    rows.push([`${response.productdata[0].id}`, `${variants[i].colorName.replace(/ /g,"_")+productid}`, `${response.productdata[0].title}`, `${process.env.PROJ_DEV_HOST+"/"+response.productdata[0].img}`, `Color = ${i + 1}`, `${variants[i].colorName}`, ``])
   }
 
   for (let i = 0; i < variants.length; i++){
