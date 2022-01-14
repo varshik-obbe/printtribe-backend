@@ -7,8 +7,8 @@ import ParseErrors from "../../utils/ParseErrors";
 export const add_Categories = async (req, res) => {
     let { data } = req.body;
     let dateVal = Date.now();
-    await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ /g,"_"), ext: 'jpg' });
-    data.img = '/uploads/'+ dateVal + data.name.replace(/ /g,"_")+'.jpg'
+    await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ |'/g,"_"), ext: 'jpg' });
+    data.img = '/uploads/'+ dateVal + data.name.replace(/ |'/g,"_")+'.jpg'
     const categories = new Categories({
         _id: mongoose.Types.ObjectId(),
         category: data.name,
@@ -209,8 +209,8 @@ export const update_categories = async (req,res) => {
     }
     if(data.img) {
         let dateVal = Date.now();
-        await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ /g,"_"), ext: 'jpg' });
-        data.img = '/uploads/'+ dateVal + data.name.replace(/ /g,"_")+'.jpg'
+        await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ |'/g,"_"), ext: 'jpg' });
+        data.img = '/uploads/'+ dateVal + data.name.replace(/ |'/g,"_")+'.jpg'
     }
     Categories.updateOne({_id: id}, {$set: data}).exec().then((userRecord)=>{
         res.status(200).json({success:{global:"Categorie updated successfully"}})
