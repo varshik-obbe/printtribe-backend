@@ -220,8 +220,8 @@ async function writeToFile(rows,rowsSides,rowsAreas,rowsPrintTypes,rowsSidesPrin
   }
 
   for (let i = 0; i < variants.length; i++){
-    rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, ``, `${variants[i].frontImgURL}`, ``, `21.5`])
-    rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, ``, `${variants[i].backImgURL}`, ``, `21.5`])
+    rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, ``, `${process.env.PROJ_DEV_HOST+variants[i].frontImgURL}`, ``, `21.5`])
+    rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, ``, `${process.env.PROJ_DEV_HOST+variants[i].backImgURL}`, ``, `21.5`])
   }
 
   for (let i = 0; i < variants.length; i++){
