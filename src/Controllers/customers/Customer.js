@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Customer from "../../models/customers";
 import ParseErrors from "../../utils/ParseErrors";
+import SendMail from "../../utils/SendMail";
 
 
 export const add_customer = (req,res)=>{
@@ -28,7 +29,15 @@ export const add_customer = (req,res)=>{
         bank_name: customerRegisterdata.bank_name
     });
     customer.setPassword(customerRegisterdata.password)
-    customer.save().then((customerRecord)=>res.status(201).json({customerRecord}))
+    customer.save().then((customerRecord)=> {
+        let title = "printribe mail"
+        let hello = "hello fellow dropshipper"
+        let message = "thank you for registering with us, please find the partner panel link below."
+        let second_message = "for any further assistance please reach out to us."
+        let link = "https://printribe-partner.web.app/#/login";
+        SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
+        res.status(201).json({customerRecord})
+    })
     .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
 }
 
