@@ -33,7 +33,10 @@ export default async function (title,hello,message,second_message,email,link) {
             to: email, // list of receivers
             subject: "Hello ✔", // Subject line
             html: htmlToSend, // html body
-          });
+          })
+          .catch((err) => {
+              console.log("error is "+err)
+          })
 
           console.log("mail sent successfully");
     }
