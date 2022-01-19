@@ -5,7 +5,9 @@ import Products from "../../models/products";
 
 
 export const getUpdatedPrice = (req,res)=>{
-    let { reqBody } = req.body
+    let reqBody = req.body
+
+    console.log("product id is: "+reqBody.productid)
 
     Products.find({'_id': reqBody.productid})
     .exec()
@@ -75,7 +77,7 @@ export const get_token = async (req,res) => {
 }
 
 export const getCartURL = async (req,res) => {
-    const { data } = req.body
+    const data = req.body
     if(data.designid)
     {
         let returndata = {}
@@ -138,7 +140,7 @@ export const getCartURL = async (req,res) => {
 }
 
 export const edit_cart = (req,res) => {
-    let { data } = req.body
+    let data = req.body
 
     res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
 }
