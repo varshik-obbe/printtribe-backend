@@ -1,4 +1,5 @@
 import axios from "axios";
+import mongoose from "mongoose";
 import qs from "qs";
 import designId from "../../models/customDesign_id";
 import Products from "../../models/products";
@@ -105,11 +106,13 @@ export const getCartURL = async (req,res) => {
             res.status(400).json({error:{global:"error while generating token"}});
            })
         const designSave = new designId({
+          _id: mongoose.Types.ObjectId(),
             variantProductId: data.productid,
             customerUniqueId: data.additionaldata.customerUniqueId,
             designId: data.designid,
         });
         designSave.save().then(async (saveddata) => {
+          console.log("saved design id is:"+saveddata.designId)
               const Cartheaders = {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + returndata.access_token
@@ -124,13 +127,19 @@ export const getCartURL = async (req,res) => {
                  responseCart = data.data
                })
                .catch((err) => {
+                 console.log("error occured :"+err)
                 res.status(400).json({error:{global:"error while getting cart url"}});
                })
 
-               if(responseCart)
-               {
-                res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
-               }
+               if(res.headersSent) { 
+              }
+              else {
+                console.log("response data from zakeke"+responseCart)
+                if(responseCart)
+                {
+                 res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+                }
+              }
         })
     }
     else
