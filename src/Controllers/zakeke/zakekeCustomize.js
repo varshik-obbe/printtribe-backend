@@ -27,15 +27,15 @@ export const getUpdatedPrice = (req,res)=>{
                 quantity: productsres.quantity
                 }))
         }
-        let finalPrice = (response.products[0].price + reqBody.zakekeprice) * reqBody.quantity;
+        let finalPrice = (response.products[0].price + reqBody.zakekeprice) * parseInt(reqBody.quantity, 10);
 
         if (reqBody.zakekepercentageprice > 0)
         {
             finalPrice += (response.products[0].price *
- reqBody.zakekepercentageprice * reqBody.quantity) / 100;
+ reqBody.zakekepercentageprice * parseInt(reqBody.quantity, 10)) / 100;
         }
         let isoutofstock = false;
-        if(response.products[0].quantity < reqBody.quantity)
+        if(response.products[0].quantity < parseInt(reqBody.quantity, 10))
         {
             isoutofstock = true;
         }
