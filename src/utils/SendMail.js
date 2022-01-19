@@ -9,7 +9,7 @@ export default async function (title,hello,message,second_message,email,link) {
         let transporter = NodeMailer.createTransport({
             host: process.env.EMAIL_SMTP_HOST,
             port: process.env.EMAIL_SMTP_PORT,
-            secure: false, // true for 465, false for other ports
+            secure: true, // true for 465, false for other ports
             auth: {
               user: process.env.EMAIL_USERNAME, // generated ethereal user
               pass: process.env.EMAIL_PASSWORD, // generated ethereal password
@@ -34,11 +34,10 @@ export default async function (title,hello,message,second_message,email,link) {
             subject: "Hello ✔", // Subject line
             html: htmlToSend, // html body
           })
+          .then((success) => console.log("mail sent successfully"))
           .catch((err) => {
               console.log("error is "+err)
           })
-
-          console.log("mail sent successfully");
     }
     catch {
         console.log("ran into an error");
