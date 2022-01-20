@@ -28,6 +28,23 @@ export const add_ProductInfo = async (req,res)=>{
     .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
 }
 
+export const get_isZakekeProduct = (req,res) => {
+    const id = req.params.id;
+    ZakekeProducts.findOne({'productId': id})
+    .exec()
+    .then((data) => {
+        if(data) {
+            res.status(200).json({success: true, message: 'this is a zakeke customizable product'})
+        }
+        else {
+            res.status(400).json({error:{global:"this is not a zakeke customizable product"}});    
+        }
+    })
+    .catch((err) => {
+        res.status(400).json({error:{global:"something went wrong"}});
+    })
+}
+
 export const getProducts = (req,res) => {
     ZakekeProducts.find()
     .exec()
@@ -78,4 +95,4 @@ export const deleteZakekeProduct = (req,res) => {
     });   
 }
 
-export default { add_ProductInfo, getProducts, updateZakekeProducts,deleteZakekeProduct }
+export default { add_ProductInfo, getProducts, updateZakekeProducts,deleteZakekeProduct, get_isZakekeProduct }

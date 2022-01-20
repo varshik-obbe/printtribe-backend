@@ -9,6 +9,8 @@ router.post('/addZakekeProducts', Authentication , ZakekeProducts.add_ProductInf
 
 router.get('/getZakekeProducts', ZakekeProducts.getProducts);
 
+router.get("/isZakekeProduct/:id", Authentication, ZakekeProducts.get_isZakekeProduct);
+
 router.put("/updateZakekeProducts",Authentication, ZakekeProducts.updateZakekeProducts);
 
 router.delete('/deleteZakekeProduct/:id', Authentication, ZakekeProducts.deleteZakekeProduct);
