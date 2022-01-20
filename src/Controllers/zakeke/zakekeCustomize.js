@@ -82,6 +82,7 @@ export const getCartURL = async (req,res) => {
     if(data.designid)
     {
         let returndata = {}
+        console.log("design id is:"+data.designId)
         let sendData = qs.stringify({
             'grant_type':'client_credentials',
             'access_type':'S2S'
@@ -112,7 +113,6 @@ export const getCartURL = async (req,res) => {
             designId: data.designid,
         });
         designSave.save().then(async (saveddata) => {
-          console.log("saved design id is:"+saveddata.designId)
               const Cartheaders = {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + returndata.access_token
