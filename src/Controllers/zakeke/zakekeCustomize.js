@@ -82,7 +82,7 @@ export const getCartURL = async (req,res) => {
     if(data.designid)
     {
         let returndata = {}
-        console.log("design id is:"+data.designId)
+        console.log("design id is:"+data.designid)
         let sendData = qs.stringify({
             'grant_type':'client_credentials',
             'access_type':'S2S'
