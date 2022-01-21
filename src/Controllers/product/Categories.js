@@ -7,33 +7,38 @@ import ParseErrors from "../../utils/ParseErrors";
 export const add_Categories = async (req, res) => {
     let { data } = req.body;
     let dateVal = Date.now();
-    await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ |'/g,"_").toLowerCase(), ext: 'jpg' });
-    data.img = '/uploads/'+ dateVal + data.name.replace(/ |'/g,"_")+'.jpg'
-    const categories = new Categories({
-        _id: mongoose.Types.ObjectId(),
-        category: data.name,
-        url: data.url,
-        img: data.img,
-        maincat: data.maincat,
-        subcat: data.subcat
-    });
-    const result_display = await categories.save().then((categoriesValue) => {
-        console.log('categories response ->'+categoriesValue)
-        return categoriesValue;
-    })
-        .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }));
-        console.log(result_display);
-        if(result_display) {
-            const categoriesValue = {
-                id: result_display._id,
-                name: result_display.category,
-                url: result_display.url,
-                img: result_display.img,
-                maincat: result_display.maincat,
-                subcat: result_display.subcat
-            };
-            res.status(201).json({ categoriesValue });
-        }
+    try {
+        await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ |'/g,"_").toLowerCase(), ext: data.extension });
+        data.img = '/uploads/'+ dateVal + data.name.replace(/ |'/g,"_")+"."+data.extension
+        const categories = new Categories({
+            _id: mongoose.Types.ObjectId(),
+            category: data.name,
+            url: data.url,
+            img: data.img,
+            maincat: data.maincat,
+            subcat: data.subcat
+        });
+        const result_display = await categories.save().then((categoriesValue) => {
+            console.log('categories response ->'+categoriesValue)
+            return categoriesValue;
+        })
+            .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }));
+            console.log(result_display);
+            if(result_display) {
+                const categoriesValue = {
+                    id: result_display._id,
+                    name: result_display.category,
+                    url: result_display.url,
+                    img: result_display.img,
+                    maincat: result_display.maincat,
+                    subcat: result_display.subcat
+                };
+                res.status(201).json({ categoriesValue });
+            }
+    }
+    catch(err) {
+        res.status(400).json({ errors: err.toString() })
+    }
 }
 
 export const get_Categories = async (req, res) => {
@@ -209,8 +214,8 @@ export const update_categories = async (req,res) => {
     }
     if(data.img) {
         let dateVal = Date.now();
-        await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ |'/g,"_").toLowerCase(), ext: 'jpg' });
-        data.img = '/uploads/'+ dateVal + data.name.replace(/ |'/g,"_")+'.jpg'
+        await decode(data.img, { fname: './uploads/'+ dateVal + data.name.replace(/ |'/g,"_").toLowerCase(), ext: data.extension });
+        data.img = '/uploads/'+ dateVal + data.name.replace(/ |'/g,"_")+"."+data.extension
     }
     Categories.updateOne({_id: id}, {$set: data}).exec().then((userRecord)=>{
         res.status(200).json({success:{global:"Categorie updated successfully"}})
