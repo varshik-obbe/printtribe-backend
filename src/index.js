@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import adminSettings from './routes/admin_settings/admin_settings';
 import customers from './routes/customers/customers';
+import orders from "./routes/orders/orders";
 import payment_methods from './routes/payment_methods/payment_methods';
 import categories from './routes/products/categories';
 import products from './routes/products/products';
@@ -29,13 +31,13 @@ mongoose
   .connect(
 //     `mongodb+srv://scaffolding:scaffolding@cluster0-cqgrr.mongodb.net/test?retryWrites=true&w=majority`,
 //     { useNewUrlParser: true }
-    "mongodb://varshik:test123@localhost:27017/printtribe?authSource=admin",{ useNewUrlParser: true }
+    "mongodb://localhost:27017/printtribe",{ useNewUrlParser: true }
   )
   .then(client => {
     console.log("connected to database");
   })
 //   )
-// mongoose.connect("mongodb://localhost:27017/printtribe",{ useNewUrlParser: true })
+// mongoose.connect("mongodb://varshik:test123@localhost:27017/printtribe?authSource=admin",{ useNewUrlParser: true })
   .catch(err => {
     console.log(err);
   });
@@ -50,6 +52,8 @@ mongoose
   app.use('/api/payment_methods', payment_methods);
   app.use('/api/zakekeCSV', zakekeCSV);
   app.use('/api/zakekeCustomize', zakekeCustomize);
+  app.use('/api/orders', orders);
+  app.use('/api/adminSettings', adminSettings);
 
 app.listen(500, function() {
     console.log('listening on 500')
