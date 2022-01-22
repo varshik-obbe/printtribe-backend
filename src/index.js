@@ -31,13 +31,13 @@ mongoose
   .connect(
 //     `mongodb+srv://scaffolding:scaffolding@cluster0-cqgrr.mongodb.net/test?retryWrites=true&w=majority`,
 //     { useNewUrlParser: true }
-    "mongodb://localhost:27017/printtribe",{ useNewUrlParser: true }
+    "mongodb://varshik:test123@localhost:27017/printtribe?authSource=admin",{ useNewUrlParser: true }
   )
   .then(client => {
     console.log("connected to database");
   })
 //   )
-// mongoose.connect("mongodb://varshik:test123@localhost:27017/printtribe?authSource=admin",{ useNewUrlParser: true })
+// mongoose.connect("mongodb://localhost:27017/printtribe",{ useNewUrlParser: true })
   .catch(err => {
     console.log(err);
   });
