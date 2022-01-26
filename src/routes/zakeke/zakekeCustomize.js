@@ -4,7 +4,7 @@ import customerAuthentication from "../../middleware/CustomerAuthentication";
 
 const router = express.Router()
 
-router.get('/getToken', customerAuthentication, zakekeCustomize.get_token);
+router.get('/getToken/:id', customerAuthentication, zakekeCustomize.get_token);
 
 router.post('/productinfo', customerAuthentication, zakekeCustomize.getUpdatedPrice)
 
