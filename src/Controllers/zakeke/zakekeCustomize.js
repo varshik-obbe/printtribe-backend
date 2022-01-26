@@ -49,10 +49,12 @@ export const getUpdatedPrice = (req,res)=>{
 }
 
 export const get_token = async (req,res) => {
+    const id = req.params.id;
     let returndata = {}
     let sendData = qs.stringify({
         'grant_type':'client_credentials',
-        'access_type':'S2S'
+        'access_type':'S2S',
+        'visitorcode':id
       });
       const token = `${process.env.ZAKEKE_CLIENT_ID}:${process.env.ZAKEKE_SECRET}`;
       const encodedToken = Buffer.from(token).toString('base64');
@@ -85,7 +87,8 @@ export const getCartURL = async (req,res) => {
         console.log("design id is:"+data.designid)
         let sendData = qs.stringify({
             'grant_type':'client_credentials',
-            'access_type':'S2S'
+            'access_type':'S2S',
+            'visitorcode':data.additionaldata.customerUniqueId
           });
           const token = `${process.env.ZAKEKE_CLIENT_ID}:${process.env.ZAKEKE_SECRET}`;
           const encodedToken = Buffer.from(token).toString('base64');
