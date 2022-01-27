@@ -110,55 +110,12 @@ export const getCartURL = async (req,res) => {
            .catch((err) => {
             res.status(400).json({error:{global:"error while generating token"}});
            })
-          await designId.findOne({'customerUniqueId': data.additionaldata.customerUniqueId})
-          .exec()
-          .then((data) => {
-            if(data) {
-              console.log("design already saved with this customer id and the data is:"+data)
-              designData = data
-            }
-          })
-          .catch((err) => {
-
-          })
-        if(Object.keys(designData).length === 0) {
-          designId.updateOne({"customerUniqueId": designData.customerUniqueId}, {$set: { "designId": data.designid }})
-          .then(async (dataUpdated) => {
-            const Cartheaders = {
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + returndata.access_token
-            }
-            let responseCart = {}
-            await axios({
-              url: "https://api.zakeke.com/v1/designs/"+data.designId,
-              method: "GET",
-              headers: Cartheaders
-             })
-             .then((data) => {
-               responseCart = data.data
-             })
-             .catch((err) => {
-               console.log("error occured :"+err)
-              res.status(400).json({error:{global:"error while getting cart url"}});
-             })
-
-             if(res.headersSent) { 
-            }
-            else {
-              console.log("response data from zakeke"+responseCart)
-              if(responseCart)
-              {
-               res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
-              }
-            }
-          })
-        }
-        else {
           const designSave = new designId({
             _id: mongoose.Types.ObjectId(),
               variantProductId: data.productid,
               customerUniqueId: data.additionaldata.customerUniqueId,
               designId: data.designid,
+              visitorId: data.additionaldata.visitorId
           });
           designSave.save().then(async (saveddata) => {
                 const Cartheaders = {
@@ -189,7 +146,6 @@ export const getCartURL = async (req,res) => {
                   }
                 }
           })
-        }
     }
     else
     {
