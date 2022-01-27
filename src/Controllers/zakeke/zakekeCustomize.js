@@ -123,7 +123,7 @@ export const getCartURL = async (req,res) => {
           })
         if(Object.keys(designData).length === 0) {
           designId.updateOne({"customerUniqueId": designData.customerUniqueId}, {$set: { "designId": data.designid }})
-          .then((dataUpdated) => {
+          .then(async (dataUpdated) => {
             const Cartheaders = {
               'Accept': 'application/json',
               'Authorization': 'Bearer ' + returndata.access_token
