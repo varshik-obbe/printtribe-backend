@@ -110,6 +110,7 @@ export const getCartURL = async (req,res) => {
            .catch((err) => {
             res.status(400).json({error:{global:"error while generating token"}});
            })
+           console.log("visitor id is:"+data.additionaldata.visitorId)
           const designSave = new designId({
             _id: mongoose.Types.ObjectId(),
               variantProductId: data.productid,
