@@ -97,6 +97,7 @@ export const getCartURL = async (req,res) => {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Basic ' + encodedToken
           }
+          let designData = {}
           await axios({
             url: 'https://api.zakeke.com/token',
             method: "POST",
@@ -109,46 +110,95 @@ export const getCartURL = async (req,res) => {
            .catch((err) => {
             res.status(400).json({error:{global:"error while generating token"}});
            })
-        const designSave = new designId({
-          _id: mongoose.Types.ObjectId(),
-            variantProductId: data.productid,
-            customerUniqueId: data.additionaldata.customerUniqueId,
-            designId: data.designid,
-        });
-        designSave.save().then(async (saveddata) => {
-              const Cartheaders = {
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + returndata.access_token
-              }
-              let responseCart = {}
-              await axios({
-                url: "https://api.zakeke.com/v1/designs/"+saveddata.designId,
-                method: "GET",
-                headers: Cartheaders
-               })
-               .then((data) => {
-                 responseCart = data.data
-               })
-               .catch((err) => {
-                 console.log("error occured :"+err)
-                res.status(400).json({error:{global:"error while getting cart url"}});
-               })
+          await designId.findOne({'customerUniqueId': data.additionaldata.customerUniqueId})
+          .exec()
+          .then((data) => {
+            if(data) {
+              console.log("design already saved with this customer id and the data is:"+data)
+              designData = data
+            }
+          })
+          .catch((err) => {
 
-               if(res.headersSent) { 
+          })
+        if(Object.keys(designData).length === 0) {
+          designId.updateOne({"customerUniqueId": designData.customerUniqueId}, {$set: { "designId": data.designid }})
+          .then((dataUpdated) => {
+            const Cartheaders = {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + returndata.access_token
+            }
+            let responseCart = {}
+            await axios({
+              url: "https://api.zakeke.com/v1/designs/"+data.designId,
+              method: "GET",
+              headers: Cartheaders
+             })
+             .then((data) => {
+               responseCart = data.data
+             })
+             .catch((err) => {
+               console.log("error occured :"+err)
+              res.status(400).json({error:{global:"error while getting cart url"}});
+             })
+
+             if(res.headersSent) { 
+            }
+            else {
+              console.log("response data from zakeke"+responseCart)
+              if(responseCart)
+              {
+               res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
               }
-              else {
-                console.log("response data from zakeke"+responseCart)
-                if(responseCart)
-                {
-                 res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+            }
+          })
+        }
+        else {
+          const designSave = new designId({
+            _id: mongoose.Types.ObjectId(),
+              variantProductId: data.productid,
+              customerUniqueId: data.additionaldata.customerUniqueId,
+              designId: data.designid,
+          });
+          designSave.save().then(async (saveddata) => {
+                const Cartheaders = {
+                  'Accept': 'application/json',
+                  'Authorization': 'Bearer ' + returndata.access_token
                 }
-              }
-        })
+                let responseCart = {}
+                await axios({
+                  url: "https://api.zakeke.com/v1/designs/"+saveddata.designId,
+                  method: "GET",
+                  headers: Cartheaders
+                 })
+                 .then((data) => {
+                   responseCart = data.data
+                 })
+                 .catch((err) => {
+                   console.log("error occured :"+err)
+                  res.status(400).json({error:{global:"error while getting cart url"}});
+                 })
+  
+                 if(res.headersSent) { 
+                }
+                else {
+                  console.log("response data from zakeke"+responseCart)
+                  if(responseCart)
+                  {
+                   res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+                  }
+                }
+          })
+        }
     }
     else
     {
         res.status(400).json({error:{global:"design id was not provided"}});
     }
+}
+
+export const get_cartInfo = (req,res) => {
+
 }
 
 export const edit_cart = (req,res) => {
