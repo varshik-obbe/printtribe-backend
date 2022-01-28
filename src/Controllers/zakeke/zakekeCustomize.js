@@ -140,11 +140,9 @@ export const getCartURL = async (req,res) => {
                  if(res.headersSent) { 
                 }
                 else {
-                  console.log("response data from zakeke"+responseCart)
-                  console.log("total price for the order:"+responseCart.totalPrice)
                   if(responseCart)
                   {
-                    designId.updateOne({"_id": saveddata._id}, {$set: {"modelCode": responseCart.modelCode, "tempPreviewImageUrl": responseCart.tempPreviewImageUrl, "totalPrice": responseCart.totalPrice}})
+                    designId.updateOne({"_id": saveddata._id}, {$set: {"modelCode": responseCart.modelCode, "tempPreviewImageUrl": responseCart.tempPreviewImageUrl, "totalPrice": responseCart.designUnitPrice}})
                     .then((data) => {
                       res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
                     })
