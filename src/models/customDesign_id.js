@@ -7,7 +7,10 @@ const designIdSchema = new mongoose.Schema({
     variantProductId: {type:String,required:true},
     customerUniqueId: {type:String,required:true},
     designId: {type:String,required:true},
-    visitorId: {type: String,required: true}
+    visitorId: {type: String,required: true},
+    modelCode: {type: String},
+    tempPreviewImageUrl: {type: String},
+    totalPrice: {type: String}
 },{ timestamps:true });
 
 designIdSchema.plugin(uniqueValidator);
