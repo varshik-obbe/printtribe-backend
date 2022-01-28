@@ -6,6 +6,8 @@ const router = express.Router()
 
 router.get('/getToken/:id', customerAuthentication, zakekeCustomize.get_token);
 
+router.get('/getCartInfo/:id', customerAuthentication, zakekeCustomize.get_cartInfo);
+
 router.post('/productinfo', customerAuthentication, zakekeCustomize.getUpdatedPrice)
 
 router.post('/cartUrl', customerAuthentication, zakekeCustomize.getCartURL)
