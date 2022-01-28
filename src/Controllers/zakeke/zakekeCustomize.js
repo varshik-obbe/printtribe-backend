@@ -141,6 +141,7 @@ export const getCartURL = async (req,res) => {
                 }
                 else {
                   console.log("response data from zakeke"+responseCart)
+                  console.log("total price for the order:"+responseCart.totalPrice)
                   if(responseCart)
                   {
                     designId.updateOne({"_id": saveddata._id}, {$set: {"modelCode": responseCart.modelCode, "tempPreviewImageUrl": responseCart.tempPreviewImageUrl, "totalPrice": responseCart.totalPrice}})
