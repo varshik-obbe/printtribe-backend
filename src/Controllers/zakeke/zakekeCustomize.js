@@ -183,7 +183,7 @@ export const get_cartInfo = (req,res) => {
    }); 
 }
 
-export const edit_cart = (req,res) => {
+export const edit_cart = async (req,res) => {
     const data = req.body
 
     if(data.designid)
