@@ -143,7 +143,11 @@ export const getCartURL = async (req,res) => {
                   console.log("response data from zakeke"+responseCart)
                   if(responseCart)
                   {
-                   res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+                    designId.updateOne({"_id": saveddata._id}, {$set: {"modelCode": responseCart.modelCode, "tempPreviewImageUrl": responseCart.tempPreviewImageUrl, "totalPrice": responseCart.totalPrice}})
+                    .then((data) => {
+                      res.status(200).json({returnurl: process.env.ZAKEKE_CART_URL})
+                    })
+                    .catch((err) => res.status(400).json({error:{global:"error while updating data :"+err}}))
                   }
                 }
           })
@@ -155,7 +159,16 @@ export const getCartURL = async (req,res) => {
 }
 
 export const get_cartInfo = (req,res) => {
+  const id = req.params.id;
+  zakekeDesignArray = []
 
+  designId.find({'visitorId': id})
+  .exec()
+  .then((data) => {
+    data.map((value) => ({
+      
+    }))
+  })
 }
 
 export const edit_cart = (req,res) => {
