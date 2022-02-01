@@ -54,8 +54,8 @@ export default async function(status) {
          
         let tokenAxVal = await axios(config)
         .then(async function (response) {
-          console.log(JSON.stringify(response.data));
-          let exp_date = new Date(response.data.created_at);
+          console.log(response.data);
+          let exp_date = new Date();
           exp_date = addDays(exp_date, 8);
           let tokenVal = await tokenModel.updateOne({ "name": 'shiprocket'}, {$set: { "token": response.data.token, "expiry_date": exp_date.toString() }} )
         .then((savedResult) => {
@@ -65,7 +65,7 @@ export default async function(status) {
         return tokenVal;
         })
         .catch(function (error) {
-          console.log(error);
+          console.log("couldn't fetch the token:"+error);
         });   
         return tokenAxVal;
     }
