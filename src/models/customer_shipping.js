@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
 
 const customerShipmentSchema = new mongoose.Schema({
     _id:mongoose.Schema.Types.ObjectId,
     customer_id: {type: String, required: true},
-    visitor_id: {type: String, required: true},
+    visitor_id: {type: String, required: true, unique: true},
     fullname: {type:String,required:true},
     address1: {type:String,required:true},
     address2: {type:String},
@@ -16,6 +17,6 @@ const customerShipmentSchema = new mongoose.Schema({
     city: {type:String, required: true}
 },{ timestamps:true });
 
-// categoriesSchema.plugin(uniqueValidator);
+customerShipmentSchema.plugin(uniqueValidator);
 
 export default mongoose.model("customer_shipping", customerShipmentSchema);
