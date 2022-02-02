@@ -30,6 +30,7 @@ const orderSchema = new mongoose.Schema({
     shipment_ord_id: {type: String},
     shipment_status: {type: String},
     customer_email:{type:String,required:true,index:true},
+    customer_id: {type: String, required: true, index: true},
     visitor_id: {type:String,required:true,index:true}
 },{ timestamps:true });
 
