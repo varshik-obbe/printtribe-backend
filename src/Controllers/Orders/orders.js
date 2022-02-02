@@ -20,7 +20,8 @@ export const add_order = async (req,res) => {
             payment_type: orderData.payment_type,
             payment_ref_id: orderData.payment_ref_id,
             customer_email: orderData.customer_email,
-            visitor_id: orderData.visitor_id
+            visitor_id: orderData.visitor_id,
+            customer_id: orderData.customer_id
         })
         newOrder.save().then(async saveddata => {
             const savedDataPopulate = await saveddata
