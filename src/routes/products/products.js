@@ -32,7 +32,7 @@ const upload = multer({
 });
 
 
-router.post('/addProduct', Authentication, upload.fields([ { name: 'cover_img', maxCount: 1 }, { name: 'img', maxCount: 1 }]), ProductsController.add_Products);
+router.post('/addProduct', Authentication, upload.fields([ { name: 'cover_img', maxCount: 1 }, { name: 'img', maxCount: 1 }, { name: 'extra_imgs', maxCount: 12 }]), ProductsController.add_Products);
 
 
 router.get('/getProducts', Authentication, ProductsController.get_products);

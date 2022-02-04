@@ -4,7 +4,7 @@ import Products from "../../models/products";
 import ParseErrors from "../../utils/ParseErrors";
 
 
-export const add_Products = (req, res, err) => {
+export const add_Products = async (req, res, err) => {
         const data = req.body;
         if(!req.files.cover_img)
         {
@@ -27,6 +27,15 @@ export const add_Products = (req, res, err) => {
             // })
             // )
 
+            let product_extraImgsArr = [];
+
+            if(req.files.extra_imgs.length > 0)
+            {
+                await Promise.all(req.files.extra_imgs.map((item,key) => {
+                    product_extraImgsArr.push(item.path.toString());
+                }))
+            }
+
 
             const categories = new Products({
                 _id: mongoose.Types.ObjectId(),
@@ -38,7 +47,8 @@ export const add_Products = (req, res, err) => {
                 cover_img: req.files.cover_img[0].path,
                 category_id: data.category_id,
                 img: req.files.img[0].path,
-                quantity: data.quantity
+                quantity: data.quantity,
+                extra_imgs: product_extraImgsArr
             });
             categories.save().then((productsValue) => {
                 res.status(201).jsonp({ productsValue })
@@ -119,7 +129,8 @@ export const get_products = async (req,res) => {
                                     cover_img: subproductsData.cover_img,
                                     category_id: subproductsData.category_id,
                                     img: subproductsData.img,
-                                    quantity: subproductsData.quantity
+                                    quantity: subproductsData.quantity,
+                                    extra_imgs: subproductsData.extra_imgs
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["products"] = responseProducts.subProducts;
@@ -141,7 +152,8 @@ export const get_products = async (req,res) => {
                                             cover_img: subsubProductsData.cover_img,
                                             category_id: subsubProductsData.category_id,
                                             img: subsubProductsData.img,
-                                            quantity: subsubProductsData.quantity
+                                            quantity: subsubProductsData.quantity,
+                                            extra_imgs: subsubProductsData.extra_imgs
                                         }))
                                     }
                                     maincat.categories[key].subCategories[keysub].subsubCategories[productskeysub]["products"] = responseSubSubProducts.subSubProducts;
@@ -171,7 +183,8 @@ export const get_SingleProduct = (req,res) => {
                 cover_img: productrecord.cover_img,
                 category_id: productrecord.category_id,
                 img: productrecord.img,
-                quantity: productrecord.quantity
+                quantity: productrecord.quantity,
+                extra_imgs: productrecord.extra_imgs
             
             }))
         }
