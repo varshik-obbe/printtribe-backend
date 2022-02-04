@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import adminSettings from './routes/admin_settings/admin_settings';
 import customers from './routes/customers/customers';
 import customerInventory from './routes/customers/products';
+import walletInfo from './routes/customers/wallet';
 import customerShipping from './routes/customer_shipping/customer_shipping';
 import orders from "./routes/orders/orders";
 import payment_methods from './routes/payment_methods/payment_methods';
@@ -58,6 +59,7 @@ mongoose
   app.use('/api/adminSettings', adminSettings);
   app.use('/api/customerShipping', customerShipping);
   app.use('/api/customerInventory', customerInventory);
+  app.use('/api/customerWallet', walletInfo);
 
 app.listen(500, function() {
     console.log('listening on 500')
