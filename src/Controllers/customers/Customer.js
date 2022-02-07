@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
 import Customer from "../../models/customers";
@@ -186,27 +185,38 @@ export const updateCustomer = (req,res) => {
 export const updatePass = async (req,res) => {
     const { restData } = req.body
 
-    Customer.findByIdAndUpdate({_id: restData.id}, restData, (err, data) => {
-        if(err) {
-         console.log("error is:"+err)   
-        }
-        else {
-            if(data) {
-                data.password = bcrypt.hashSync(restData.password, 10)
-                data.save(function (errors, user) {
-                    if (errors) {
-                        console.log("error while updating is :"+errors)
-                        res.status(400).json({error:{global:"something went wrong while updating"}})
-                    } else {
-                        res.status(200).json({success:{global:"password updated successfully"}})        
-                    }
-                  });
-            }
-            else {
-                res.status(200).json({success:{global:"could not find data"}})        
-            }
-        }
+    Customer.findOneAndUpdate(
+        { _id: restData.id },
+        { password: restData.password },
+        { useFindAndModify: false }
+    )
+    .exec()
+    .then((data) => {
+                    res.status(200).json({success:{global:"password updated successfully"}})
     })
+    .catch((err) => res.status(200).json({success:{global:"could not find data"}}))
+    
+    // Customer.findByIdAndUpdate({_id: restData.id}, restData, (err, data) => {
+    //     if(err) {
+    //      console.log("error is:"+err)   
+    //     }
+    //     else {
+    //         if(data) {
+    //             data.password = bcrypt.hashSync(restData.password, 10)
+    //             data.save(function (errors, user) {
+    //                 if (errors) {
+    //                     console.log("error while updating is :"+errors)
+    //                     res.status(400).json({error:{global:"something went wrong while updating"}})
+    //                 } else {
+    //                     res.status(200).json({success:{global:"password updated successfully"}})        
+    //                 }
+    //               });
+    //         }
+    //         else {
+    //             res.status(200).json({success:{global:"could not find data"}})        
+    //         }
+    //     }
+    // })
 }
 
 export const delete_Customer = (req,res) => {
