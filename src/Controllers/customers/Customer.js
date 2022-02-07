@@ -1,5 +1,8 @@
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from 'uuid';
 import Customer from "../../models/customers";
+import forgotPassModel from "../../models/forgot_passwords";
 import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
 
@@ -105,6 +108,71 @@ export const getCustomerById = (req,res)=>{
     });
 }
 
+export const forgotPassword = (req,res) => {
+    const email = req.params.email
+
+
+    Customer.findOne({ 'email': email })
+    .exec()
+    .then((data) => {
+        if(data) {
+            let randomstring = uuidv4();
+            let exp_date = new Date();
+            exp_date = addDays(exp_date, 2);
+
+            const forgotPassSave = new forgotPassModel({
+                _id:mongoose.Types.ObjectId(),
+                customer_email: data.email,
+                customer_id:data._id,
+                random_string: randomstring,
+                expiry_date: exp_date
+            })
+
+            forgotPassSave.save()
+            .then((savedata) => {
+                let title = "printribe mail"
+                let hello = "hello customer"
+                let message = "you have opted for password reset, please click the link below to reset it."
+                let second_message = "for any further assistance please reach out to us."
+                let link = process.env.PROJ_DEV_HOST/"forgotPass/"+randomstring;
+                SendMail(title,hello,message,second_message,data.email,link); 
+
+                res.status(201).json({success: {global: "mail sent successfully"}})
+            })
+            .catch((err) => {
+                res.status(400).json({error:{global:"coluld not send mail"}})
+            }) 
+        }
+        else {
+            res.status(400).json({error:{global:"user with this email was not found"}});
+        }
+    })
+    .catch((err) => res.status(400).json({error:{global:"something went wrong while fetching data"}}))
+}
+
+export const resetPass = (req,res) => {
+    const tokenString = req.params.id
+
+    forgotPassModel.findOne({ 'random_string': tokenString })
+    .exec()
+    .then((data) => {
+        if(data) {
+            res.status(200).json({ data: data })
+        }
+        else
+        {
+            res.status(400).json({error:{global:"token is invalid"}})
+        }
+    })
+    .catch((err) => res.status(400).json({error:{global:"something went wrong while fetching data"}}))
+}
+
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
 export const updateCustomer = (req,res) => {
     const id = req.query.id;
     const { data } = req.body;
@@ -112,6 +180,26 @@ export const updateCustomer = (req,res) => {
         res.status(200).json({success:{global:"Customer details is updated successfully"}})
     }).catch((err)=>{
         res.status(400).json({error:{global:"something went wrong"}});
+    })
+}
+
+export const updatePass = async (req,res) => {
+    const { restData } = req.body
+
+    Customer.findByIdAndUpdate({_id: restData.id}, restData, (err, data) => {
+        if(err) {
+         console.log("error is:"+err)   
+        }
+        else {
+            data.password = bcrypt.hashSync(restData.password, 10)
+            data.save(function (err, user) {
+                if (err) {
+                    res.status(400).json({error:{global:"something went wrong while updating"}})
+                } else {
+                    res.status(200).json({success:{global:"password updated successfully"}})        
+                }
+              });
+        }
     })
 }
 
@@ -130,4 +218,4 @@ export const delete_Customer = (req,res) => {
     });
 }
 
-export default { add_customer, login, getCustomers, getCustomerById, updateCustomer, delete_Customer }
+export default { add_customer, login, getCustomers, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass }

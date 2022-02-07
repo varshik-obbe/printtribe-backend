@@ -257,6 +257,26 @@ export const update_product = async (req,res) => {
          }
 }
 
+export const search_products = (req,res) => {
+    const text = req.params.text
+
+    let title = new RegExp(text)
+
+    Products.find({
+        "$or": [
+            { title: { '$regex':  title, '$options': 'i'} },
+            { description: { '$regex':  title, '$options': 'i'} }
+        ]
+    })
+    .exec()
+    .then((data) => {
+        res.status(200).json({ products: data })
+    })
+    .catch((err) => {
+        res.status(400).json({error:{global:"could not find the products"}});
+    })
+}
+
 export const delete_Products = (req,res) => {
     const id = req.params.id;
     Products.deleteOne({_id: id},function(err,data){
@@ -272,4 +292,4 @@ export const delete_Products = (req,res) => {
     });
 }
 
-export default { add_Products, get_products, get_SingleProduct, update_product, delete_Products }
+export default { add_Products, get_products, get_SingleProduct, update_product, delete_Products, search_products }
