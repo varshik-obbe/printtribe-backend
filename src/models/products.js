@@ -11,7 +11,7 @@ const productsSchema = new mongoose.Schema({
     cover_img: {type:String,required:true,lowercase:true},
     img: {type:String,required:true,lowercase:true},
     category_id: {type:String,required:true},
-    quantity: {type:String,required:true,lowercase:true},
+    quantity: {type:String,lowercase:true},
     extra_imgs: {type: Array}
 },{ timestamps:true });
 
