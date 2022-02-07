@@ -30,6 +30,18 @@ customerSchema.methods.setPassword = function setPassword(password){
     this.password = bcrypt.hashSync(password, 10);    
 }
 
+customerSchema.pre('findOneAndUpdate', async function (next) {
+    try {
+        if (this._update.password) {
+            const hashed = await bcrypt.hash(this._update.password, 10)
+            this._update.password = hashed;
+        }
+        next();
+    } catch (err) {
+        return next(err);
+    }
+});
+
 customerSchema.methods.isValidPassword = function isValidPassword(password) {
     return bcrypt.compareSync(password, this.password);
 }
