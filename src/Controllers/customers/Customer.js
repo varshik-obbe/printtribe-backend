@@ -191,14 +191,19 @@ export const updatePass = async (req,res) => {
          console.log("error is:"+err)   
         }
         else {
-            data.password = bcrypt.hashSync(restData.password, 10)
-            data.save(function (err, user) {
-                if (err) {
-                    res.status(400).json({error:{global:"something went wrong while updating"}})
-                } else {
-                    res.status(200).json({success:{global:"password updated successfully"}})        
-                }
-              });
+            if(data) {
+                data.password = bcrypt.hashSync(restData.password, 10)
+                data.save(function (err, user) {
+                    if (err) {
+                        res.status(400).json({error:{global:"something went wrong while updating"}})
+                    } else {
+                        res.status(200).json({success:{global:"password updated successfully"}})        
+                    }
+                  });
+            }
+            else {
+                res.status(200).json({success:{global:"could not find data"}})        
+            }
         }
     })
 }
