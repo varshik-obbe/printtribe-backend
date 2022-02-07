@@ -46,6 +46,8 @@ router.put('/updateProduct', Authentication, upload.fields([ { name: 'cover_img'
 
 router.patch('/updateProduct', Authentication, ProductsController.update_product);
 
+router.get('/getSearchProducts/:text', Authentication, ProductsController.search_products);
+
 
 router.delete('/deleteProduct/:id', Authentication, ProductsController.delete_Products);
 

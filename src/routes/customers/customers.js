@@ -13,9 +13,17 @@ router.get('/getCustomers', CustomerController.getCustomers);
 
 router.get('/getCustomerbyid', CustomerAuthentication, CustomerController.getCustomerById);
 
+router.get('/forgotpass/:email', CustomerAuthentication, CustomerController.forgotPassword);
+
+router.get('/tokenVerify/:id', CustomerAuthentication, CustomerController.resetPass);
+
 router.patch("/updatecustomer",CustomerAuthentication, CustomerController.updateCustomer);
 
+router.patch("/updatePass",CustomerAuthentication, CustomerController.updatePass);
+
 router.put("/updatecustomer",CustomerAuthentication, CustomerController.updateCustomer);
+
+router.put("/updatePass",CustomerAuthentication, CustomerController.updatePass);
 
 router.delete('/deleteCustomer/:id', CustomerAuthentication, CustomerController.delete_Customer);
 
