@@ -7,4 +7,6 @@ const router = express.Router()
 
 router.post('/addOrder', CustomerAuthentication , OrdersController.add_order);
 
+router.get('/getOrders/:id', CustomerAuthentication, OrdersController.getCustomer_orders);
+
 export default router
