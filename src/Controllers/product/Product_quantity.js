@@ -135,6 +135,19 @@ async function updatedLog(updateData)  {
 
 }
 
+export const getAllQuantLogs = (req,res) => {
+    const product_id = req.params.id
+
+    quantityLogModel.find({ 'product_id': product_id })
+    .exec()
+    .then((logdata) => {
+        res.status(200).json({ logData: logdata })
+    })
+    .catch((err) => {
+        res.status(500).json({error:{global:"logs could not be fetched"}})
+    })
+}
+
 export const deleteQuantItem = (req,res) => {
     const id = req.params.id;
     productQuantModel.deleteOne({'product_id': id},function(err,data){
@@ -150,4 +163,4 @@ export const deleteQuantItem = (req,res) => {
     });
 }
 
-export default { add_quantities, getQuantById, getQuantByColorSize, updateQuant, deleteQuantItem }
+export default { add_quantities, getQuantById, getQuantByColorSize, updateQuant, deleteQuantItem, getAllQuantLogs }

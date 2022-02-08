@@ -15,6 +15,8 @@ router.patch('/updateQuantData', Authentication, productQuantController.updateQu
 
 router.put('/updateQuantData', Authentication, productQuantController.updateQuant);
 
+router.get('/getAllQuantLogs/:id', Authentication, productQuantController.getAllQuantLogs);
+
 router.delete('/deleteQuantData/:id', Authentication, productQuantController.deleteQuantItem);
 
 export default router;
