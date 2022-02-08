@@ -225,8 +225,8 @@ async function writeToFile(rows,rowsSides,rowsAreas,rowsPrintTypes,rowsSidesPrin
   }
 
   for (let i = 0; i < variants.length; i++){
-    rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, `Front Area`, `https://zakekecdn.blob.core.windows.net/cdn/examples/example_images/tshirt_front_mask.png`, `${zakekeConfigData.zakekedata[0].clipOut}`])
-    rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, `Back Area`, `https://zakekecdn.blob.core.windows.net/cdn/examples/example_images/tshirt_back_mask.png`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+    rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, `Front Area`, `${process.env.PROJ_DEV_HOST+variants[i].frontImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+    rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, `Back Area`, `${process.env.PROJ_DEV_HOST+variants[i].backImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
   }
 
   for (let i = 0; i < variants.length; i++){
