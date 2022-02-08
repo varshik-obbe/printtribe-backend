@@ -188,4 +188,21 @@ export const add_order = async (req,res) => {
     }
 }
 
-export default { add_order }
+export const getCustomer_orders = (req,res) => {
+  const customer_id = req.params.id
+  
+  orderModel.find({ 'customer_id': customer_id })
+  .populate('customerShipping_id')
+  .exec()
+  .then((orderdata) => {
+    if(orderdata) {
+      res.status(201).json({ orders: orderdata })
+    }
+    else {
+      res.status(500).json({error:{global:"orders could not be found"}});
+    }
+  })
+  .catch((err) => res.status(500).json({error:{global:"orders could not be fetched"+err}}))
+}
+
+export default { add_order, getCustomer_orders }
