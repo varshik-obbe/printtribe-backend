@@ -13,6 +13,10 @@ export const add_ProductInfo = async (req,res)=>{
             let dateVal = Date.now();
             await decode(item.backImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId, ext: 'jpg' });
             await decode(item.frontImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId, ext: 'jpg' });
+            await decode(item.frontImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "frontMaskImg" + productdata.productId, ext: 'jpg'});
+            await decode(item.backImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "backMaskImg" + productdata.productId, ext: 'jpg'});
+            productdata.variant[key]['frontImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "frontMaskImg" + productdata.productId +".jpg";
+            productdata.variant[key]['backImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "backMaskImg" + productdata.productId +".jpg";
             productdata.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId +".jpg";
             productdata.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId +".jpg";
         }))
