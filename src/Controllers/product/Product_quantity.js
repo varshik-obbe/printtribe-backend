@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import productQuantModel from "../../models/product_quantity";
+import quantityLogModel from "../../models/quantity_log";
 import ParseErrors from "../../utils/ParseErrors";
 
 export const add_quantities = (req,res) => {
@@ -53,7 +54,17 @@ export const getQuantByColorSize = (req,res) => {
 export const updateQuant = (req,res) => {
     const { updateData } = req.body;
     if(updateData.product_id && updateData.color && updateData.size) {
-        productQuantModel.updateOne({'product_id': updateData.product_id, 'variants.color': updateData.color, 'variants.size': updateData.size}, { $set: { 'variants.$.quantity': updateData.quantity } })
+        productQuantModel.updateOne(
+            { 'product_id': updateData.product_id, variants: { $elemMatch: { color: updateData.color, size: updateData.size  } } },
+            { $set: { "variants.$.quantity": updateData.quantity } }
+         )
+         .exec()
+         .then(async (updatedData) => {
+             await updatedLog(updateData);
+             res.status(201).json({ success: { global: "updated successfully" } })
+         })
+         .catch((err) => res.status(500).json({error:{global:"could not update data"}}))
+        // productQuantModel.updateOne({'product_id': updateData.product_id, 'variants.color': updateData.color, 'variants.size': updateData.size}, { $set: { 'variants.$.quantity': updateData.quantity } })
 
 
         // productQuantModel.findOneAndUpdate({'product_id': updateData.product_id}, 
@@ -63,14 +74,65 @@ export const updateQuant = (req,res) => {
         //     { 
         //       "arrayFilters": [{ "variants.color": updateData.color}, { 'variants.size': updateData.size }]
         //     })
-            .then((updatedData) => {
-                res.status(200).json({success:{global:"User details is updated successfully"}})
-            })
-            .catch((err) => res.status(400).json({error:{global:"something went wrong while updating"+err}}))
+            // .then((updatedData) => {
+            //     res.status(200).json({success:{global:"User details is updated successfully"}})
+            // })
+            // .catch((err) => res.status(400).json({error:{global:"something went wrong while updating"+err}}))
     } 
     else {
         res.status(500).json({error:{global:"product_id or color or size is not provided"}})
     }
+}
+
+
+async function updatedLog(updateData)  {
+
+
+    let date_ob = new Date();
+
+    // current date
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+
+    // current minutes
+    let minutes = date_ob.getMinutes();
+
+    // current seconds
+    let seconds = date_ob.getSeconds();
+
+
+    const updatdeDate = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+
+    const updatedLogSave = new quantityLogModel({
+        _id: mongoose.Types.ObjectId(),
+        product_id: updateData.product_id,
+        color: updateData.color,
+        size: updateData.size,
+        user_id: updateData.user_id,
+        email: updateData.email,
+        updated_quant: updateData.updated_quant,
+        action: updateData.action,
+        time: updatdeDate.toString()
+    })
+
+    await updatedLogSave.save().then((savedata) => {
+        console.log("log added successfully");
+        return "success";
+    })
+    .catch((err) => {
+        console.log("error saving log data "+err)
+        return "fail";
+    })
+
 }
 
 export const deleteQuantItem = (req,res) => {
