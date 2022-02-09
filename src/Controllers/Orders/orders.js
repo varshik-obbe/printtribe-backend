@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import qs from "qs";
 import orderModel from "../../models/orders";
 import addProductsInventory from "../../utils/addProductsToCustomer";
+import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
 import ParseErrors from "../../utils/ParseErrors";
 
@@ -22,12 +23,15 @@ export const add_order = async (req,res) => {
             payment_ref_id: orderData.payment_ref_id,
             customer_email: orderData.customer_email,
             visitor_id: orderData.visitor_id,
-            customer_id: orderData.customer_id
+            customer_id: orderData.customer_id,
+            shipment_status: "processing"
         })
         newOrder.save().then(async saveddata => {
             
             const savedDataPopulate = await saveddata
             .populate('customerShipping_id')
+
+            deleteQuant(orderData.product_info,orderData.customer_id,orderData.customer_email)
 
             let addCustomerInventory = addProductsInventory(savedDataPopulate.product_info, savedDataPopulate.customer_id)
 
