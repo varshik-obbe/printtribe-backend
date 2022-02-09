@@ -10,7 +10,8 @@ const quantitySchema = new mongoose.Schema({
     email: {type:String,required:true},
     updated_quant: {type:String,required:true},
     action: {type:String,lowercase:true},
-    time: {type:String,lowercase:true}
+    time: {type:String},
+    user_type: {type: String}
 },{ timestamps:true });
 
 // categoriesSchema.plugin(uniqueValidator);

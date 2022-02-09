@@ -121,7 +121,8 @@ async function updatedLog(updateData)  {
         email: updateData.email,
         updated_quant: updateData.updated_quant,
         action: updateData.action,
-        time: updatdeDate.toString()
+        time: updatdeDate.toString(),
+        user_type: "admin"
     })
 
     await updatedLogSave.save().then((savedata) => {
