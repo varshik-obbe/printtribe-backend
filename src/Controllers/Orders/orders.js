@@ -24,6 +24,7 @@ export const add_order = async (req,res) => {
             customer_email: orderData.customer_email,
             visitor_id: orderData.visitor_id,
             customer_id: orderData.customer_id,
+            courier_id: orderData.courier_id,
             shipment_status: "processing"
         })
         newOrder.save().then(async saveddata => {
@@ -209,4 +210,17 @@ export const getCustomer_orders = (req,res) => {
   .catch((err) => res.status(500).json({error:{global:"orders could not be fetched"+err}}))
 }
 
-export default { add_order, getCustomer_orders }
+export const getAdminOngoingOrders = (req,res) => {
+  orderModel.find({ 'shipment_status': "processing" })
+  .exec()
+  .then((orderdata) => {
+    if(orderdata) {
+      res.status(201).json({ orders: orderdata })
+    }
+    else {
+      res.status(500).json({error:{global:"no ongoing orders"}});
+    }
+  })
+}
+
+export default { add_order, getCustomer_orders, getAdminOngoingOrders }

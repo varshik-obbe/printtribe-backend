@@ -14,6 +14,7 @@ import payment_methods from './routes/payment_methods/payment_methods';
 import categories from './routes/products/categories';
 import products from './routes/products/products';
 import quantProducts from './routes/products/product_quantity';
+import pickupShiprocketOrder from "./routes/shipment/shiprocketShipment";
 import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
 import zakekeConfig from './routes/zakeke/zakekeConfig';
@@ -62,6 +63,7 @@ mongoose
   app.use('/api/customerInventory', customerInventory);
   app.use('/api/customerWallet', walletInfo);
   app.use('/api/productQuant', quantProducts);
+  app.use('/api/shiprocketGenrate', pickupShiprocketOrder);
 
 app.listen(500, function() {
     console.log('listening on 500')
