@@ -17,7 +17,13 @@ export const assignAWB = async(req,res) => {
             const status = await createAwb(orderdata);
             console.log("status is :"+status)
             if(status == "success") {
-                res.status(200).json({ success: {global: "awb generated successfully"} })
+                ordersModel.updateOne({ '_id': orderdata._id }, { $set: { 'shipment_status': "awb generated" } })
+                .then((updatedData) => {
+                    res.status(200).json({ success: {global: "awb generated successfully"} })
+                })
+                .catch((err) => {
+                    console.log("could not update orders status"+err)
+                })
             }
             else {
                 res.status(500).json({error:{global:"could not generate awb"}});        
@@ -44,7 +50,13 @@ export const generatePickup = async (req,res) => {
             if(orderdata.shiprocket_awb) {
                 const pickupData = await pickupShiprocketOrder(orderdata)
                 if(pickupData) {
-                    res.status(200).json({ success: { global: "pick up api success" } })
+                    ordersModel.updateOne({ '_id': orderdata._id }, { $set: { 'shipment_status': "picking up order" } })
+                    .then((updatedData) => {
+                        res.status(200).json({ success: { global: "pick up api success" } })
+                    })
+                    .catch((err) => {
+                        console.log("could not update orders status"+err)
+                    })
                 }
                 else {
                     res.status(500).json({error:{global:"something went wrong while pickup API"}});                                    
