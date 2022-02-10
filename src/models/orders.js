@@ -31,7 +31,9 @@ const orderSchema = new mongoose.Schema({
     shipment_status: {type: String},
     customer_email:{type:String,required:true,index:true},
     customer_id: {type: String, required: true, index: true},
-    visitor_id: {type:String,required:true,index:true}
+    courier_id: {type: String},
+    visitor_id: {type:String,required:true,index:true},
+    shiprocket_awb: {type:String}
 },{ timestamps:true });
 
 orderSchema.plugin(uniqueValidator)
