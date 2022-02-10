@@ -141,9 +141,9 @@ export const add_order = async (req,res) => {
                                   "transaction_charges": 0,
                                   "total_discount": 0,
                                   "sub_total": parseInt(orderData.total_price, 10),
-                                  "length": 14,
-                                  "breadth": 15,
-                                  "height": 20,
+                                  "length": 10,
+                                  "breadth": 10,
+                                  "height": 10,
                                   "weight": weightTotal
                                 }
                     
