@@ -133,7 +133,7 @@ export const forgotPassword = (req,res) => {
                 let hello = "hello customer"
                 let message = "you have opted for password reset, please click the link below to reset it."
                 let second_message = "for any further assistance please reach out to us."
-                let link = "https://api.theprintribe.com/forgotPass/"+randomstring;
+                let link = "https://printribe-2021.web.app/forgotPass/"+randomstring;
                 SendMail(title,hello,message,second_message,data.email,link); 
 
                 res.status(201).json({success: {global: "mail sent successfully"}})
