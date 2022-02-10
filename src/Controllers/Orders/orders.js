@@ -116,7 +116,7 @@ export const add_order = async (req,res) => {
                                         shippingProductsArr.push(data);
                                 }))
                     
-                                const weightTotal = parseInt(orderData.total_quantity) * 0.3; 
+                                const weightTotal = parseInt(orderData.total_quantity) * 0.1; 
                     
                     
                                 let shipRockData = {
