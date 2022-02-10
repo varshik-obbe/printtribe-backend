@@ -44,7 +44,7 @@ export const generatePickup = async (req,res) => {
             if(orderdata.shiprocket_awb) {
                 const pickupData = await pickupShiprocketOrder(orderdata)
                 if(pickupData) {
-                    res.status(200).json({ saveddata: pickupData })
+                    res.status(200).json({ success: { global: "pick up api success" } })
                 }
                 else {
                     res.status(500).json({error:{global:"something went wrong while pickup API"}});                                    
