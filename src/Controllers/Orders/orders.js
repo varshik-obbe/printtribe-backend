@@ -25,7 +25,8 @@ export const add_order = async (req,res) => {
             visitor_id: orderData.visitor_id,
             customer_id: orderData.customer_id,
             courier_id: orderData.courier_id,
-            shipment_status: "processing"
+            shipment_status: "processing",
+            shiprocket_awb: ""
         })
         newOrder.save().then(async saveddata => {
             
