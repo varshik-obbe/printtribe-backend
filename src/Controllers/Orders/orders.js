@@ -212,7 +212,7 @@ export const getCustomer_orders = (req,res) => {
 }
 
 export const getAdminOngoingOrders = (req,res) => {
-  orderModel.find({ 'shipment_status': "processing" })
+  orderModel.find({ $or: [{ shipment_status: "processing" }, { shipment_status: "awb generated" }, { shipment_status: "picking up order" }] })
   .exec()
   .then((orderdata) => {
     if(orderdata) {
