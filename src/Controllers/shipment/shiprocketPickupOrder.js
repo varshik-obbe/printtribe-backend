@@ -120,6 +120,7 @@ export const shiprocketWebhookAuth = (req,res) => {
     const data = req.body
     const token = req.get('x-api-key');
 
+    console.log("token value is"+token);
     if(token == "printribesecret") {
 
         if(data) {
