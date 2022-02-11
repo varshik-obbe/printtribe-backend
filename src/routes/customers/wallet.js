@@ -9,6 +9,8 @@ router.post('/addWalletAmount', CustomerAuthentication , walletController.add_cr
 
 router.get('/getWalletbyid/:id', CustomerAuthentication, walletController.get_walletByID);
 
+router.post('/razorPayInstantiate', CustomerAuthentication , walletController.instantiateRazorpay);
+
 // router.patch("/updateWallet",CustomerAuthentication, CustomerController.updateCustomer);
 
 // router.put("/updatecustomer",CustomerAuthentication, CustomerController.updateCustomer);
