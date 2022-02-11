@@ -5,6 +5,6 @@ import Authentication from "../../middleware/Authentication";
 
 const router = express.Router()
 
-router.get('/shippingAuth', Authentication, shiprocketPickupAwbController.shiprocketWebhookAuth);
+router.post('/shippingAuth', Authentication, shiprocketPickupAwbController.shiprocketWebhookAuth);
 
 export default router
