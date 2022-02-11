@@ -116,4 +116,32 @@ export const getOrderTrack = async (req,res) => {
     }
 }
 
-export default { assignAWB, generatePickup, getPickupDetails, getOrderTrack }
+export const shiprocketWebhookAuth = (req,res) => {
+    const data = req.body
+    const token = req.get('x-api-key');
+
+    if(token == "printribesecret") {
+
+        if(data) {
+            if(data.current_status == "Delivered") {
+                ordersModel.updateOne({ 'shiprocket_awb': data.awb }, { $set: { 'shipment_status': 'processed' } })
+                .then((data) => {
+                    res.status(200).json({ success: { global: "data updated successfully"} })
+                })
+            }
+            else {
+                console.log("status not delivered")
+                res.status(200).json({ error: { global: "status is not delivered" } })
+            }
+        }
+        else {
+            console.log("no data received")
+            res.status(200).json({ error: { global: "no data received" } })
+        }
+    }
+    else {
+        res.status(400).json({ error: { global: "token doesn't match" } })
+    }
+}
+
+export default { assignAWB, generatePickup, getPickupDetails, getOrderTrack, shiprocketWebhookAuth }
