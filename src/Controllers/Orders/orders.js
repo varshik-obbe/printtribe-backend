@@ -197,7 +197,24 @@ export const add_order = async (req,res) => {
 export const getCustomer_orders = (req,res) => {
   const customer_id = req.params.id
   
-  orderModel.find({ 'customer_id': customer_id })
+  orderModel.find({ 'customer_id': customer_id, $or: [{ shipment_status: "cancelled" }, { shipment_status: "processed" }] })
+  .populate('customerShipping_id')
+  .exec()
+  .then((orderdata) => {
+    if(orderdata) {
+      res.status(201).json({ orders: orderdata })
+    }
+    else {
+      res.status(500).json({error:{global:"orders could not be found"}});
+    }
+  })
+  .catch((err) => res.status(500).json({error:{global:"orders could not be fetched"+err}}))
+}
+
+export const getCustomerOngoing = (req,res) => {
+  const customer_id = req.params.id
+
+  orderModel.find({ 'customer_id': customer_id, $or: [{ shipment_status: "processing" }, { shipment_status: "awb generated" }, { shipment_status: "picking up order" }] })
   .populate('customerShipping_id')
   .exec()
   .then((orderdata) => {
@@ -224,4 +241,17 @@ export const getAdminOngoingOrders = (req,res) => {
   })
 }
 
-export default { add_order, getCustomer_orders, getAdminOngoingOrders }
+export const getAdminOtherOrders = (req,res) => {
+  orderModel.find({ $or: [{ shipment_status: "processed" }, { shipment_status: "cancelled" }] })
+  .exec()
+  .then((orderdata) => {
+    if(orderdata) {
+      res.status(201).json({ orders: orderdata })
+    }
+    else {
+      res.status(500).json({error:{global:"no ongoing orders"}});
+    }
+  })
+}
+
+export default { add_order, getCustomer_orders, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing }

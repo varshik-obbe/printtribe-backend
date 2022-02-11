@@ -12,4 +12,8 @@ router.get('/getOrders/:id', CustomerAuthentication, OrdersController.getCustome
 
 router.get('/getOngoingOrders', Authentication, OrdersController.getAdminOngoingOrders);
 
+router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
+
+router.get('/getAdminOtherOrders', Authentication, OrdersController.getAdminOtherOrders);
+
 export default router
