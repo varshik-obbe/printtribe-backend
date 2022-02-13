@@ -2,23 +2,23 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function getDateInSecs(date) {
-  return +new Date(date) / 1000;
+export function getDateInSecs(date) {
+return +new Date(date) / 1000;
 }
 
-function normalizeDate(date) {
+export function normalizeDate(date) {
   return isNumber(date) ? date : getDateInSecs(date);
 }
 
-function isNumber(num) {
+export function isNumber(num) {
   return !isNaN(Number(num));
 }
 
-function isNonNullObject(input) {
+export function isNonNullObject(input) {
   return !!input && (typeof input === "undefined" ? "undefined" : _typeof(input)) === "object" && !Array.isArray(input);
 }
 
-function normalizeBoolean(bool) {
+export function normalizeBoolean(bool) {
   if (bool === undefined) {
     return bool;
   }
@@ -26,12 +26,12 @@ function normalizeBoolean(bool) {
   return bool ? 1 : 0;
 }
 
-function isDefined(value) {
+export function isDefined(value) {
 
   return typeof value !== "undefined";
 }
 
-function normalizeNotes() {
+export function normalizeNotes() {
   var notes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   var normalizedNotes = {};
@@ -41,7 +41,7 @@ function normalizeNotes() {
   return normalizedNotes;
 }
 
-function prettify(val) {
+export function prettify(val) {
 
   /*
    * given an object , returns prettified string
@@ -53,7 +53,7 @@ function prettify(val) {
   return JSON.stringify(val, null, 2);
 }
 
-function getTestError(summary, expectedVal, gotVal) {
+export function getTestError(summary, expectedVal, gotVal) {
 
   /*
    * @param {String} summary
@@ -66,7 +66,7 @@ function getTestError(summary, expectedVal, gotVal) {
   return new Error("\n" + summary + "\n" + ("Expected(" + (typeof expectedVal === "undefined" ? "undefined" : _typeof(expectedVal)) + ")\n" + prettify(expectedVal) + "\n\n") + ("Got(" + (typeof gotVal === "undefined" ? "undefined" : _typeof(gotVal)) + ")\n" + prettify(gotVal)));
 }
 
-function validateWebhookSignature(body, signature, secret) {
+export function validateWebhookSignature(body, signature, secret) {
 
   /*
    * Verifies webhook signature
@@ -92,7 +92,7 @@ function validateWebhookSignature(body, signature, secret) {
   return expectedSignature === signature;
 }
 
-function validatePaymentVerification() {
+export function validatePaymentVerification() {
   var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var signature = arguments[1];
   var secret = arguments[2];
@@ -135,14 +135,4 @@ function validatePaymentVerification() {
   return validateWebhookSignature(payload, signature, secret);
 };
 
-export default {   normalizeNotes: normalizeNotes,
-    normalizeDate: normalizeDate,
-    normalizeBoolean: normalizeBoolean,
-    isNumber: isNumber,
-    getDateInSecs: getDateInSecs,
-    prettify: prettify,
-    isDefined: isDefined,
-    isNonNullObject: isNonNullObject,
-    getTestError: getTestError,
-    validateWebhookSignature: validateWebhookSignature,
-    validatePaymentVerification: validatePaymentVerification }
+export default { normalizeNotes, normalizeDate, normalizeBoolean, isNumber, getDateInSecs, prettify, isDefined, isNonNullObject, getTestError, validateWebhookSignature, validatePaymentVerification }

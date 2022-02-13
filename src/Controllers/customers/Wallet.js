@@ -2,36 +2,64 @@ import mongoose from "mongoose";
 import razorpay from "razorpay";
 import paymentHistoryModel from "../../models/payment_history";
 import walletModel from "../../models/wallet";
-import validatePaymentVerification from "../../utils/razorpayUtils";
 
 export const add_credits = (req,res) => {
     const { walletData } = req.body
 
+    console.log("customer id is:"+walletData.customer_id)
+    let instance = new razorpay({
+        key_id: process.env.RAZORPAY_KEY,
+        key_secret: process.env.RAZORPAY_SECRET,
+    })
+
     walletModel.findOne({ 'customer_id': walletData.customer_id })
     .exec()
     .then((data) => {
-        if(data) {
-
-        }
-        else {
-            let status = validatePaymentVerification({"order_id": walletData.razorpay_order_id, "payment_id": walletData.razorpay_payment_id }, walletData.razorpay_signature, process.env.RAZORPAY_SECRET);
-            
-            if(status) {
-                const walletSave = new walletModel({
-                    _id: mongoose.Types.ObjectId(),
-                    customer_id: walletData.customer_id,
-                    currency: walletData.currency,
-                    amount: walletData.amount,
-                    status: walletData.status
-                });
-            
-                walletSave.save().then((savedData) => {
-                    res.status(201).json({ savedData: savedHistoryData })
-                })
-                .catch((err) => res.status(400).json({errors:{ global: "could not save wallet data"+err }}))
-            }            
-        }
+        instance.orders.fetch(walletData.razorpay_order_id , function (err, response) {
+            if(err) {
+                console.log("error is"+err)
+                res.status(400).json({errors:{ global: "could not fetch order" }})
+            }
+            else {
+                let status = response.status;
+                console.log("status is"+status)
+                if(data) {
+                    if(status == "paid") {
+                        let newAmount = parseInt(data.amount) + parseInt(walletData.amount);
+                        walletModel.updateOne({ 'customer_id': walletData.customer_id }, {$set: { 'amount': newAmount }}).then((updatedData) => {
+                            res.status(201).json({ success: { global: "updated successfully" } })
+                        })
+                        .catch((err) => res.status(400).json({errors:{ global: "could not update data"+err }}))
+                    }
+                    else {
+                        res.status(400).json({errors:{ global: "payment was not completed" }})
+                    }                        
+                }
+                else {
+                    
+                    console.log("status is:"+status);
+                    if(status == "paid") {
+                        const walletSave = new walletModel({
+                            _id: mongoose.Types.ObjectId(),
+                            customer_id: walletData.customer_id,
+                            currency: walletData.currency,
+                            amount: walletData.amount,
+                            status: "active"
+                        });
+                    
+                        walletSave.save().then((savedData) => {
+                            res.status(201).json({ success: { global: "wallet added successfully" } })
+                        })
+                        .catch((err) => res.status(400).json({errors:{ global: "could not save wallet data"+err }}))
+                    }
+                    else {
+                        res.status(400).json({errors:{ global: "payment was not completed" }})
+                    }            
+            }
+            }
+        })
     })
+    .catch((err) => res.status(400).json({errors:{ global: "could not fetch data"+err }}))
 }
 
 export const instantiateRazorpay = (req,res) => {
@@ -91,6 +119,10 @@ export const get_walletByID = (req,res) => {
         res.status(200).json({ wallet: data })
     })
     .catch((err) => res.status(500).json({error:{global:"could not fetch data"}}))
+}
+
+export const updateByWebhook = (req,res) => {
+    
 }
 
 export default { add_credits, get_walletByID, instantiateRazorpay }
