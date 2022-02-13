@@ -8,7 +8,7 @@ const paymentHistorySchema = new mongoose.Schema({
     currency: {type:String,required:true},
     amount: {type:Number, required:true},
     reference_id: {type: String},
-    payment_order_id: {type: String, required:true},
+    payment_order_id: {type: String, unique: true, required:true},
     payment_id: {type: String},
     payment_date: {type: String, required: true},
     payment_status: {type: String}
