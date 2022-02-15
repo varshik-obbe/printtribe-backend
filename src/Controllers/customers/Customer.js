@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { decode } from 'node-base64-image';
 import { v4 as uuidv4 } from 'uuid';
 import Customer from "../../models/customers";
 import forgotPassModel from "../../models/forgot_passwords";
@@ -6,12 +7,16 @@ import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
 
 
-export const add_customer = (req,res)=>{
+export const add_customer = async (req,res)=>{
     const { customerRegisterdata } = req.body;
     console.log(customerRegisterdata);
     let dateVal = Date.now();
-    await decode(customerRegisterdata.customer_img, { fname: './uploads/'+ dateVal.toString() + customerRegisterdata.customer_img.replace(/ |'/g,"_"), ext: 'jpg' });
-    let imagUrl = '/uploads/'+ dateVal.toString() + customerRegisterdata.customer_img.replace(/ |'/g,"_")+".jpg";
+    let imagUrl = "";
+    if(customerRegisterdata.customer_img) {
+        await decode(customerRegisterdata.customer_img, { fname: './uploads/'+ dateVal.toString() + "customer", ext: 'jpg' });
+        imagUrl = '/uploads/'+ dateVal.toString() + "customer"+".jpg";
+    }
+
     const customer = new Customer({
         _id:mongoose.Types.ObjectId(),
         email:customerRegisterdata.email,
@@ -92,7 +97,8 @@ export const getCustomers = (req,res) => {
                     website: customer.website,
                     account_number: customer.account_number,
                     ifsc_code: customer.ifsc_code,
-                    bank_name: customer.bank_name                    
+                    bank_name: customer.bank_name,
+                    customer_img: customer.customer_img
                 }))
         }
         res.status(200).json({customerdata:response});
@@ -176,14 +182,15 @@ function addDays(date, days) {
     return result;
   }
 
-export const updateCustomer = (req,res) => {
+export const updateCustomer = async (req,res) => {
     const id = req.query.id;
     const { data } = req.body;
     if(data.customer_img) {
+        console.log("entered customer image decode")
         let customerImg = "";
         let dateVal = Date.now();
-        await decode(data.customer_img, { fname: './uploads/'+ dateVal.toString() + data.customer_img.replace(/ |'/g,"_"), ext: 'jpg' });
-        customerImg = '/uploads/'+ dateVal.toString() + data.customer_img.replace(/ |'/g,"_")+".jpg";
+        await decode(data.customer_img, { fname: './uploads/'+ dateVal.toString() + "customer", ext: 'jpg' });
+        customerImg = '/uploads/'+ dateVal.toString() + "customer"+".jpg";
         data['customer_img'] = customerImg;
     }
 
@@ -282,4 +289,4 @@ export const google_signinUp = (req,res) => {
 
 }
 
-export default { add_customer, login, getCustomers, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass }
+export default { add_customer, login, getCustomers, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass, google_signinUp }

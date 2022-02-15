@@ -5,7 +5,9 @@ import CustomerAuthentication from "../../middleware/CustomerAuthentication";
 
 const router = express.Router()
 
-router.post('/addCustomer', CustomerAuthentication , CustomerController.add_customer);
+router.post('/addCustomer', CustomerController.add_customer);
+
+router.post('/customerGoogleSign', CustomerController.google_signinUp);
 
 router.post('/login', CustomerController.login);
 
