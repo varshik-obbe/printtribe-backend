@@ -23,7 +23,8 @@ const customerSchema = new mongoose.Schema({
     website: {type: String},
     account_number: {type: String},
     ifsc_code: {type: String},
-    bank_name: {type: String}
+    bank_name: {type: String},
+    customer_img: {type: String}
 },{ timestamps:true });
 
 customerSchema.methods.setPassword = function setPassword(password){
