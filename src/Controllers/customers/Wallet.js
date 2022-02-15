@@ -12,54 +12,91 @@ export const add_credits = (req,res) => {
         key_secret: process.env.RAZORPAY_SECRET,
     })
 
-    walletModel.findOne({ 'customer_id': walletData.customer_id })
+    paymentHistoryModel.findOne({ 'payment_order_id': walletData.razorpay_order_id })
     .exec()
-    .then((data) => {
-        instance.orders.fetch(walletData.razorpay_order_id , function (err, response) {
-            if(err) {
-                console.log("error is"+err)
-                res.status(400).json({errors:{ global: "could not fetch order" }})
-            }
-            else {
-                let status = response.status;
-                console.log("status is"+status)
-                if(data) {
-                    if(status == "paid") {
-                        let newAmount = parseInt(data.amount) + parseInt(walletData.amount);
-                        walletModel.updateOne({ 'customer_id': walletData.customer_id }, {$set: { 'amount': newAmount }}).then((updatedData) => {
-                            res.status(201).json({ success: { global: "updated successfully" } })
-                        })
-                        .catch((err) => res.status(400).json({errors:{ global: "could not update data"+err }}))
+    .then((getData) => {
+        if(getData.payment_status == "success" || getData.payment_status == "failed") {
+            res.status(400).json({errors:{ global: "order is already completed" }})
+        }        
+        else {
+            walletModel.findOne({ 'customer_id': walletData.customer_id })
+            .exec()
+            .then((data) => {
+                instance.orders.fetch(walletData.razorpay_order_id , function (err, response) {
+                    if(err) {
+                        console.log("error is"+err)
+                        res.status(400).json({errors:{ global: "could not fetch order" }})
                     }
                     else {
-                        res.status(400).json({errors:{ global: "payment was not completed" }})
-                    }                        
-                }
-                else {
-                    
-                    console.log("status is:"+status);
-                    if(status == "paid") {
-                        const walletSave = new walletModel({
-                            _id: mongoose.Types.ObjectId(),
-                            customer_id: walletData.customer_id,
-                            currency: walletData.currency,
-                            amount: walletData.amount,
-                            status: "active"
-                        });
-                    
-                        walletSave.save().then((savedData) => {
-                            res.status(201).json({ success: { global: "wallet added successfully" } })
-                        })
-                        .catch((err) => res.status(400).json({errors:{ global: "could not save wallet data"+err }}))
+                        let status = response.status;
+                        console.log("status is"+status)
+                        if(data) {
+                            if(status == "paid") {
+                                let newAmount = parseInt(data.amount) + parseInt(walletData.amount);
+                                walletModel.updateOne({ 'customer_id': walletData.customer_id }, {$set: { 'amount': newAmount }}).then((updatedData) => {
+                                        paymentHistoryModel.updateOne({ 'payment_order_id': walletData.razorpay_order_id }, { $set: { 'payment_status': "success" } })
+                                        .then((updatehistory) => {
+                                            res.status(201).json({ success: { global: "updated successfully" } })
+                                        })
+                                        .catch((err) => {
+                                            res.status(400).json({errors:{ global: "error when updating payment history"+err }})
+                                        })
+                                })
+                                .catch((err) => res.status(400).json({errors:{ global: "could not update data"+err }}))
+                            }
+                            else {
+                                paymentHistoryModel.updateOne({ 'payment_order_id': walletData.razorpay_order_id }, { $set: { 'payment_status': "failed" } })
+                                .then((updated) => {
+                                    res.status(400).json({errors:{ global: "payment was not completed" }})
+                                })
+                                .catch((err) => {
+                                    res.status(400).json({errors:{ global: "error when updating payment history"+err }})
+                                })
+                            }                        
+                        }
+                        else {
+                            
+                            console.log("status is:"+status);
+                            if(status == "paid") {
+                                const walletSave = new walletModel({
+                                    _id: mongoose.Types.ObjectId(),
+                                    customer_id: walletData.customer_id,
+                                    currency: walletData.currency,
+                                    amount: walletData.amount,
+                                    status: "active"
+                                });
+                            
+                                walletSave.save().then((savedData) => {
+                                    paymentHistoryModel.updateOne({ 'payment_order_id': walletData.razorpay_order_id }, { $set: { 'payment_status': "success" } })
+                                    .then((updated) => {
+                                        res.status(201).json({ success: { global: "wallet added successfully" } })
+                                    })
+                                    .catch((err) => {
+                                        res.status(400).json({errors:{ global: "error when updating payment history"+err }})
+                                    })
+                                })
+                                .catch((err) => res.status(400).json({errors:{ global: "could not save wallet data"+err }}))
+                            }
+                            else {
+                                paymentHistoryModel.updateOne({ 'payment_order_id': walletData.razorpay_order_id }, { $set: { 'payment_status': "failed" } })
+                                .then((updated) => {
+                                    res.status(400).json({errors:{ global: "payment was not completed" }})
+                                })
+                                .catch((err) => {
+                                    res.status(400).json({errors:{ global: "error when updating payment history"+err }})
+                                })                        
+                            }            
                     }
-                    else {
-                        res.status(400).json({errors:{ global: "payment was not completed" }})
-                    }            
-            }
-            }
-        })
+                    }
+                })
+            })
+            .catch((err) => res.status(400).json({errors:{ global: "could not fetch data"+err }}))      
+        }
     })
-    .catch((err) => res.status(400).json({errors:{ global: "could not fetch data"+err }}))
+    .catch((err) => {
+        console.log("failed fetching payment history data"+err)
+        res.status(400).json({errors:{ global: "could not fetch data" }})
+    })
 }
 
 export const instantiateRazorpay = (req,res) => {
