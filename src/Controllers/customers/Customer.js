@@ -9,6 +9,9 @@ import SendMail from "../../utils/SendMail";
 export const add_customer = (req,res)=>{
     const { customerRegisterdata } = req.body;
     console.log(customerRegisterdata);
+    let dateVal = Date.now();
+    await decode(customerRegisterdata.customer_img, { fname: './uploads/'+ dateVal.toString() + customerRegisterdata.customer_img.replace(/ |'/g,"_"), ext: 'jpg' });
+    let imagUrl = '/uploads/'+ dateVal.toString() + customerRegisterdata.customer_img.replace(/ |'/g,"_")+".jpg";
     const customer = new Customer({
         _id:mongoose.Types.ObjectId(),
         email:customerRegisterdata.email,
@@ -28,7 +31,8 @@ export const add_customer = (req,res)=>{
         website: customerRegisterdata.website,
         account_number: customerRegisterdata.account_number,
         ifsc_code: customerRegisterdata.ifsc_code,
-        bank_name: customerRegisterdata.bank_name
+        bank_name: customerRegisterdata.bank_name,
+        customer_img: imagUrl
     });
     customer.setPassword(customerRegisterdata.password)
     customer.save().then((customerRecord)=> {
@@ -175,6 +179,14 @@ function addDays(date, days) {
 export const updateCustomer = (req,res) => {
     const id = req.query.id;
     const { data } = req.body;
+    if(data.customer_img) {
+        let customerImg = "";
+        let dateVal = Date.now();
+        await decode(data.customer_img, { fname: './uploads/'+ dateVal.toString() + data.customer_img.replace(/ |'/g,"_"), ext: 'jpg' });
+        customerImg = '/uploads/'+ dateVal.toString() + data.customer_img.replace(/ |'/g,"_")+".jpg";
+        data['customer_img'] = customerImg;
+    }
+
     Customer.updateOne({_id: id}, {$set: data}).exec().then((customerRecord)=>{
         res.status(200).json({success:{global:"Customer details is updated successfully"}})
     }).catch((err)=>{
@@ -232,6 +244,42 @@ export const delete_Customer = (req,res) => {
             return res.send('success')
         }
     });
+}
+
+
+export const google_signinUp = (req,res) => {
+    const { saveData } = req.body
+
+    Customer.findOne({ 'email': saveData.email }).exec()
+    .then((data) => {
+        if(data) {
+            res.status(200).json({ savedData: data });
+        }
+        else {
+            const customer = new Customer({
+                _id:mongoose.Types.ObjectId(),
+                email:saveData.email,
+                role:saveData.role,
+                username: saveData.username
+            })
+            customer.setPassword(saveData.password)
+        
+            customer.save().then((data) => {
+                res.status(201).json({ savedData: data })
+            })
+            .catch((err) => {
+                console.log("error occured while saving"+err)
+                res.status(200).json({success:{global:"could not save data"}})
+            })
+        }
+
+    })
+    .catch((err) => {
+        console.log("error while fetching customer")
+        res.status(200).json({success:{global:"could not fetch customer"}})
+    })
+
+
 }
 
 export default { add_customer, login, getCustomers, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass }

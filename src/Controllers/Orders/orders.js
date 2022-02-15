@@ -6,6 +6,7 @@ import addProductsInventory from "../../utils/addProductsToCustomer";
 import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
 import ParseErrors from "../../utils/ParseErrors";
+import SendMail from "../../utils/SendMail";
 
 export const add_order = async (req,res) => {
     const { orderData } = req.body;
@@ -36,6 +37,13 @@ export const add_order = async (req,res) => {
             deleteQuant(orderData.product_info,orderData.customer_id,orderData.customer_email)
 
             let addCustomerInventory = addProductsInventory(savedDataPopulate.product_info, savedDataPopulate.customer_id)
+
+            let title = "printribe mail"
+            let hello = "hello fellow dropshipper"
+            let message = "thank you for ordering with us, please find the order in partner panel link below."
+            let second_message = "for any further assistance please reach out to us."
+            let link = "https://printribe-partner.web.app/#/login";
+            SendMail(title,hello,message,second_message,orderData.customer_email,link);
 
             if(addCustomerInventory) {
               let newDate = new Date();
