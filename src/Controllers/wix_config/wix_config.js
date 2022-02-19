@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import getToken from "../../utils/getWixToken";
 
 
@@ -20,7 +21,8 @@ export const testToken = async (req,res) => {
 export const tokenWebhook = (req,res) => {
     const data = req.body;
 
-    console.log("event type is"+data.appId);
+    let decodedData = jwt.decode(data)
+    console.log("decoded data is"+decodedData);
 
     res.status(200).json({ global: { success: "response" } })
 }
