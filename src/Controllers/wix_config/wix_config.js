@@ -18,7 +18,7 @@ export const testToken = async (req,res) => {
 }
 
 export const tokenWebhook = (req,res) => {
-    const { data } = req.body;
+    const data = req.get(digest);
 
     console.log("data is "+data);
 
