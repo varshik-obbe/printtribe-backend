@@ -18,9 +18,9 @@ export const testToken = async (req,res) => {
 }
 
 export const tokenWebhook = (req,res) => {
-    const data = req.get('digest');
+    const data = req.body;
 
-    console.log("data is "+data);
+    console.log("event type is"+data.eventType);
 
     res.status(200).json({ global: { success: "response" } })
 }
