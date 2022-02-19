@@ -1,3 +1,4 @@
+import util from "util";
 import getToken from "../../utils/getWixToken";
 
 
@@ -20,7 +21,7 @@ export const testToken = async (req,res) => {
 export const tokenWebhook = (req,res) => {
     const data = req.body;
 
-    console.log("data is "+data);
+    console.log("data is "+util.inspect(data));
 
     res.status(200).json({ global: { success: "response" } })
 }
