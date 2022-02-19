@@ -18,6 +18,7 @@ import pickupShiprocketOrder from "./routes/shipment/shiprocketShipment";
 import shiprocketwebhhok from "./routes/shipment/webhookAuth";
 import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
+import testToken from "./routes/wix_config/wix_config";
 import zakekeConfig from './routes/zakeke/zakekeConfig';
 import zakekeCSV from './routes/zakeke/zakekeCSV';
 import zakekeCustomize from './routes/zakeke/zakekeCustomize';
@@ -66,6 +67,7 @@ mongoose
   app.use('/api/productQuant', quantProducts);
   app.use('/api/shiprocketGenrate', pickupShiprocketOrder);
   app.use('/api/shippingWebhook', shiprocketwebhhok);
+  app.use('/api/wix', testToken);
 
 app.listen(500, function() {
     console.log('listening on 500')
