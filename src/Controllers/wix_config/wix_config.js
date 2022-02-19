@@ -20,7 +20,7 @@ export const testToken = async (req,res) => {
 export const tokenWebhook = (req,res) => {
     const data = req.body;
 
-    console.log("event type is"+data.eventType);
+    console.log("event type is"+data.appId);
 
     res.status(200).json({ global: { success: "response" } })
 }
