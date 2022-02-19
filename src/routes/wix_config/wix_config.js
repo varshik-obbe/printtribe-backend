@@ -5,8 +5,10 @@ import CustomerAuthentication from "../../middleware/CustomerAuthentication";
 
 const router = express.Router()
 
-router.post('/testToken', CustomerAuthentication , wixController.testToken);
+router.post('/finishInitialize', CustomerAuthentication , wixController.testToken);
 
 router.post('/appInstalledEvent', wixController.tokenWebhook);
+
+router.post('/addProducts', wixController.addProduct);
 
 export default router
