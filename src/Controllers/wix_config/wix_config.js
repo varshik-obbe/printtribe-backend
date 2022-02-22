@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import CustomerModel from "../../models/customers";
 import customerProductsModel from "../../models/customer_inventory_products";
 import getToken from "../../utils/getWixToken";
 
@@ -30,8 +31,15 @@ export const testToken = async (req,res) => {
 
           token = await axios(config)
           .then(async function (response) {
-              console.log("success response is"+response.data)
-              res.status(200).json({ global: { success: "finished setup" } })
+              CustomerModel.updateOne({ '_id': tokenData.customer_id }, { $set: { 'customer_wix': 'active' } })
+              .then((updateData) => {
+                console.log("success response is"+response.data)
+                res.status(200).json({ global: { success: "finished setup" } })
+              })
+              .catch((err) => {
+                console.log("error occured while updating customer"+err)
+                res.status(400).json({ global: {error: "error occured while updating customer"} })                  
+              })
           })
           .catch((err) => {
               console.log("error occured while finishing set up"+err)
@@ -74,7 +82,7 @@ export const addProduct = async (req,res) => {
                       },
                       "productOptions": [
                           {
-                              "name": data.productcolor,
+                              "name": "color",
                               "choices": [
                                   {
                                       "value": data.productcolor,
@@ -83,7 +91,7 @@ export const addProduct = async (req,res) => {
                               ]
                           },
                           {
-                              "name": data.productsize,
+                              "name": "size",
                               "choices": [
                                 {
                                     "value": data.productsize,
@@ -98,7 +106,7 @@ export const addProduct = async (req,res) => {
                       "ribbon": "Sale",
                       "brand": "Printribe",
                       "weight": 0.3,
-                      "manageVariants": false
+                      "manageVariants": true
                     }
                   }
         
@@ -116,8 +124,7 @@ export const addProduct = async (req,res) => {
         
                   await axios(config)
                   .then(async function (response) {
-                      console.log("product id is"+response.data.product.id)
-                      customerProductsModel.updateOne({ '_id': data._id }, { $set: { 'wix_product_id': response.data.product.id } })
+                      customerProductsModel.updateOne({ '_id': data._id }, { $set: { 'wix_product_id': response.data.product.id, 'wix_inventory_id': response.data.product.inventoryItemId, 'wix_variant_id': response.data.product.variants[0].id } })
                       .then((updatedData) => {
                           console.log("data updated");
                           res.status(200).json({ wixData: response.data })
@@ -148,4 +155,202 @@ export const addProduct = async (req,res) => {
     
 }
 
-export default { testToken, tokenWebhook, addProduct }
+export const uploadMedia = async (req,res) => {
+    const { productData } = req.body;
+
+    let token = "";
+    token = await getToken("",productData.customer_id);
+
+    console.log("token is"+token)
+    if(token != "") {
+        customerProductsModel.findOne({ 'product_id': productData.product_id, 'wix_product_id': productData.wix_product_id })
+        .exec()
+        .then(async (prodData) => {
+            if(prodData) {
+
+                console.log("wix product id is"+prodData.wix_product_id)
+                console.log("product image is"+prodData.product_img)
+                let dataMedia = {
+                    "media": [
+                      {
+                        "url": prodData.product_img
+                      }                      
+                    ]
+                  }
+
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                  }
+           
+                  var config = {
+                    method: 'POST',
+                    url: 'https://www.wixapis.com/stores/v1/products/'+prodData.wix_product_id+'/media',
+                    headers: headers,
+                    data: dataMedia
+                  };
+        
+                  await axios(config)
+                  .then( async function (resp) {
+                      res.status(200).json({ global: { success: "uploaded media successfully" } })
+                  })
+                  .catch((err) => {
+                      console.log("error occured while getting wix product"+err)
+                      res.status(400).json({ global: { error: "error occured while getting product from wix" } });                  
+                  })
+            }
+            else {
+                res.status(400).json({ global: { error: "could not find the product" } });
+            }
+        })
+        .catch((err) => {
+            console.log("error occured while fetching data"+err)
+            res.status(400).json({ global: { error: "error occured while fetching data" } });
+        })
+    }
+    else {
+        res.status(400).json({ global: { error: "could not generate token" } });
+    }
+
+}
+
+export const addQuantity = async (req,res) => {
+    const { productData } = req.body;
+
+    let token = "";
+    token = await getToken("",productData.customer_id);
+
+    console.log("token is"+token)
+    if(token != "") {
+        await customerProductsModel.findOne({ 'product_id': productData.product_id, 'wix_product_id': productData.wix_product_id })
+        .exec()
+        .then(async (prodData) => {
+            if(prodData) {
+
+                
+
+                const headersChange = {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                  }
+
+                  let dataQuantChange = {
+                    "inventoryItem": {
+                        "id": prodData.wix_inventory_id,
+                        "trackQuantity": true,
+                        "variants": [
+                            {
+                                "variantId": "4e9cbd72-60aa-42c0-bbc1-c05e67c457f7",
+                                "quantity": prodData.quantity
+                            }
+                        ]
+                    }
+                }
+                  var configChange = {
+                    method: 'patch',
+                    url: "https://www.wixapis.com/stores/v2/inventoryItems/"+prodData.wix_inventory_id,
+                    headers: headersChange,
+                    data: dataQuantChange
+                  };
+        
+                  await axios(configChange)
+                  .then(async function(responseData) {
+                    res.status(200).json({ global: { success: "updated successfully" } })
+                })
+                .catch((err) => {
+                    console.log("error occured while getting product wix info"+err)
+                    res.status(400).json({ global: { error: "could not find wix data" } });                      
+                })
+
+                // const headers = {
+                //     'Content-Type': 'application/json',
+                //     'Authorization': token
+                //   }
+
+                //   let dataQuant = {
+                //     "incrementData": [
+                //       {
+                //         "productId": prodData.wix_product_id,
+                //         "variantId": "4e9cbd72-60aa-42c0-bbc1-c05e67c457f7",
+                //         "incrementBy": 5
+                //       }
+                //     ]
+                //   }
+                //   var config = {
+                //     method: 'post',
+                //     url: "https://www.wixapis.com/stores/v2/inventoryItems/increment",
+                //     headers: headers,
+                //     data: dataQuant
+                //   };
+        
+                //   await axios(config)
+                //   .then(async function(responseData) {
+                //       res.status(200).json({ global: { success: "updated successfully" } })
+                //   })
+                //   .catch((err) => {
+                //       console.log("error occured while getting product wix info"+err)
+                //       res.status(400).json({ global: { error: "could not find wix data" } });                      
+                //   })
+            }
+            else {
+                res.status(400).json({ global: { error: "could not find the product" } });
+            }
+        })
+        .catch((err) => {
+            console.log("error occured while fetching data"+err)
+            res.status(400).json({ global: { error: "error occured while fetching data" } });
+        })
+    }
+    else {
+        res.status(400).json({ global: { error: "could not generate token" } });
+    }
+
+}
+
+export const removeProd = async (req,res) => {
+    const { productData } = req.body;
+
+    let token = "";
+    token = await getToken("",productData.customer_id);
+
+    console.log("token is"+token)
+    if(token != "") {
+        customerProductsModel.findOne({ 'product_id': productData.product_id, 'customer_id': productData.customer_id })
+        .exec()
+        .then(async (data) => {
+            if(data) {
+                const headersChange = {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                  }
+    
+                  var configChange = {
+                    method: 'delete',
+                    url: "https://www.wixapis.com/stores/v1/products/"+data.wix_product_id,
+                    headers: headersChange
+                  };
+        
+                  await axios(configChange)
+                  .then(async function(responseData) {
+                    res.status(200).json({ global: { success: "deleted successfully" } })
+                })
+                .catch((err) => {
+                    console.log("error occured while getting product wix info"+err)
+                    res.status(400).json({ global: { error: "could not find wix data" } });                      
+                })
+            }
+            else {
+                res.status(400).json({ global: { error: "could not find customer data" } });                                 
+            }
+        })
+        .catch((err) => {
+            console.log("error occured while fetching cutomer product data"+err)
+            res.status(400).json({ global: { error: "error occured while fetching cutomer product data" } });                      
+        })
+    }
+    else {
+        res.status(400).json({ global: { error: "could not generate token" } });
+    }
+}
+
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd }

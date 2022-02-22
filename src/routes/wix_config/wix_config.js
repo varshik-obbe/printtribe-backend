@@ -11,4 +11,10 @@ router.post('/appInstalledEvent', wixController.tokenWebhook);
 
 router.post('/addProducts', wixController.addProduct);
 
+router.post('/addMedia', wixController.uploadMedia);
+
+router.post('/uploadQuant', wixController.addQuantity);
+
+router.post('/removeProduct', wixController.removeProd);
+
 export default router

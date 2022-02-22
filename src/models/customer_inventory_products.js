@@ -15,7 +15,9 @@ const customerIncentorySvhema = new mongoose.Schema({
     zakeke_price: {type:String},
     designID: {type: String, required: true},
     customer_id: {type: String, required: true},
-    wix_product_id: {type: String, required: true}
+    wix_product_id: {type: String},
+    wix_inventory_id: {type: String},
+    wix_variant_id: {type: String}
 }, {timestamps: true});
 
 export default mongoose.model("customer_inventory_products", customerIncentorySvhema)
