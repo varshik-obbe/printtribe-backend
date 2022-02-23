@@ -15,10 +15,13 @@ export const add_Categories = async (req, res) => {
             category: data.name,
             url: data.url,
             img: data.img,
+            colors: data.colors,
+            sizes: data.sizes,
             maincat: data.maincat,
             subcat: data.subcat
         });
-        const result_display = await categories.save().then((categoriesValue) => {
+        let result_display = ""
+        result_display = await categories.save().then((categoriesValue) => {
             console.log('categories response ->'+categoriesValue)
             return categoriesValue;
         })
@@ -30,6 +33,8 @@ export const add_Categories = async (req, res) => {
                     name: result_display.category,
                     url: result_display.url,
                     img: result_display.img,
+                    colors: result_display.colors,
+                    sizes: result_display.sizes,
                     maincat: result_display.maincat,
                     subcat: result_display.subcat
                 };
@@ -54,6 +59,8 @@ export const get_Categories = async (req, res) => {
                     name: categoriesdata.category,
                     url: categoriesdata.url,
                     img: categoriesdata.img,
+                    colors: categoriesdata.colors,
+                    sizes: categoriesdata.sizes,
                     maincat: categoriesdata.maincat,
                     subcat: categoriesdata.subcat,
                     subCategories: []
@@ -74,6 +81,8 @@ export const get_Categories = async (req, res) => {
                             name: subcategoriesdata.category,
                             url: subcategoriesdata.url,
                             img: subcategoriesdata.img,
+                            colors: subcategoriesdata.colors,
+                            sizes: subcategoriesdata.sizes,
                             maincat: subcategoriesdata.maincat,
                             subcat: subcategoriesdata.subcat
                         }))
@@ -93,6 +102,8 @@ export const get_Categories = async (req, res) => {
                                     name: subsubcategoriesdata.category,
                                     url: subsubcategoriesdata.url,
                                     img: subsubcategoriesdata.img,
+                                    colors: subsubcategoriesdata.colors,
+                                    sizes: subsubcategoriesdata.sizes,
                                     maincat: subsubcategoriesdata.maincat,
                                     subcat: subsubcategoriesdata.subcat
                                 }))
@@ -117,6 +128,8 @@ export const get_CategoryById = async (req,res) => {
                 name: categoryrecord.category,
                 url: categoryrecord.url,
                 img: categoryrecord.img,
+                colors: categoryrecord.colors,
+                sizes: categoryrecord.sizes,
                 maincat: categoryrecord.maincat,
                 subcat: categoryrecord.subcat,
                 subCategories: [],
@@ -145,6 +158,8 @@ export const get_CategoryById = async (req,res) => {
                                 name: subcategoriesdata.category,
                                 url: subcategoriesdata.url,
                                 img: subcategoriesdata.img,
+                                colors: subcategoriesdata.colors,
+                                sizes: subcategoriesdata.sizes,
                                 maincat: subcategoriesdata.maincat,
                                 subcat: subcategoriesdata.subcat
                             }))
@@ -164,6 +179,8 @@ export const get_CategoryById = async (req,res) => {
                                         name: subsubcategoriesdata.category,
                                         url: subsubcategoriesdata.url,
                                         img: subsubcategoriesdata.img,
+                                        colors: subsubcategoriesdata.colors,
+                                        sizes: subsubcategoriesdata.sizes,
                                         maincat: subsubcategoriesdata.maincat,
                                         subcat: subsubcategoriesdata.subcat
                                     }))
@@ -189,6 +206,8 @@ export const get_CategoryById = async (req,res) => {
                             name: subsubcategoriesdata.category,
                             url: subsubcategoriesdata.url,
                             img: subsubcategoriesdata.img,
+                            colors: subsubcategoriesdata.colors,
+                            sizes: subsubcategoriesdata.sizes,
                             maincat: subsubcategoriesdata.maincat,
                             subcat: subsubcategoriesdata.subcat
                         }))
