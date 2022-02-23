@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import User from "../../models/user";
 import ParseErrors from "../../utils/ParseErrors";
@@ -76,6 +77,24 @@ export const updateUser = (req,res) => {
     })
 }
 
+export const changePass = (req,res) => {
+ 
+    let { updateData } = req.body;
+
+    updateData.password = bcrypt.hashSync(updateData.password, 10)
+
+    User.findOneAndUpdate(
+        { _id: updateData.id },
+        { password: updateData.password },
+        { useFindAndModify: false }
+    )
+    .exec()
+    .then((data) => {
+                    res.status(200).json({success:{global:"password updated successfully"}})
+    })
+    .catch((err) => res.status(200).json({success:{global:"could not find data"}}))
+}
+
 export const delete_User = (req,res) => {
     const id = req.params.id;
     User.deleteOne({_id: id},function(err,data){
@@ -91,4 +110,4 @@ export const delete_User = (req,res) => {
     });
 }
 
-export default { add_user, login, getUsers, getUserById, updateUser, delete_User }
+export default { add_user, login, getUsers, getUserById, updateUser, delete_User, changePass }
