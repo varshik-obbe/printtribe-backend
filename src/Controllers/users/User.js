@@ -81,18 +81,31 @@ export const changePass = (req,res) => {
  
     let { updateData } = req.body;
 
-    updateData.password = bcrypt.hashSync(updateData.password, 10)
+    User.findOne({ _id: updateData.id }).exec().then((UserRecord)=>{
+        if(UserRecord && UserRecord.isValidPassword(updateData.existing_password)){
+            updateData.password = bcrypt.hashSync(updateData.password, 10)
 
-    User.findOneAndUpdate(
-        { _id: updateData.id },
-        { password: updateData.password },
-        { useFindAndModify: false }
-    )
-    .exec()
-    .then((data) => {
-                    res.status(200).json({success:{global:"password updated successfully"}})
-    })
-    .catch((err) => res.status(200).json({success:{global:"could not find data"}}))
+            User.findOneAndUpdate(
+                { _id: updateData.id },
+                { password: updateData.password },
+                { useFindAndModify: false }
+            )
+            .exec()
+            .then((data) => {
+                            res.status(200).json({success:{global:"password updated successfully"}})
+            })
+            .catch((err) => res.status(200).json({success:{global:"could not find data"}}))
+            
+        }else{
+            res.status(400).json({errors:{global:"password is incorrect"}});
+        }
+    }).catch((err) => 
+    {
+        console.log(err)
+        res.status(400).json({errors:{global:"could not get the user"}})
+
+    }
+    );
 }
 
 export const delete_User = (req,res) => {
