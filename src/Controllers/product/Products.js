@@ -29,12 +29,17 @@ export const add_Products = async (req, res, err) => {
 
             let product_extraImgsArr = [];
 
+        try {
             if(req.files.extra_imgs.length > 0)
             {
                 await Promise.all(req.files.extra_imgs.map((item,key) => {
                     product_extraImgsArr.push(item.path.toString());
                 }))
             }
+        }
+        catch(err) {
+            console.log("extra images not entered");
+        }
 
 
             const categories = new Products({
