@@ -18,6 +18,11 @@ const categoriesSchema = new mongoose.Schema({
             sizename: {type: String, required: true}
         }
     ],
+    zakekeSides: [
+        {
+            sidename: {type: String, required: true}
+        }
+    ],
     maincat: {type:String,required:true, ref: "categories"},
     subcat: {type:String,required:true, ref: "categories"}
 },{ timestamps:true });

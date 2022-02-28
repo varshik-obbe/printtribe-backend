@@ -11,7 +11,8 @@ export const add_user = (req,res)=>{
         _id:mongoose.Types.ObjectId(),
         email:userRegisterdata.email,
         username:userRegisterdata.username,
-        role:userRegisterdata.role
+        role:userRegisterdata.role,
+        modules: userRegisterdata.modules
     })
     user.setPassword(userRegisterdata.password)
     user.save().then((userRecord)=>res.status(201).json({userRecord}))
@@ -48,7 +49,8 @@ export const getUsers = (req,res) => {
                     id:user._id,
                     email: user.email,
                     username:user.username,
-                    role: user.role
+                    role: user.role,
+                    modules: user.modules
                 }))
         }
         res.status(200).json({userdata:response});
