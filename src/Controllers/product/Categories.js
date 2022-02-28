@@ -18,7 +18,8 @@ export const add_Categories = async (req, res) => {
             colors: data.colors,
             sizes: data.sizes,
             maincat: data.maincat,
-            subcat: data.subcat
+            subcat: data.subcat,
+            zakekeSides: data.zakekeSides
         });
         let result_display = ""
         result_display = await categories.save().then((categoriesValue) => {
@@ -36,7 +37,8 @@ export const add_Categories = async (req, res) => {
                     colors: result_display.colors,
                     sizes: result_display.sizes,
                     maincat: result_display.maincat,
-                    subcat: result_display.subcat
+                    subcat: result_display.subcat,
+                    zakekeSides: result_display.zakekeSides,                    
                 };
                 res.status(201).json({ categoriesValue });
             }
@@ -61,6 +63,7 @@ export const get_Categories = async (req, res) => {
                     img: categoriesdata.img,
                     colors: categoriesdata.colors,
                     sizes: categoriesdata.sizes,
+                    zakekeSides: categoriesdata.zakekeSides,
                     maincat: categoriesdata.maincat,
                     subcat: categoriesdata.subcat,
                     subCategories: []
@@ -83,6 +86,7 @@ export const get_Categories = async (req, res) => {
                             img: subcategoriesdata.img,
                             colors: subcategoriesdata.colors,
                             sizes: subcategoriesdata.sizes,
+                            zakekeSides: subcategoriesdata.zakekeSides,
                             maincat: subcategoriesdata.maincat,
                             subcat: subcategoriesdata.subcat
                         }))
@@ -104,6 +108,7 @@ export const get_Categories = async (req, res) => {
                                     img: subsubcategoriesdata.img,
                                     colors: subsubcategoriesdata.colors,
                                     sizes: subsubcategoriesdata.sizes,
+                                    zakekeSides: subsubcategoriesdata.zakekeSides,
                                     maincat: subsubcategoriesdata.maincat,
                                     subcat: subsubcategoriesdata.subcat
                                 }))
@@ -130,6 +135,7 @@ export const get_CategoryById = async (req,res) => {
                 img: categoryrecord.img,
                 colors: categoryrecord.colors,
                 sizes: categoryrecord.sizes,
+                zakekeSides: categoryrecord.zakekeSides,
                 maincat: categoryrecord.maincat,
                 subcat: categoryrecord.subcat,
                 subCategories: [],
@@ -160,6 +166,7 @@ export const get_CategoryById = async (req,res) => {
                                 img: subcategoriesdata.img,
                                 colors: subcategoriesdata.colors,
                                 sizes: subcategoriesdata.sizes,
+                                zakekeSides: subcategoriesdata.zakekeSides,
                                 maincat: subcategoriesdata.maincat,
                                 subcat: subcategoriesdata.subcat
                             }))
@@ -181,6 +188,7 @@ export const get_CategoryById = async (req,res) => {
                                         img: subsubcategoriesdata.img,
                                         colors: subsubcategoriesdata.colors,
                                         sizes: subsubcategoriesdata.sizes,
+                                        zakekeSides: subsubcategoriesdata.zakekeSides,
                                         maincat: subsubcategoriesdata.maincat,
                                         subcat: subsubcategoriesdata.subcat
                                     }))
@@ -208,6 +216,7 @@ export const get_CategoryById = async (req,res) => {
                             img: subsubcategoriesdata.img,
                             colors: subsubcategoriesdata.colors,
                             sizes: subsubcategoriesdata.sizes,
+                            zakekeSides: subsubcategoriesdata.zakekeSides,
                             maincat: subsubcategoriesdata.maincat,
                             subcat: subsubcategoriesdata.subcat
                         }))
