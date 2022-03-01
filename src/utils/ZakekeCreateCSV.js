@@ -220,13 +220,37 @@ async function writeToFile(rows,rowsSides,rowsAreas,rowsPrintTypes,rowsSidesPrin
   }
 
   for (let i = 0; i < variants.length; i++){
-    rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, ``, `${process.env.PROJ_DEV_HOST+variants[i].frontImgURL}`, ``, `21.5`])
-    rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, ``, `${process.env.PROJ_DEV_HOST+variants[i].backImgURL}`, ``, `21.5`])
+    for(let j = 0; j < variants[i].variantNames.length; j++) {
+      if(variants[i].variantNames[j] == "front") {
+        rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, ``, `${process.env.PROJ_DEV_HOST+variants[i].frontImgURL}`, ``, `21.5`])
+      }
+      if(variants[i].variantNames[j] == "back") {
+        rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, ``, `${process.env.PROJ_DEV_HOST+variants[i].backImgURL}`, ``, `21.5`])
+      }
+      if(variants[i].variantNames[j] == "left") {
+        rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Left`, ``, `${process.env.PROJ_DEV_HOST+variants[i].leftImgURL}`, ``, `21.5`])
+      }
+      if(variants[i].variantNames[j] == "right") {
+        rowsSides.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Right`, ``, `${process.env.PROJ_DEV_HOST+variants[i].rightImgURL}`, ``, `21.5`])
+      }
+    }
   }
 
   for (let i = 0; i < variants.length; i++){
-    rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, `Front Area`, `${process.env.PROJ_DEV_HOST+variants[i].frontImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
-    rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, `Back Area`, `${process.env.PROJ_DEV_HOST+variants[i].backImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+    for(let j = 0; j < variants[i].variantNames.length; j++) {
+      if(variants[i].variantNames[j] == "front") {
+        rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, `Front Area`, `${process.env.PROJ_DEV_HOST+variants[i].frontImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+      }
+      if(variants[i].variantNames[j] == "back") {
+        rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, `Back Area`, `${process.env.PROJ_DEV_HOST+variants[i].backImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+      }
+      if(variants[i].variantNames[j] == "left") {
+        rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Left`, `Left Area`, `${process.env.PROJ_DEV_HOST+variants[i].leftImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+      }
+      if(variants[i].variantNames[j] == "right") {
+        rowsAreas.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Right`, `Right Area`, `${process.env.PROJ_DEV_HOST+variants[i].rightImgMask}`, `${zakekeConfigData.zakekedata[0].clipOut}`])
+      }
+    }
   }
 
   for (let i = 0; i < variants.length; i++){
@@ -234,8 +258,20 @@ async function writeToFile(rows,rowsSides,rowsAreas,rowsPrintTypes,rowsSidesPrin
   }
 
   for (let i = 0; i < variants.length; i++){
-    rowsSidesPrint.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, `${zakekeConfigData.zakekedata[0].PrintType}`, `${zakekeConfigData.zakekedata[0].DPI}`, `${zakekeConfigData.zakekedata[0].DisableSellerCliparts}`, `${zakekeConfigData.zakekedata[0].DisableUploadImages}`, `${zakekeConfigData.zakekedata[0].UseFixedImageSizes}`, `${zakekeConfigData.zakekedata[0].DisableText}`, `${zakekeConfigData.zakekedata[0].CanChangeSvgColors}`, `${zakekeConfigData.zakekedata[0].CanUseImageFilters}`])
-    rowsSidesPrint.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, `${zakekeConfigData.zakekedata[0].PrintType}`, `${zakekeConfigData.zakekedata[0].DPI}`, `${zakekeConfigData.zakekedata[0].DisableSellerCliparts}`, `${zakekeConfigData.zakekedata[0].DisableUploadImages}`, `${zakekeConfigData.zakekedata[0].UseFixedImageSizes}`, `${zakekeConfigData.zakekedata[0].DisableText}`, `${zakekeConfigData.zakekedata[0].CanChangeSvgColors}`, `${zakekeConfigData.zakekedata[0].CanUseImageFilters}`])
+    for(let j = 0; j < variants[i].variantNames.length; j++) {
+      if(variants[i].variantNames[j] == "front") {
+        rowsSidesPrint.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Front`, `${zakekeConfigData.zakekedata[0].PrintType}`, `${zakekeConfigData.zakekedata[0].DPI}`, `${zakekeConfigData.zakekedata[0].DisableSellerCliparts}`, `${zakekeConfigData.zakekedata[0].DisableUploadImages}`, `${zakekeConfigData.zakekedata[0].UseFixedImageSizes}`, `${zakekeConfigData.zakekedata[0].DisableText}`, `${zakekeConfigData.zakekedata[0].CanChangeSvgColors}`, `${zakekeConfigData.zakekedata[0].CanUseImageFilters}`])
+      }
+      if(variants[i].variantNames[j] == "back") {
+        rowsSidesPrint.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Back`, `${zakekeConfigData.zakekedata[0].PrintType}`, `${zakekeConfigData.zakekedata[0].DPI}`, `${zakekeConfigData.zakekedata[0].DisableSellerCliparts}`, `${zakekeConfigData.zakekedata[0].DisableUploadImages}`, `${zakekeConfigData.zakekedata[0].UseFixedImageSizes}`, `${zakekeConfigData.zakekedata[0].DisableText}`, `${zakekeConfigData.zakekedata[0].CanChangeSvgColors}`, `${zakekeConfigData.zakekedata[0].CanUseImageFilters}`])
+      }
+      if(variants[i].variantNames[j] == "left") {
+        rowsSidesPrint.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Left`, `${zakekeConfigData.zakekedata[0].PrintType}`, `${zakekeConfigData.zakekedata[0].DPI}`, `${zakekeConfigData.zakekedata[0].DisableSellerCliparts}`, `${zakekeConfigData.zakekedata[0].DisableUploadImages}`, `${zakekeConfigData.zakekedata[0].UseFixedImageSizes}`, `${zakekeConfigData.zakekedata[0].DisableText}`, `${zakekeConfigData.zakekedata[0].CanChangeSvgColors}`, `${zakekeConfigData.zakekedata[0].CanUseImageFilters}`])
+      }
+      if(variants[i].variantNames[j] == "right") {
+        rowsSidesPrint.push([`${response.productdata[0].id}`, `${variants[i].colorName}`, `Right`, `${zakekeConfigData.zakekedata[0].PrintType}`, `${zakekeConfigData.zakekedata[0].DPI}`, `${zakekeConfigData.zakekedata[0].DisableSellerCliparts}`, `${zakekeConfigData.zakekedata[0].DisableUploadImages}`, `${zakekeConfigData.zakekedata[0].UseFixedImageSizes}`, `${zakekeConfigData.zakekedata[0].DisableText}`, `${zakekeConfigData.zakekedata[0].CanChangeSvgColors}`, `${zakekeConfigData.zakekedata[0].CanUseImageFilters}`])
+      }
+    }
   }
 
   try {
