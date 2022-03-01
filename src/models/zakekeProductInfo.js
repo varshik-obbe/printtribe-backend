@@ -7,10 +7,14 @@ const zakekeProductInfoSchema = new mongoose.Schema({
     variant: [
         {
             colorName: {type: String, required: true},
-            backImgURL: {type: String, required: true},
-            frontImgURL: {type: String, required: true},
-            frontImgMask: {type: String, required: true},
-            backImgMask: {type: String, required: true}
+            backImgURL: {type: String},
+            frontImgURL: {type: String},
+            frontImgMask: {type: String},
+            backImgMask: {type: String},
+            leftImgURL: {type: String},
+            rightImgURL: {type: String},
+            rightImgMask: {type: String},
+            leftImgMask: {type: String}
         }
     ]
 },{ timestamps:true });

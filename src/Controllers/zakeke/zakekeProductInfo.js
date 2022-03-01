@@ -11,14 +11,32 @@ export const add_ProductInfo = async (req,res)=>{
     if(Array.isArray(productdata.variant) && productdata.variant.length > 0) {
         await Promise.all(productdata.variant.map(async (item,key) => {
             let dateVal = Date.now();
-            await decode(item.backImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId, ext: 'jpg' });
-            await decode(item.frontImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId, ext: 'jpg' });
-            await decode(item.frontImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "frontMaskImg" + productdata.productId, ext: 'jpg'});
-            await decode(item.backImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "backMaskImg" + productdata.productId, ext: 'jpg'});
-            productdata.variant[key]['frontImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "frontMaskImg" + productdata.productId +".jpg";
-            productdata.variant[key]['backImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "backMaskImg" + productdata.productId +".jpg";
-            productdata.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId +".jpg";
-            productdata.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId +".jpg";
+            await Promise.all(item.variantNames.map(async (itemsSub, keySub) => {
+                if(itemsSub == "front") {
+                    await decode(item.frontImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId, ext: 'jpg' });
+                    await decode(item.frontImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "frontMaskImg" + productdata.productId, ext: 'jpg'});
+                    productdata.variant[key]['frontImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "frontMaskImg" + productdata.productId +".jpg";
+                    productdata.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId +".jpg";
+                }
+                else if(itemsSub == "back") {
+                    await decode(item.backImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId, ext: 'jpg' });
+                    await decode(item.backImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "backMaskImg" + productdata.productId, ext: 'jpg'});
+                    productdata.variant[key]['backImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "backMaskImg" + productdata.productId +".jpg";
+                    productdata.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId +".jpg";
+                }
+                else if(itemsSub == "left") {
+                    await decode(item.leftImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId, ext: 'jpg' });
+                    await decode(item.leftImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "leftMaskImg" + productdata.productId, ext: 'jpg'});
+                    productdata.variant[key]['leftImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "leftMaskImg" + productdata.productId +".jpg";
+                    productdata.variant[key]['leftImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId +".jpg";                   
+                }
+                else if(itemsSub == "right") {
+                    await decode(item.rightImgURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId, ext: 'jpg' });
+                    await decode(item.rightImgMask, {fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "rightMaskImg" + productdata.productId, ext: 'jpg'});
+                    productdata.variant[key]['rightImgMask'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "rightMaskImg" + productdata.productId +".jpg";
+                    productdata.variant[key]['rightImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId +".jpg";
+                }
+            }))
         }))
     }
     console.log(productdata);
