@@ -172,10 +172,10 @@ export const get_products = async (req,res) => {
     res.status(201).json({ maincat });
 }
 
-export const get_SingleProduct = (req,res) => {
-    Products.find({'_id':req.params.id})
+export const get_SingleProduct = async (req,res) => {
+    await Products.find({'_id':req.params.id})
     .exec().
-    then((productdata)=>{
+    then(async (productdata)=>{
         const response = {
             count:productdata.length,
             productdata:productdata.map((productrecord)=>({
@@ -193,9 +193,20 @@ export const get_SingleProduct = (req,res) => {
             
             }))
         }
-        res.status(200).json({product:response});
+        await Categories.findOne({ _id: response.productdata[0].category_id })
+        .exec()
+        .then((catData) => {
+            response.productdata[0]["maincategory_id"] = catData.maincat;
+            response.productdata[0]["subcategory_id"] = catData.subcat;
+            res.status(200).json({product:response});
+        })
+        .catch((err) => {
+            console.log("error occured while fetching category data"+err)
+            res.status(500).json({error:{global:"something went wrong while fetching categoy id"}});
+        })
     })
     .catch((err)=>{
+        console.log("error occured while fetching product data"+err)
         res.status(500).json({error:{global:"something went wrong"}});
     });
 }
