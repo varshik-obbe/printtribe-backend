@@ -332,7 +332,14 @@ export const removeProd = async (req,res) => {
         
                   await axios(configChange)
                   .then(async function(responseData) {
-                    res.status(200).json({ global: { success: "deleted successfully" } })
+                    customerProductsModel.updateOne({ 'product_id': productData.product_id, 'customer_id': productData.customer_id }, { $set: { 'wix_product_id': '' } })
+                    .then((updateData) => {
+                        res.status(200).json({ global: { success: "deleted successfully" } })
+                    })
+                    .catch((err) => {
+                        console.log("error occured while updating product data"+err)
+                        res.status(400).json({ global: { error: "could not update customer product data" } });                                              
+                    })
                 })
                 .catch((err) => {
                     console.log("error occured while getting product wix info"+err)
@@ -353,4 +360,38 @@ export const removeProd = async (req,res) => {
     }
 }
 
-export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd }
+export const getOrders = async (req,res) => {
+    const { productData } = req.body;
+
+    let token = "";
+    token = await getToken("",productData.customer_id);
+
+    console.log("token is"+token)
+    if(token != "") {
+        const headersChange = {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+
+          let Senddata = {
+          }
+    
+          var configChange = {
+            method: 'post',
+            url: "https://www.wixapis.com/stores/v2/orders/query",
+            headers: headersChange,
+            data: Senddata
+          };
+    
+          await axios(configChange)
+          .then(async function(responseData) {
+            res.status(200).json({ orders: responseData.data })
+        })
+        .catch((err) => {
+            console.log("error occured while getting orders from wix"+err)
+            res.status(400).json({ global: { error: "could not find wix orders" } });                      
+        })
+    }
+}
+
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders }
