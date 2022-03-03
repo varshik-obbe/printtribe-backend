@@ -12,7 +12,9 @@ const productsSchema = new mongoose.Schema({
     img: {type:String,required:true,lowercase:true},
     category_id: {type:String,required:true},
     quantity: {type:String,lowercase:true},
-    extra_imgs: {type: Array}
+    extra_imgs: {type: Array},
+    hsn_code: {type: String},
+    gst: {type: String}
 },{ timestamps:true });
 
 // categoriesSchema.plugin(uniqueValidator);
