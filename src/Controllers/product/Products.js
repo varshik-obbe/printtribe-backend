@@ -53,7 +53,9 @@ export const add_Products = async (req, res, err) => {
                 category_id: data.category_id,
                 img: req.files.img[0].path,
                 quantity: data.quantity,
-                extra_imgs: product_extraImgsArr
+                extra_imgs: product_extraImgsArr,
+                hsn_code: data.hsn_code,
+                gst: data.gst
             });
             categories.save().then((productsValue) => {
                 res.status(201).jsonp({ productsValue })
@@ -135,7 +137,9 @@ export const get_products = async (req,res) => {
                                     category_id: subproductsData.category_id,
                                     img: subproductsData.img,
                                     quantity: subproductsData.quantity,
-                                    extra_imgs: subproductsData.extra_imgs
+                                    extra_imgs: subproductsData.extra_imgs,
+                                    hsn_code: subproductsData.hsn_code,
+                                    gst: subproductsData.gst
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["products"] = responseProducts.subProducts;
@@ -158,7 +162,9 @@ export const get_products = async (req,res) => {
                                             category_id: subsubProductsData.category_id,
                                             img: subsubProductsData.img,
                                             quantity: subsubProductsData.quantity,
-                                            extra_imgs: subsubProductsData.extra_imgs
+                                            extra_imgs: subsubProductsData.extra_imgs,
+                                            hsn_code: subsubProductsData.hsn_code,
+                                            gst: subsubProductsData.gst
                                         }))
                                     }
                                     maincat.categories[key].subCategories[keysub].subsubCategories[productskeysub]["products"] = responseSubSubProducts.subSubProducts;
@@ -189,7 +195,9 @@ export const get_SingleProduct = async (req,res) => {
                 category_id: productrecord.category_id,
                 img: productrecord.img,
                 quantity: productrecord.quantity,
-                extra_imgs: productrecord.extra_imgs
+                extra_imgs: productrecord.extra_imgs,
+                hsn_code: productrecord.hsn_code,
+                gst: productrecord.gst
             
             }))
         }

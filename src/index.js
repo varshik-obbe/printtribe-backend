@@ -9,6 +9,7 @@ import customers from './routes/customers/customers';
 import customerInventory from './routes/customers/products';
 import walletInfo from './routes/customers/wallet';
 import customerShipping from './routes/customer_shipping/customer_shipping';
+import adminInvoice from './routes/orders/offline_orders';
 import orders from "./routes/orders/orders";
 import payment_methods from './routes/payment_methods/payment_methods';
 import categories from './routes/products/categories';
@@ -68,6 +69,7 @@ mongoose
   app.use('/api/shiprocketGenrate', pickupShiprocketOrder);
   app.use('/api/shippingWebhook', shiprocketwebhhok);
   app.use('/api/wix', testToken);
+  app.use('/api/adminInvoice', adminInvoice);
 
 app.listen(500, function() {
     console.log('listening on 500')
