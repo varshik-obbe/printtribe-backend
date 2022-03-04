@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ProductsModel from "../../models/products";
 import productQuantModel from "../../models/product_quantity";
 import quantityLogModel from "../../models/quantity_log";
 import ParseErrors from "../../utils/ParseErrors";
@@ -10,11 +11,19 @@ export const add_quantities = (req,res) => {
     const productsQuantData = new productQuantModel({
         _id: mongoose.Types.ObjectId(),
         product_id: productsData.product_id,
-        variants: productsData.variants
+        variants: productsData.variants,
+        color_code: productsData.color_code
     })
 
     productsQuantData.save().then((savedata) => {
-        res.status(201).json({ saveddata: savedata })
+        ProductsModel.updateOne({ '_id': productsData.product_id }, { $set: { 'quantities_updated': true } })
+        .then((updatedData) => {
+            res.status(201).json({ saveddata: savedata })
+        })
+        .catch((err) => {
+            console.log("could not update product"+err)
+            res.status(400).json({ global: { error: "could not update product" } })
+        })
     })
     .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }))
 }

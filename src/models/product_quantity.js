@@ -8,7 +8,8 @@ const productQuantSchema = new mongoose.Schema({
         {
             color: {type: String, required: true},
             size: {type: String, required: true},
-            quantity: {type: String, required: true}
+            quantity: {type: String, required: true},
+            color_code: {type: String}
         }
     ]
 }, {timestamps: true})
