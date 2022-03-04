@@ -139,7 +139,8 @@ export const get_products = async (req,res) => {
                                     quantity: subproductsData.quantity,
                                     extra_imgs: subproductsData.extra_imgs,
                                     hsn_code: subproductsData.hsn_code,
-                                    gst: subproductsData.gst
+                                    gst: subproductsData.gst,
+                                    quantities_updated: subproductsData.quantities_updated
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["products"] = responseProducts.subProducts;
@@ -164,7 +165,8 @@ export const get_products = async (req,res) => {
                                             quantity: subsubProductsData.quantity,
                                             extra_imgs: subsubProductsData.extra_imgs,
                                             hsn_code: subsubProductsData.hsn_code,
-                                            gst: subsubProductsData.gst
+                                            gst: subsubProductsData.gst,
+                                            quantities_updated: subsubProductsData.quantities_updated
                                         }))
                                     }
                                     maincat.categories[key].subCategories[keysub].subsubCategories[productskeysub]["products"] = responseSubSubProducts.subSubProducts;
@@ -197,7 +199,8 @@ export const get_SingleProduct = async (req,res) => {
                 quantity: productrecord.quantity,
                 extra_imgs: productrecord.extra_imgs,
                 hsn_code: productrecord.hsn_code,
-                gst: productrecord.gst
+                gst: productrecord.gst,
+                quantities_updated: productrecord.quantities_updated
             
             }))
         }
