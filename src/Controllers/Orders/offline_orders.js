@@ -136,7 +136,7 @@ export const add_order = async (req,res) => {
             total_price: orderData.total_price,
             customer_email: orderData.customer_email,
             courier_id: orderData.courier_id,
-            shipment_status: "processing",
+            shipment_status: "",
             shiprocket_awb: "",
             cgst_amount: orderData.cgst_amount,
             sgst_amount: orderData.sgst_amount,
@@ -167,4 +167,15 @@ export const add_order = async (req,res) => {
     }
 }
 
-export default { add_order }
+export const get_orders = (req,res) => {
+    offlineorderModel.find().exec()
+    .then((data) => {
+        res.status(200).json({ resultData: data })
+    })
+    .catch((err) => {
+        console.log("error occured while fetching"+err)
+        res.status(400).json({ global: { error: "could not fetch data" } })
+    })
+}
+
+export default { add_order, get_orders }

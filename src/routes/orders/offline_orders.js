@@ -9,7 +9,7 @@ router.post('/addOrder', Authentication , OfflineOrdersController.add_order);
 
 // router.get('/getOrders/:id', CustomerAuthentication, OrdersController.getCustomer_orders);
 
-// router.get('/getOngoingOrders', Authentication, OrdersController.getAdminOngoingOrders);
+router.get('/getOrders', Authentication, OfflineOrdersController.get_orders);
 
 // router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
 
