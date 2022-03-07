@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import util from "util";
 import CustomerModel from "../../models/customers";
 import customerProductsModel from "../../models/customer_inventory_products";
 import getToken from "../../utils/getWixToken";
@@ -398,7 +399,7 @@ export const getOrders = async (req,res) => {
 export const ordersPaid = (req,res) => {
     const data = req.body;
 
-    console.log("data is"+data);
+    console.log("data is"+util.inspect(data, true));
 
     res.status(200).json({ global: { success: "triggered data" }})
 }
