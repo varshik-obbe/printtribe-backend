@@ -17,4 +17,8 @@ router.post('/uploadQuant', wixController.addQuantity);
 
 router.post('/removeProduct', wixController.removeProd);
 
+router.post('/getOrders', wixController.getOrders);
+
+router.post('/addOrders', wixController.ordersPaid);
+
 export default router
