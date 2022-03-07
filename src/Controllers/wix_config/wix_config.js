@@ -394,4 +394,10 @@ export const getOrders = async (req,res) => {
     }
 }
 
-export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders }
+
+export const ordersPaid = (req,res) => {
+    const { data } = req.body;
+
+    console.log("data is"+data);
+}
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid }
