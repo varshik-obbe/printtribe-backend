@@ -396,8 +396,10 @@ export const getOrders = async (req,res) => {
 
 
 export const ordersPaid = (req,res) => {
-    const { data } = req.body;
+    const data = req.body;
 
     console.log("data is"+data);
+
+    res.status(200).json({ global: { success: "triggered data" }})
 }
 export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid }
