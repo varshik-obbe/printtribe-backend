@@ -55,7 +55,9 @@ export const add_Products = async (req, res, err) => {
                 quantity: data.quantity,
                 extra_imgs: product_extraImgsArr,
                 hsn_code: data.hsn_code,
-                gst: data.gst
+                gst: data.gst,
+                weight: data.weight,
+                dimensions: data.dimensions
             });
             categories.save().then((productsValue) => {
                 res.status(201).jsonp({ productsValue })
@@ -140,7 +142,9 @@ export const get_products = async (req,res) => {
                                     extra_imgs: subproductsData.extra_imgs,
                                     hsn_code: subproductsData.hsn_code,
                                     gst: subproductsData.gst,
-                                    quantities_updated: subproductsData.quantities_updated
+                                    quantities_updated: subproductsData.quantities_updated,
+                                    weight: data.weight,
+                                    dimensions: data.dimensions
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["products"] = responseProducts.subProducts;
@@ -166,7 +170,9 @@ export const get_products = async (req,res) => {
                                             extra_imgs: subsubProductsData.extra_imgs,
                                             hsn_code: subsubProductsData.hsn_code,
                                             gst: subsubProductsData.gst,
-                                            quantities_updated: subsubProductsData.quantities_updated
+                                            quantities_updated: subsubProductsData.quantities_updated,
+                                            weight: data.weight,
+                                            dimensions: data.dimensions
                                         }))
                                     }
                                     maincat.categories[key].subCategories[keysub].subsubCategories[productskeysub]["products"] = responseSubSubProducts.subSubProducts;
@@ -200,7 +206,9 @@ export const get_SingleProduct = async (req,res) => {
                 extra_imgs: productrecord.extra_imgs,
                 hsn_code: productrecord.hsn_code,
                 gst: productrecord.gst,
-                quantities_updated: productrecord.quantities_updated
+                quantities_updated: productrecord.quantities_updated,
+                weight: data.weight,
+                dimensions: data.dimensions
             
             }))
         }

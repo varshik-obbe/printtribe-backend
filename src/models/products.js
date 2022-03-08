@@ -15,7 +15,13 @@ const productsSchema = new mongoose.Schema({
     extra_imgs: {type: Array},
     hsn_code: {type: String},
     gst: {type: String},
-    quantities_updated: { type: Boolean, default: false }
+    quantities_updated: { type: Boolean, default: false },
+    weight: {type: String},
+    dimensions: {
+        height: { type: String },
+        width: { type: String },
+        length: { type: String }
+    }
 },{ timestamps:true });
 
 // categoriesSchema.plugin(uniqueValidator);
