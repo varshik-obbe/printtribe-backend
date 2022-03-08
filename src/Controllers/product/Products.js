@@ -143,8 +143,8 @@ export const get_products = async (req,res) => {
                                     hsn_code: subproductsData.hsn_code,
                                     gst: subproductsData.gst,
                                     quantities_updated: subproductsData.quantities_updated,
-                                    weight: data.weight,
-                                    dimensions: data.dimensions
+                                    weight: subproductsData.weight,
+                                    dimensions: subproductsData.dimensions
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["products"] = responseProducts.subProducts;
@@ -171,8 +171,8 @@ export const get_products = async (req,res) => {
                                             hsn_code: subsubProductsData.hsn_code,
                                             gst: subsubProductsData.gst,
                                             quantities_updated: subsubProductsData.quantities_updated,
-                                            weight: data.weight,
-                                            dimensions: data.dimensions
+                                            weight: subsubProductsData.weight,
+                                            dimensions: subsubProductsData.dimensions
                                         }))
                                     }
                                     maincat.categories[key].subCategories[keysub].subsubCategories[productskeysub]["products"] = responseSubSubProducts.subSubProducts;
@@ -207,8 +207,8 @@ export const get_SingleProduct = async (req,res) => {
                 hsn_code: productrecord.hsn_code,
                 gst: productrecord.gst,
                 quantities_updated: productrecord.quantities_updated,
-                weight: data.weight,
-                dimensions: data.dimensions
+                weight: productrecord.weight,
+                dimensions: productrecord.dimensions
             
             }))
         }
