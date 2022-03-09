@@ -429,7 +429,7 @@ export const ordersPaid = async (req,res) => {
         "city": parsedOrderData.order.shippingInfo.shipmentDetails.address.city
     }
 
-    console.log("wix order shipping details :" + util.parse(shippingDetails, true));
+    console.log("wix order shipping details :" + util.inspect(shippingDetails, true));
 
     let orderDet = {
         "total_price": parsedOrderData.order.totals.total,
@@ -439,7 +439,7 @@ export const ordersPaid = async (req,res) => {
         "customer_email": parsedOrderData.order.buyerInfo.email
     }
 
-    console.log("wix orders order details :"+ util.parse(orderDet));
+    console.log("wix orders order details :"+ util.inspect(orderDet));
 
     await Promise.all(parsedOrderData.order.lineItems.map(async (item,key) => {
         await customerProductsModel.findOne({ 'wix_product_id': item.productId }).exec()
@@ -457,7 +457,7 @@ export const ordersPaid = async (req,res) => {
         })
     }))
 
-    console.log("wix orders items array after getting the product :"+util.parse(itemArray));
+    console.log("wix orders items array after getting the product :"+util.inspect(itemArray));
 
     let insertProductArr = [];
 
@@ -477,7 +477,7 @@ export const ordersPaid = async (req,res) => {
         insertProductArr.push(newItemObj)
     }))
 
-    console.log("wix orders insert items array :"+util.parse(insertProductArr));
+    console.log("wix orders insert items array :"+util.inspect(insertProductArr));
 
     if(itemExist) {
          
