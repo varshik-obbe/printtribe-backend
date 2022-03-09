@@ -413,7 +413,7 @@ export const ordersPaid = async (req,res) => {
 
     ordersData = JSON.parse(ordersData);
 
-    console.log("orders Data is parsed :"+ordersData);
+    console.log("orders Data is parsed :"+util.inspect(ordersData, true));
 
     let itemExist = false;
 
