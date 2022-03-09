@@ -164,7 +164,7 @@ export const uploadMedia = async (req,res) => {
 
     console.log("token is"+token)
     if(token != "") {
-        customerProductsModel.findOne({ 'product_id': productData.product_id, 'wix_product_id': productData.wix_product_id })
+        customerProductsModel.findOne({ 'product_id': productData.product_id, 'customer_id': productData.customer_id })
         .exec()
         .then(async (prodData) => {
             if(prodData) {
@@ -241,7 +241,7 @@ export const addQuantity = async (req,res) => {
                         "trackQuantity": true,
                         "variants": [
                             {
-                                "variantId": "4e9cbd72-60aa-42c0-bbc1-c05e67c457f7",
+                                "variantId": prodData.wix_variant_id,
                                 "quantity": prodData.quantity
                             }
                         ]
@@ -399,8 +399,13 @@ export const getOrders = async (req,res) => {
 export const ordersPaid = (req,res) => {
     const data = req.body;
 
+    console.log("list of headers "
+    +JSON.stringify(req.headers));
+
     // var decoded = jwt.verify(data, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu5G05HHc9faKvUaJdvzQeVT5XzyKFfuxadHZX6rNQbTcQc7o8Glz6HmxxQJHwPYvmjJtihzCbuaSyfI+99iZb3+zGltFqbcLsE+SnZx7CmjMYgb1emiowQnQMk9vIpS5BPpQ71qLJHiJxizLMvGnYeI09v+jn+X86pOeRu/laKngjBDUT+CWShWcCAljbbzqH6GCTTNgwrfZ9T3wqxYZQHg0Ap4Ke6o9WuGIcnVkw5eM0B+sLLOjPfXtoXjlqN4nOn3wSySAtQEdiaZpwuhlwdFJ6YYUkKqAn1xuKIfZ7K8OvYkjHa6wpWqAN2BZWCDi+XgCERqoWDrR70FrJ5OaZQIDAQAB');
-    console.log("data is"+util.inspect(data, true));
+    console.log("data is"+data);
+
+    console.log("util inspect data is "+ util.inspect(data,true));
 
 
     res.status(200).json({ global: { success: "triggered data" }})
