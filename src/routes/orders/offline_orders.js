@@ -11,7 +11,9 @@ router.post('/addOrder', Authentication , OfflineOrdersController.add_order);
 
 router.get('/getOrders', Authentication, OfflineOrdersController.get_orders);
 
-router.get('/createPdf', Authentication, OfflineOrdersController.create_pdf);
+// router.get('/createPdf', Authentication, OfflineOrdersController.create_pdf);
+
+router.get('/getPDFinvoice/:id', Authentication, OfflineOrdersController.getPdfInvoice);
 
 // router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
 

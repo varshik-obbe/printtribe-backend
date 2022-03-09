@@ -204,6 +204,9 @@ export const getPdfInvoice = (req,res) => {
     .then((data) => {
         res.status(200).json({ link: data.pdf_link })
     })
+    .catch((err) => {
+        res.status(400).json({ global: { error: "error occured while fetching data" } })
+    })
 }
 
 export const get_orders = (req,res) => {
@@ -217,7 +220,4 @@ export const get_orders = (req,res) => {
     })
 }
 
-export const create_pdf = async (req,res) => {
-}
-
-export default { add_order, get_orders, create_pdf }
+export default { add_order, get_orders, getPdfInvoice }
