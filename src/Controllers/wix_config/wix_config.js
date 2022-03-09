@@ -441,6 +441,8 @@ export const ordersPaid = async (req,res) => {
         "customer_email": parsedOrderData.order.buyerInfo.email
     }
 
+    let customer_id = "";
+
     console.log("wix orders order details :"+ util.inspect(orderDet));
 
     await Promise.all(parsedOrderData.order.lineItems.map(async (item,key) => {
@@ -448,6 +450,7 @@ export const ordersPaid = async (req,res) => {
         .then((proddata) => {
             if(proddata) {
                 itemExist = true;
+                customer_id = proddata.customer_id;
                 parsedOrderData.order.lineItems[key]["description"] = proddata.description;
                 parsedOrderData.order.lineItems[key]["product_img"] = proddata.product_img;
                 parsedOrderData.order.lineItems[key]["category_id"] = proddata.category_id;
@@ -492,6 +495,7 @@ export const ordersPaid = async (req,res) => {
              wix_order_number: parsedOrderData.order.number,
              customerShipping_details: customerShipArr,
              product_info: insertProductArr,
+             customer_id: customer_id,
              total_weight: orderDet.total_weight,
              total_quantity: orderDet.total_quantity,
              total_price: orderDet.total_price,
@@ -510,4 +514,25 @@ export const ordersPaid = async (req,res) => {
 
     res.status(200).json({ global: { success: "triggered data" }})
 }
-export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid }
+
+export const getWixOrders = (req,res) => {
+    const id = req.params.id;
+
+    wixOrderModel.find()
+    .exec()
+    .then((data) => {
+        if(data) {
+            res.status(200).json({ ordersData: data })
+        }
+        else {
+            res.status(400).json({ global: { error: "could not find any orders" } })
+        }
+    })
+    .catch((err) => {
+        console.log("error occured while fetching"+err)
+        res.status(400).json({ global: { error: "could not fetch orders" } })
+    })
+}
+
+
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders }

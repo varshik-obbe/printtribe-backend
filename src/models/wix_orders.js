@@ -33,6 +33,7 @@ const wixOrders = new mongoose.Schema({
             quantity: {type:String,required:true}
         }
     ],
+    customer_id: {type: String, required: true},
     total_weight: {type: String, required: true},
     total_quantity: {type: String,required: true},
     total_price: {type:String,required:true},
