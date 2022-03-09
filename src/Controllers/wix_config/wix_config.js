@@ -411,6 +411,8 @@ export const ordersPaid = async (req,res) => {
 
     let ordersData = decoded.data;
 
+    ordersData = JSON.parse(ordersData);
+
     let itemExist = false;
 
     let itemArray = [];
