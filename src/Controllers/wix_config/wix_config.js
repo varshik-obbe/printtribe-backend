@@ -405,15 +405,10 @@ export const ordersPaid = async (req,res) => {
 
     var decoded = jwt.verify(data, fs.readFileSync('./ZakekeFiles/public.pem'), { algorithms: ['RS256'] });
 
-    console.log("decoded data is "+ decoded);
-
-    console.log("decoded data util inspect "+util.inspect(decoded,true));
 
     let ordersData = decoded.data;
 
     ordersData = JSON.parse(ordersData);
-
-    console.log("orders Data is parsed :"+util.inspect(ordersData, true));
 
     let parsedOrderData = JSON.parse(ordersData.data);
 
@@ -434,7 +429,7 @@ export const ordersPaid = async (req,res) => {
         "city": parsedOrderData.order.shippingInfo.shipmentDetails.address.city
     }
 
-    console.log("wix order shipping details :" +shippingDetails);
+    console.log("wix order shipping details :" + util.parse(shippingDetails, true));
 
     let orderDet = {
         "total_price": parsedOrderData.order.totals.total,
@@ -444,7 +439,7 @@ export const ordersPaid = async (req,res) => {
         "customer_email": parsedOrderData.order.buyerInfo.email
     }
 
-    console.log("wix orders order details :"+orderDet);
+    console.log("wix orders order details :"+ util.parse(orderDet));
 
     await Promise.all(parsedOrderData.order.lineItems.map(async (item,key) => {
         await customerProductsModel.findOne({ 'wix_product_id': item.productId }).exec()
@@ -462,7 +457,7 @@ export const ordersPaid = async (req,res) => {
         })
     }))
 
-    console.log("wix orders items array after getting the product :"+itemArray);
+    console.log("wix orders items array after getting the product :"+util.parse(itemArray));
 
     let insertProductArr = [];
 
@@ -482,7 +477,7 @@ export const ordersPaid = async (req,res) => {
         insertProductArr.push(newItemObj)
     }))
 
-    console.log("wix orders insert items array :"+insertProductArr);
+    console.log("wix orders insert items array :"+util.parse(insertProductArr));
 
     if(itemExist) {
          
