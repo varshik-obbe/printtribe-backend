@@ -397,7 +397,7 @@ export const getOrders = async (req,res) => {
 }
 
 
-export const ordersPaid = (req,res) => {
+export const ordersPaid = async (req,res) => {
     const data = req.body;
 
     console.log("list of headers "
@@ -408,6 +408,77 @@ export const ordersPaid = (req,res) => {
     console.log("decoded data is "+ decoded);
 
     console.log("decoded data util inspect "+util.inspect(decoded,true));
+
+    let ordersData = decoded.data;
+
+    let itemExist = false;
+
+    let itemArray = [];
+
+    let shippingDetails = {
+        "wix_customer_id": ordersData.order.buyerInfo.id,
+        "fullname": ordersData.order.shippingInfo.shipmentDetails.address.fullName.firstName + ordersData.order.shippingInfo.shipmentDetails.address.fullName.lastName,
+        "address1": ordersData.order.shippingInfo.shipmentDetails.address.addressLine1,
+        "country":  "India",
+        "zip_code": ordersData.order.shippingInfo.shipmentDetails.address.zipCode,
+        "state": ordersData.order.shippingInfo.shipmentDetails.address.subdivision,
+        "phone": ordersData.order.shippingInfo.shipmentDetails.address.phone,
+        "city": ordersData.order.shippingInfo.shipmentDetails.address.city
+    }
+
+    console.log("wix order shipping details :" +shippingDetails);
+
+    let orderDet = {
+        "total_price": ordersData.order.totals.total,
+        "total_weight": ordersData.order.totals.weight,
+        "total_quantity": ordersData.order.totals.quantity,
+        "total_tax": ordersData.order.totals.tax,
+        "customer_email": ordersData.order.buyerInfo.email
+    }
+
+    console.log("wix orders order details :"+orderDet);
+
+    await Promise.all(ordersData.order.lineItems.map(async (item,key) => {
+        await customerProductsModel.findOne({ 'wix_product_id': item.productId }).exec()
+        .then((proddata) => {
+            if(proddata) {
+                itemExist = true;
+                ordersData.order.lineItems[key]["description"] = proddata.description;
+                ordersData.order.lineItems[key]["product_img"] = proddata.product_img;
+                ordersData.order.lineItems[key]["category_id"] = proddata.category_id;
+                itemArray.push(ordersData.order.lineItems[key]);
+            }
+        })
+        .catch((err) => {
+            console.log('error occured while fetching product')
+        })
+    }))
+
+    console.log("wix orders items array after getting the product :"+itemArray);
+
+    let insertProductArr = [];
+
+    await Promise.all(itemArray.map(async (items,keys) => {
+        let newItemObj = {
+            wix_product_id: items.productId,
+            title: items.name,
+            description: items.description,
+            price: items.priceData.totalPrice,
+            productsize: items.options[1].selection,
+            productcolor: items.options[0].selection,
+            product_img: items.product_img,
+            category_id: items.category_id,
+            quantity: items.quantity
+        }
+
+        insertProductArr.push(newItemObj)
+    }))
+
+    console.log("wix orders insert items array :"+insertProductArr);
+
+    if(itemExist) {
+         
+    }
 
     res.status(200).json({ global: { success: "triggered data" }})
 }

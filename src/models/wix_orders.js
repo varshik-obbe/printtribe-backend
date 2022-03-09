@@ -14,7 +14,6 @@ const wixOrders = new mongoose.Schema({
             country: {type:String},
             zip_code: {type:String, required: true},
             state: {type:String},
-            company: {type:String},
             phone: {type:String},
             shipping_charges: {type:String},
             city: {type:String, required: true}
@@ -23,7 +22,7 @@ const wixOrders = new mongoose.Schema({
     product_info:[
         {
             _id:mongoose.Schema.Types.ObjectId,
-            product_id: {type: String,required: true},
+            wix_product_id: {type: String,required: true},
             title: {type:String,required:true},
             description: {type:String},
             price: {type:String,required:true},
@@ -34,11 +33,10 @@ const wixOrders = new mongoose.Schema({
             quantity: {type:String,required:true}
         }
     ],
+    total_weight: {type: String, required: true},
     total_quantity: {type: String,required: true},
     total_price: {type:String,required:true},
-    cgst_amount: {type:String},
-    sgst_amount: {type: String},
-    igst_amount: {type: String},
+    total_tax: {type:String},
     shipping_charges: {type:String},
     shipment_ref_id: {type: String},
     shipment_ord_id: {type: String},
