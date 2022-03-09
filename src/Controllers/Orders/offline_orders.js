@@ -1,6 +1,7 @@
 import axios from "axios";
 import mongoose from "mongoose";
 import offlineorderModel from "../../models/offline_invoice_orders";
+import createPDF from "../../utils/createPDF";
 import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
 import ParseErrors from "../../utils/ParseErrors";
@@ -32,12 +33,16 @@ export const add_order = async (req,res) => {
     
                 deleteQuant(orderData.product_info,orderData.admin_id,orderData.customer_email)
 
+                let cust_name = saveddata.customerShipping_details[0].fullname;
+                let random = "";
+                random = await createPDF(cust_name);
+
     
                 let title = "printribe mail"
                 let hello = "hello fellow dropshipper"
-                let message = "thank you for ordering with us, your order will be shipped to you soon."
+                let message = "thank you for ordering with us, your order will be shipped to you soon.Please click the link below to download your invoice"
                 let second_message = "for any further assistance please reach out to us."
-                let link = "https://printribe-partner.web.app/#/login";
+                let link = process.env.PROJ_DEV_HOST+"/uploads/"+random+".pdf";
                 SendMail(title,hello,message,second_message,orderData.customer_email,link);
     
                   let newDate = new Date();
@@ -104,7 +109,7 @@ export const add_order = async (req,res) => {
                     
                     await axios(config)
                     .then(async function (response) {
-                    await offlineorderModel.updateOne({'_id': saveddata._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id} })
+                    await offlineorderModel.updateOne({'_id': saveddata._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id, 'pdf_link': link} })
                     .then((updateData) => {
                         res.status(201).jsonp({ savedData: saveddata });
                     })
@@ -159,13 +164,25 @@ export const add_order = async (req,res) => {
 
             deleteQuant(orderData.product_info,orderData.admin_id,orderData.customer_email)
 
+            let cust_name = saveddata.customerShipping_details[0].fullname;
+            let random = "";
+            random = await createPDF(cust_name);
+
 
             let title = "printribe mail"
             let hello = "hello fellow dropshipper"
-            let message = "thank you for ordering with us, your order will be shipped to you soon."
+            let message = "thank you for ordering with us, your order will be shipped to you soon.Please click the link below to download your invoice"
             let second_message = "for any further assistance please reach out to us."
-            let link = "https://printribe-partner.web.app/#/login";
+            let link = process.env.PROJ_DEV_HOST+"/uploads/"+random+".pdf";
             SendMail(title,hello,message,second_message,orderData.customer_email,link);
+
+            offlineorderModel.updateOne({ '_id': saveddata._id}, { $set: { 'pdf_link': link } })
+            .then((data) => {
+                console.log("updated successfully")
+            })
+            .catch((err) => {
+                console.log("error occured while updating")
+            })
 
             res.status(201).jsonp({ savedData: saveddata });
 
@@ -179,6 +196,16 @@ export const add_order = async (req,res) => {
     }
 }
 
+export const getPdfInvoice = (req,res) => {
+    const id = req.params.id;
+
+    offlineorderModel.findOne({ '_id': id })
+    .exec()
+    .then((data) => {
+        res.status(200).json({ link: data.pdf_link })
+    })
+}
+
 export const get_orders = (req,res) => {
     offlineorderModel.find().exec()
     .then((data) => {
@@ -190,4 +217,7 @@ export const get_orders = (req,res) => {
     })
 }
 
-export default { add_order, get_orders }
+export const create_pdf = async (req,res) => {
+}
+
+export default { add_order, get_orders, create_pdf }

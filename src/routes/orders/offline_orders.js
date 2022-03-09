@@ -11,6 +11,8 @@ router.post('/addOrder', Authentication , OfflineOrdersController.add_order);
 
 router.get('/getOrders', Authentication, OfflineOrdersController.get_orders);
 
+router.get('/createPdf', Authentication, OfflineOrdersController.create_pdf);
+
 // router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
 
 // router.get('/getAdminOtherOrders', Authentication, OrdersController.getAdminOtherOrders);

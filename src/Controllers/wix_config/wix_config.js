@@ -226,7 +226,7 @@ export const addQuantity = async (req,res) => {
 
     console.log("token is"+token)
     if(token != "") {
-        await customerProductsModel.findOne({ 'product_id': productData.product_id, 'wix_product_id': productData.wix_product_id })
+        await customerProductsModel.findOne({ 'product_id': productData.product_id, 'customer_id': productData.wix_product_id })
         .exec()
         .then(async (prodData) => {
             if(prodData) {
