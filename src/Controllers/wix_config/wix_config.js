@@ -1,5 +1,5 @@
 import axios from "axios";
-//import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import util from "util";
 import CustomerModel from "../../models/customers";
 import customerProductsModel from "../../models/customer_inventory_products";
@@ -407,6 +407,9 @@ export const ordersPaid = (req,res) => {
 
     console.log("util inspect data is "+ util.inspect(data,true));
 
+    var decoded = jwt.verify(data, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu5G05HHc9faKvUaJdvzQeVT5XzyKFfuxadHZX6rNQbTcQc7o8Glz6HmxxQJHwPYvmjJtihzCbuaSyfI+99iZb3+zGltFqbcLsE+SnZx7CmjMYgb1emiowQnQMk9vIpS5BPpQ71qLJHiJxizLMvGnYeI09v+jn+X86pOeRu/laKngjBDUT+CWShWcCAljbbzqH6GCTTNgwrfZ9T3wqxYZQHg0Ap4Ke6o9WuGIcnVkw5eM0B+sLLOjPfXtoXjlqN4nOn3wSySAtQEdiaZpwuhlwdFJ6YYUkKqAn1xuKIfZ7K8OvYkjHa6wpWqAN2BZWCDi+XgCERqoWDrR70FrJ5OaZQIDAQAB');
+
+    console.log("decoded data is "+ decoded);
 
     res.status(200).json({ global: { success: "triggered data" }})
 }
