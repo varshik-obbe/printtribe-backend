@@ -32,6 +32,7 @@ app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 app.use('/ZakekeFiles', express.static('ZakekeFiles'));
 app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.text({limit: '10mb'}));
 
 
 
