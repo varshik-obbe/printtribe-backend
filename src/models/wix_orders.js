@@ -44,7 +44,8 @@ const wixOrders = new mongoose.Schema({
     customer_email:{type:String,required:true,index:true},
     courier_id: {type: String},
     shiprocket_awb: {type:String},
-    shiprocket_order: {type: Boolean, default: false}
+    shiprocket_order: {type: Boolean, default: false},
+    partner_status: {type: String}
 },{ timestamps:true });
 
 wixOrders.plugin(uniqueValidator)

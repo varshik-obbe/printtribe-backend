@@ -1,9 +1,11 @@
 import axios from "axios";
 import fs from "fs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import util from "util";
 import CustomerModel from "../../models/customers";
 import customerProductsModel from "../../models/customer_inventory_products";
+import wixOrderModel from "../../models/wix_orders";
 import getToken from "../../utils/getWixToken";
 
 
@@ -420,7 +422,7 @@ export const ordersPaid = async (req,res) => {
 
     let shippingDetails = {
         "wix_customer_id": parsedOrderData.order.buyerInfo.id,
-        "fullname": parsedOrderData.order.shippingInfo.shipmentDetails.address.fullName.firstName + parsedOrderData.order.shippingInfo.shipmentDetails.address.fullName.lastName,
+        "fullname": parsedOrderData.order.shippingInfo.shipmentDetails.address.fullName.firstName +" "+ parsedOrderData.order.shippingInfo.shipmentDetails.address.fullName.lastName,
         "address1": parsedOrderData.order.shippingInfo.shipmentDetails.address.addressLine1,
         "country":  "India",
         "zip_code": parsedOrderData.order.shippingInfo.shipmentDetails.address.zipCode,
@@ -434,7 +436,7 @@ export const ordersPaid = async (req,res) => {
     let orderDet = {
         "total_price": parsedOrderData.order.totals.total,
         "total_weight": parsedOrderData.order.totals.weight,
-        "total_quantity": parsedOrderData.order.totals.quantity,
+        "total_quantity": parsedOrderData.order.totals.quantity.toString(),
         "total_tax": parsedOrderData.order.totals.tax,
         "customer_email": parsedOrderData.order.buyerInfo.email
     }
@@ -471,7 +473,7 @@ export const ordersPaid = async (req,res) => {
             productcolor: items.options[0].selection,
             product_img: items.product_img,
             category_id: items.category_id,
-            quantity: items.quantity
+            quantity: items.quantity.toString()
         }
 
         insertProductArr.push(newItemObj)
@@ -479,8 +481,31 @@ export const ordersPaid = async (req,res) => {
 
     console.log("wix orders insert items array :"+util.inspect(insertProductArr));
 
+    let customerShipArr = [];
+
+    customerShipArr.push(shippingDetails);
+
     if(itemExist) {
-         
+         const ordersSave = new wixOrderModel({
+             _id: mongoose.Types.ObjectId(),
+             wix_order_id: parsedOrderData.order.id,
+             wix_order_number: parsedOrderData.order.number,
+             customerShipping_details: customerShipArr,
+             product_info: insertProductArr,
+             total_weight: orderDet.total_weight,
+             total_quantity: orderDet.total_quantity,
+             total_price: orderDet.total_price,
+             total_tax: orderDet.total_tax,
+             customer_email: orderDet.customer_email,
+             partner_status: "processing"
+         })
+
+         ordersSave.save().then((savedData) => {
+             console.log("saved the data in wix orders")
+         })
+         .catch((err) => {
+            console.log("could not save orders"+err)
+         })
     }
 
     res.status(200).json({ global: { success: "triggered data" }})
