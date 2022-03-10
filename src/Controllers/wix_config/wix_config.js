@@ -6,6 +6,7 @@ import util from "util";
 import CustomerModel from "../../models/customers";
 import customerProductsModel from "../../models/customer_inventory_products";
 import wixOrderModel from "../../models/wix_orders";
+import getShipToken from "../../utils/GetShiprocketToken";
 import getToken from "../../utils/getWixToken";
 
 
@@ -515,6 +516,102 @@ export const ordersPaid = async (req,res) => {
     res.status(200).json({ global: { success: "triggered data" }})
 }
 
+export const setOrderStatus = async (req,res) => {
+    const { approveData } = req.body;
+
+    const token = await getShipToken();
+    if(token != "") {
+        wixOrderModel.findOne({ '_id': approveData.id })
+        .then(async (data) => {
+            if(data) {
+                const nDate = new Date().toISOString('en-US', {
+                    timeZone: 'Asia/Calcutta'
+                  }).slice(0, 10);
+                
+                let shippingProductsArr = [];
+                await Promise.all(data.product_info.map((item, key) => {
+                    let data = {
+                        "name": item.title,
+                        "sku": item.title+item.productsize+item.productcolor,
+                        "units": parseInt(item.quantity, 10),
+                        "selling_price": parseInt(item.price, 10),
+                        }
+            
+                        shippingProductsArr.push(data);
+                }))
+            
+                const weightTotal = parseInt(data.total_quantity) * 0.1; 
+            
+            
+                let shipRockData = {
+                  "order_id": data._id,
+                  "order_date": nDate,
+                  "pickup_location": process.env.SHIPROCKET_PICKUP_NAME,
+                  "billing_customer_name": data.customerShipping_details[0].fullname,
+                  "billing_last_name": data.customerShipping_details[0].fullname,
+                  "billing_address": data.customerShipping_details[0].address1,
+                  "billing_address_2": data.customerShipping_details[0].address2,
+                  "billing_city": data.customerShipping_details[0].city,
+                  "billing_pincode": data.customerShipping_details[0].zip_code,
+                  "billing_state": data.customerShipping_details[0].state,
+                  "billing_country": "India",
+                  "billing_email": data.customer_email,
+                  "billing_phone": data.customerShipping_details[0].phone,
+                  "shipping_is_billing": true,
+                  "order_items": shippingProductsArr,
+                  "payment_method": "Prepaid",
+                  "shipping_charges": parseInt(approveData.shipping_charges),
+                  "giftwrap_charges": 0,
+                  "transaction_charges": 0,
+                  "total_discount": 0,
+                  "sub_total": parseInt(data.total_price, 10),
+                  "length": 10,
+                  "breadth": 10,
+                  "height": 10,
+                  "weight": weightTotal
+                }
+    
+                const Shippingheaders = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                  }
+                var config = {
+                method: 'POST',
+                url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
+                data: shipRockData,
+                headers: Shippingheaders
+                };
+                
+                await axios(config)
+                .then(async function (response) {
+                  await wixOrderModel.updateOne({'_id': data._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id, 'shipment_status': 'processing', 'shipping_charges': approveData.shipping_charges, 'shiprocket_order': true, 'partner_status': approveData.partner_status, 'courier_id': approveData.courier_id} })
+                  .then((updateData) => {
+                    res.status(201).jsonp({ global: { success: "updated successfully" } });
+                  })
+                  .catch((err) => {
+                    console.log("couldn't update the order database "+err)
+                  })
+                })
+                .catch(function (error) {
+                console.log("error occured while creating shipping order"+error);
+                res.status(400).json({ errors: error })
+                });
+            }
+            else {
+                res.status(500).json({error:{global:"could not generate shiprocket token"}});
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({error:{global:"could not fetch order"}});
+        })
+    }
+    else {
+        res.status(500).json({error:{global:"could not generate shiprocket token"}});
+    }
+
+
+}
+
 export const getWixOrders = (req,res) => {
     const id = req.params.id;
 
@@ -535,4 +632,4 @@ export const getWixOrders = (req,res) => {
 }
 
 
-export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders }
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders, setOrderStatus }
