@@ -11,6 +11,8 @@ router.get('/getWalletbyid/:id', CustomerAuthentication, walletController.get_wa
 
 router.post('/razorPayInstantiate', CustomerAuthentication , walletController.instantiateRazorpay);
 
+router.post('/debitWallet', CustomerAuthentication, walletController.debitWallet);
+
 // router.patch("/updateWallet",CustomerAuthentication, CustomerController.updateCustomer);
 
 // router.put("/updatecustomer",CustomerAuthentication, CustomerController.updateCustomer);

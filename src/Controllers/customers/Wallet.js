@@ -147,6 +147,31 @@ export const instantiateRazorpay = (req,res) => {
       })
 }
 
+export const debitWallet = (req,res) => {
+    const { customer_data } = req.body;
+
+    walletModel.findOne({ 'customer_id': customer_data.customer_id })
+    .exec()
+    .then((data) => {
+        if(data) {
+            let newAmount = parseInt(data.amount) - parseInt(customer_data.amount)
+            walletModel.findOneAndUpdate({ 'customer_id': customer_data.customer_id }, { $set: { 'amount': newAmount } }, { new: true })
+            .then((updated) => {
+                res.status(200).json({ global: { success: updated } })
+            })
+            .catch((err) => {
+                res.status(400).json({ global: { error: "error occured while updating" } })
+            })
+        }
+        else {
+            res.status(400).json({ global: { error: "no data found" } })
+        }
+    })
+    .catch((errdata) => {
+        res.status(400).json({ global: { error: "error occured while fetching" } })
+    })
+}
+
 export const get_walletByID = (req,res) => {
     const custId = req.params.id;
 
@@ -162,4 +187,4 @@ export const updateByWebhook = (req,res) => {
     
 }
 
-export default { add_credits, get_walletByID, instantiateRazorpay }
+export default { add_credits, get_walletByID, instantiateRazorpay, debitWallet }
