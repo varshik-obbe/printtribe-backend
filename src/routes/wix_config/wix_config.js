@@ -23,6 +23,8 @@ router.post('/addOrders', wixController.ordersPaid);
 
 router.get('/getWixOrders/:id', CustomerAuthentication, wixController.getWixOrders);
 
+router.get('/getwixAllOrders', CustomerAuthentication, wixController.getAllOrders);
+
 router.post('/setOrderStatus', CustomerAuthentication, wixController.setOrderStatus);
 
 export default router

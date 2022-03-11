@@ -615,6 +615,23 @@ export const setOrderStatus = async (req,res) => {
 export const getWixOrders = (req,res) => {
     const id = req.params.id;
 
+    wixOrderModel.find({ 'customer_id': id })
+    .exec()
+    .then((data) => {
+        if(data) {
+            res.status(200).json({ ordersData: data })
+        }
+        else {
+            res.status(400).json({ global: { error: "could not find any orders" } })
+        }
+    })
+    .catch((err) => {
+        console.log("error occured while fetching"+err)
+        res.status(400).json({ global: { error: "could not fetch orders" } })
+    })
+}
+
+export const getAllOrders = (req,res) => {
     wixOrderModel.find()
     .exec()
     .then((data) => {
@@ -632,4 +649,4 @@ export const getWixOrders = (req,res) => {
 }
 
 
-export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders, setOrderStatus }
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders, setOrderStatus, getAllOrders }

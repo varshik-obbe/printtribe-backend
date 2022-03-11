@@ -16,6 +16,7 @@ import categories from './routes/products/categories';
 import products from './routes/products/products';
 import quantProducts from './routes/products/product_quantity';
 import pickupShiprocketOrder from "./routes/shipment/shiprocketShipment";
+import pickupWixorder from "./routes/shipment/shiprocketWixOrders";
 import shiprocketwebhhok from "./routes/shipment/webhookAuth";
 import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
@@ -71,6 +72,7 @@ mongoose
   app.use('/api/shippingWebhook', shiprocketwebhhok);
   app.use('/api/wix', testToken);
   app.use('/api/adminInvoice', adminInvoice);
+  app.use('/api/shiprocketWixOrders', pickupWixorder);
 
 app.listen(500, function() {
     console.log('listening on 500')
