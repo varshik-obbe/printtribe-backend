@@ -1,6 +1,7 @@
 import axios from "axios";
 import mongoose from "mongoose";
 import offlineorderModel from "../../models/offline_invoice_orders";
+import printribeSettingsModel from "../../models/printribe_settings";
 import createPDF from "../../utils/createPDF";
 import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
@@ -23,9 +24,9 @@ export const add_order = async (req,res) => {
                 courier_id: orderData.courier_id,
                 shipment_status: "processing",
                 shiprocket_awb: "",
-                cgst_amount: orderData.cgst_amount,
-                sgst_amount: orderData.sgst_amount,
-                igst_amount: orderData.igst_amount,
+                gst_details: orderData.gst_details,
+                total_weight: orderData.total_weight,
+                dimensions: orderData.dimensions,
                 shiprocket_order: true
             })
             newOrder.save().then(async saveddata => {
@@ -34,6 +35,25 @@ export const add_order = async (req,res) => {
                 deleteQuant(orderData.product_info,orderData.admin_id,orderData.customer_email)
 
                 let cust_name = saveddata.customerShipping_details[0].fullname;
+                let address = saveddata.customerShipping_details[0].address1;
+                let zipcode = saveddata.customerShipping_details[0].zip_code;
+                let shipping_charges = "";
+                if(saveddata.shipping_charges)
+                {
+                    shipping_charges = saveddata.shipping_charges;
+                }
+                let state = saveddata.customerShipping_details[0].state;
+                let state_code = saveddata.customerShipping_details[0].state_code;
+                let email = saveddata.customerShipping_details[0].customer_email;
+                let phone = saveddata.customerShipping_details[0].phone;
+                let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
+                .exec()
+                .then((settingsData) => {
+                    return settingsData.invoice_no;
+                })
+                .catch((err) => {
+                    console.log("could not get the invoice no");
+                })
                 let random = "";
                 random = await createPDF(cust_name);
 
@@ -143,21 +163,21 @@ export const add_order = async (req,res) => {
             courier_id: orderData.courier_id,
             shipment_status: "",
             shiprocket_awb: "",
-            cgst1_amount: orderData.cgst_amount,
-            sgst1_amount: orderData.sgst_amount,
-            igst1_amount: orderData.igst_amount,
-            cgst2_amount: orderData.cgst_amount,
-            sgst2_amount: orderData.sgst_amount,
-            igst2_amount: orderData.igst_amount,
-            cgst3_amount: orderData.cgst_amount,
-            sgst3_amount: orderData.sgst_amount,
-            igst3_amount: orderData.igst_amount,
-            cgst4_amount: orderData.cgst_amount,
-            sgst4_amount: orderData.sgst_amount,
-            igst4_amount: orderData.igst_amount,
-            cgst5_amount: orderData.cgst_amount,
-            sgst5_amount: orderData.sgst_amount,
-            igst5_amount: orderData.igst_amount,
+            cgst1_amount: orderData.cgst1_amount,
+            sgst1_amount: orderData.sgst1_amount,
+            igst1_amount: orderData.igst1_amount,
+            cgst2_amount: orderData.cgst2_amount,
+            sgst2_amount: orderData.sgst2_amount,
+            igst2_amount: orderData.igst2_amount,
+            cgst3_amount: orderData.cgst3_amount,
+            sgst3_amount: orderData.sgst3_amount,
+            igst3_amount: orderData.igst3_amount,
+            cgst4_amount: orderData.cgst4_amount,
+            sgst4_amount: orderData.sgst4_amount,
+            igst4_amount: orderData.igst4_amount,
+            cgst5_amount: orderData.cgst5_amount,
+            sgst5_amount: orderData.sgst5_amount,
+            igst5_amount: orderData.igst5_amount,
         })
         newOrder.save().then(async saveddata => {
             

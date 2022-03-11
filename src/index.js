@@ -12,6 +12,7 @@ import customerShipping from './routes/customer_shipping/customer_shipping';
 import adminInvoice from './routes/orders/offline_orders';
 import orders from "./routes/orders/orders";
 import payment_methods from './routes/payment_methods/payment_methods';
+import printribeSettings from './routes/printribe_settings/printribe_settings';
 import categories from './routes/products/categories';
 import products from './routes/products/products';
 import quantProducts from './routes/products/product_quantity';
@@ -73,6 +74,7 @@ mongoose
   app.use('/api/wix', testToken);
   app.use('/api/adminInvoice', adminInvoice);
   app.use('/api/shiprocketWixOrders', pickupWixorder);
+  app.use('/api/printribeSettings', printribeSettings);
 
 app.listen(500, function() {
     console.log('listening on 500')

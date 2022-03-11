@@ -33,21 +33,19 @@ const orderOfflineSchema = new mongoose.Schema({
     ],
     total_quantity: {type: String,required: true},
     total_price: {type:String,required:true},
-    cgst1_amount: {type:String},
-    sgst1_amount: {type: String},
-    igst1_amount: {type: String},
-    cgst2_amount: {type:String},
-    sgst2_amount: {type: String},
-    igst2_amount: {type: String},
-    cgst3_amount: {type:String},
-    sgst3_amount: {type: String},
-    igst3_amount: {type: String},
-    cgst4_amount: {type:String},
-    sgst4_amount: {type: String},
-    igst4_amount: {type: String},
-    cgst5_amount: {type:String},
-    sgst5_amount: {type: String},
-    igst5_amount: {type: String},
+    gst_details: [
+        {
+            gst_percent: {type:String,required:true},
+            gst_amount: {type: String,required: true},
+            gst_type: {type: String, required: true}
+        }
+    ],
+    total_weight: {type: String},
+    dimensions: {
+        height: { type: String },
+        width: { type: String },
+        length: { type: String }
+    },
     shipping_charges: {type:String},
     shipment_ref_id: {type: String},
     shipment_ord_id: {type: String},
