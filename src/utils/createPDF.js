@@ -65,7 +65,7 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
   // close the browser
   await browser.close()
 
-  return pdfName+".pdf";
+  return pdfName;
 
         // let createdData = await pdfCreating(htmlToSend,pdfName);
 
