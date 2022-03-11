@@ -33,9 +33,7 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
         let pdfName = customer_name + Date.now().toString();
 
           // launch a new chrome instance
-  const browser = await puppeteer.launch({
-    headless: true
-  })
+  const browser = await puppeteer.launch({args: ['--no-sandbox']})
 
   // create a new page
   const page = await browser.newPage()
