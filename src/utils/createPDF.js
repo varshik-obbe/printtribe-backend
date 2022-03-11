@@ -36,7 +36,7 @@ export default async function(customer_name) {
 
 async function pdfCreating(htmlData,pdfName) {
  return new Promise((resolve,reject) => {
-    pdf.create(htmlData, {}).toFile('./uploads/'+pdfName+".pdf", function (err, pdf) {
+    pdf.create(htmlData, {"format": "A4" }).toFile('./uploads/'+pdfName+".pdf", function (err, pdf) {
 
         if(err) {
             console.log("error occured while generating")
