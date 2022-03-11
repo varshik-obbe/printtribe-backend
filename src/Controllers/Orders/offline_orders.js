@@ -37,14 +37,15 @@ export const add_order = async (req,res) => {
                 let cust_name = saveddata.customerShipping_details[0].fullname;
                 let address = saveddata.customerShipping_details[0].address1;
                 let zipcode = saveddata.customerShipping_details[0].zip_code;
+                let city = saveddata.customerShipping_details[0].city;
                 let shipping_charges = "";
                 if(saveddata.shipping_charges)
                 {
                     shipping_charges = saveddata.shipping_charges;
                 }
                 let state = saveddata.customerShipping_details[0].state;
-                let state_code = saveddata.customerShipping_details[0].state_code;
-                let email = saveddata.customerShipping_details[0].customer_email;
+                let state_code = orderData.state_code;
+                let email = saveddata.customer_email;
                 let phone = saveddata.customerShipping_details[0].phone;
                 let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
                 .exec()
@@ -55,7 +56,7 @@ export const add_order = async (req,res) => {
                     console.log("could not get the invoice no");
                 })
                 let random = "";
-                random = await createPDF(cust_name);
+                random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city);
 
     
                 let title = "printribe mail"
@@ -185,8 +186,28 @@ export const add_order = async (req,res) => {
             deleteQuant(orderData.product_info,orderData.admin_id,orderData.customer_email)
 
             let cust_name = saveddata.customerShipping_details[0].fullname;
+            let address = saveddata.customerShipping_details[0].address1;
+            let zipcode = saveddata.customerShipping_details[0].zip_code;
+            let city = saveddata.customerShipping_details[0].city;
+            let shipping_charges = "";
+            if(saveddata.shipping_charges)
+            {
+                shipping_charges = saveddata.shipping_charges;
+            }
+            let state = saveddata.customerShipping_details[0].state;
+            let state_code = orderData.state_code;
+            let email = saveddata.customer_email;
+            let phone = saveddata.customerShipping_details[0].phone;
+            let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
+            .exec()
+            .then((settingsData) => {
+                return settingsData.invoice_no;
+            })
+            .catch((err) => {
+                console.log("could not get the invoice no");
+            })
             let random = "";
-            random = await createPDF(cust_name);
+            random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city);
 
 
             let title = "printribe mail"
