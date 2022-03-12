@@ -13,6 +13,8 @@ router.get('/getVendorsById', Authentication, VendorController.getVendorById);
 
 router.put("/updatevendor",Authentication, VendorController.updateVendor);
 
+router.get("/searchVendors/:text", Authentication, VendorController.search_vendors);
+
 router.delete('/deleteVendor/:id', Authentication, VendorController.delete_Vendor);
 
 export default router

@@ -16,6 +16,7 @@ export const add_vendor = (req,res)=>{
         state: vendorRegisterdata.state,
         pincode: vendorRegisterdata.pincode,
         phone: vendorRegisterdata.phone,
+        products: vendorRegisterdata.products,
         email: vendorRegisterdata.email,
         website: vendorRegisterdata.website,
         buisness_type: vendorRegisterdata.buisness_type,
@@ -45,6 +46,7 @@ export const getVendors = (req,res) => {
                     state: vendor.state,
                     pincode: vendor.pincode,
                     phone: vendor.phone,
+                    products: vendor.products,
                     email: vendor.email,
                     website: vendor.website,
                     buisness_type: vendor.buisness_type,
@@ -96,4 +98,25 @@ export const delete_Vendor = (req,res) => {
     });
 }
 
-export default { add_vendor, getVendors, getVendorById, updateVendor, delete_Vendor }
+export const search_vendors = (req,res) => {
+    const text = req.params.text
+
+    let title = new RegExp(text)
+
+    Vendor.find({
+        "$or": [
+            { companyname: { '$regex':  title, '$options': 'i'} },
+            { city: { '$regex':  title, '$options': 'i'} },
+            { products: { '$regex':  title, '$options': 'i'} },
+        ]
+    })
+    .exec()
+    .then((data) => {
+        res.status(200).json({ vendors: data })
+    })
+    .catch((err) => {
+        res.status(400).json({error:{global:"could not find the products"}});
+    })
+}
+
+export default { add_vendor, getVendors, getVendorById, updateVendor, delete_Vendor, search_vendors }

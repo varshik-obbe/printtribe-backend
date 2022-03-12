@@ -13,6 +13,7 @@ const vendorSchema = new mongoose.Schema({
     phone: {type: String, required: true},
     email: {type: String},
     website: {type: String},
+    products: {type: Array},
     buisness_type: {type: String},
     gst: {type: String, required: true},
     pan: {type: String},

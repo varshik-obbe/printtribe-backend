@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { decode } from 'node-base64-image';
 import User from "../../models/user";
 import ParseErrors from "../../utils/ParseErrors";
 
@@ -50,6 +51,7 @@ export const getUsers = (req,res) => {
                     email: user.email,
                     username:user.username,
                     role: user.role,
+                    profile_img: user.profile_img,
                     modules: user.modules
                 }))
         }
@@ -69,9 +71,14 @@ export const getUserById = (req,res)=>{
     });
 }
 
-export const updateUser = (req,res) => {
+export const updateUser = async (req,res) => {
     const id = req.query.id;
     const { data } = req.body;
+    let dateVal = Date.now().toString();
+    if(data.profile_img) {
+        await decode(data.profile_img, { fname: './uploads/'+ dateVal + data.username.replace(/ |'/g,"_").toLowerCase(), ext: data.extension });
+        data.profile_img = '/uploads/'+ dateVal + data.username.replace(/ |'/g,"_")+"."+data.extension
+    }
     User.updateOne({_id: id}, {$set: data}).exec().then((userRecord)=>{
         res.status(200).json({success:{global:"User details is updated successfully"}})
     }).catch((err)=>{
