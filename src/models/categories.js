@@ -9,18 +9,18 @@ const categoriesSchema = new mongoose.Schema({
     img: {type:String,required:true,lowercase:true},
     colors: [
         {
-            colorname: {type: String, required: true},
-            value: {type: String, required: true}
+            colorname: {type: String},
+            value: {type: String}
         }
     ],
     sizes: [
         {
-            sizename: {type: String, required: true}
+            sizename: {type: String}
         }
     ],
     zakekeSides: [
         {
-            sidename: {type: String, required: true}
+            sidename: {type: String}
         }
     ],
     maincat: {type:String,required:true, ref: "categories"},
