@@ -24,6 +24,7 @@ export const add_order = async (req,res) => {
                 courier_id: orderData.courier_id,
                 shipment_status: "processing",
                 shiprocket_awb: "",
+                shipping_charges: orderData.shipping_charges,
                 gst_details: orderData.gst_details,
                 total_weight: orderData.total_weight,
                 dimensions: orderData.dimensions,
@@ -38,10 +39,10 @@ export const add_order = async (req,res) => {
                 let address = saveddata.customerShipping_details[0].address1;
                 let zipcode = saveddata.customerShipping_details[0].zip_code;
                 let city = saveddata.customerShipping_details[0].city;
-                let shipping_charges = "";
-                if(saveddata.shipping_charges)
+                let shipping_charges = 0.00;
+                if(orderData.shipping_charges != "")
                 {
-                    shipping_charges = saveddata.shipping_charges;
+                    shipping_charges = parseFloat(saveddata.shipping_charges).toFixed(2);
                 }
                 let state = saveddata.customerShipping_details[0].state;
                 let state_code = orderData.state_code;
@@ -56,7 +57,7 @@ export const add_order = async (req,res) => {
                     console.log("could not get the invoice no");
                 })
                 let random = "";
-                random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city);
+                random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,orderData.product_info,orderData.gst_details,orderData.total_price);
 
     
                 let title = "printribe mail"
@@ -177,10 +178,10 @@ export const add_order = async (req,res) => {
             let address = saveddata.customerShipping_details[0].address1;
             let zipcode = saveddata.customerShipping_details[0].zip_code;
             let city = saveddata.customerShipping_details[0].city;
-            let shipping_charges = "";
-            if(saveddata.shipping_charges)
+            let shipping_charges = 0.00;
+            if(orderData.shipping_charges != "")
             {
-                shipping_charges = saveddata.shipping_charges;
+                shipping_charges = parseFloat(saveddata.shipping_charges).toFixed(2);
             }
             let state = saveddata.customerShipping_details[0].state;
             let state_code = orderData.state_code;
@@ -195,7 +196,7 @@ export const add_order = async (req,res) => {
                 console.log("could not get the invoice no");
             })
             let random = "";
-            random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city);
+            random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,orderData.product_info,orderData.gst_details,orderData.total_price);
 
 
             let title = "printribe mail"

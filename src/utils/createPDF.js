@@ -4,16 +4,93 @@ import puppeteer from "puppeteer";
 import { promisify } from "util";
 
 
-export default async function(customer_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city) {
+export default async function(customer_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,productInfo,gst_details,total_price) {
     try {
         const readFile = promisify(fs.readFile);
 
           let html = await readFile("./uploads/invoice_template.html", 'utf-8');
+          Handlebars.registerHelper('calculate', function(price,quant){
+            // str is the argument passed to the helper when called
+            let total = price * quant;
+            return total.toFixed(2);
+          });
+
           let template = Handlebars.compile(html);
 
           const nDate = new Date();
 
           let dateAdd = nDate.getDate() + '-' + nDate.getMonth() + '-' + nDate.getFullYear();
+
+          let totalGross = 0.00;
+
+          Promise.all(productInfo.map((item, key) => {
+            let total = parseInt(item.price) * parseInt(item.quantity);
+            totalGross = totalGross + total;
+          }))
+
+          let cgst1 = 0.00;
+          let sgst1 = 0.00;
+          let igst1 = 0.00;
+          let cgst1_perc = "";
+          let sgst1_perc = "";
+          let igst1_perc = "";
+          let cgst2 = 0.00;
+          let sgst2 = 0.00;
+          let igst2 = 0.00;
+          let cgst2_perc = "";
+          let sgst2_perc = "";
+          let igst2_perc = "";
+          let cgst3 = 0.00;
+          let sgst3 = 0.00;
+          let igst3 = 0.00;
+          let cgst3_perc = "";
+          let sgst3_perc = "";
+          let igst3_perc = "";
+
+          let total_gst_amount = 0.00;
+
+          let i = 0;
+          Promise.all(gst_details.map((itemGst,keyGst) => {
+            if(itemGst.gst_type == "cgst" || itemGst.gst_type == "sgst" && i == 0) {
+              cgst1 = parseFloat(itemGst.gst_amount).toFixed(2);
+              sgst1 = parseFloat(itemGst.gst_amount).toFixed(2);
+              cgst1_perc = itemGst.gst_percent;
+              sgst1_perc = itemGst.gst_percent;
+              i = i + 2;
+            }
+            else if(itemGst.gst_type == "igst" && i == 0) {
+              igst1 = parseFloat(itemGst.gst_amount).toFixed(2);
+              igst1_perc = itemGst.gst_percent;
+              i = i + 1;
+            }
+            else if(itemGst.gst_type == "cgst" || itemGst.gst_type == "sgst" && i == 1) {
+              cgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+              sgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+              cgst2_perc = itemGst.gst_percent;
+              sgst2_perc = itemGst.gst_percent;
+              i = i + 2;
+            }
+            else if (itemGst.gst_type == "igst" && i == 1) {
+              igst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+              igst2_perc = itemGst.gst_percent;
+              i = i + 1;
+            }
+            else if(itemGst.gst_type == "cgst" || itemGst.gst_type == "sgst" && i == 2 && keyGst == 2) {
+              cgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+              sgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+              cgst2_perc = itemGst.gst_percent;
+              sgst2_perc = itemGst.gst_percent;
+              i = i + 2;
+            }
+            else if (itemGst.gst_type == "igst" && i == 2 && keyGst == 2) {
+              igst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+              igst2_perc = itemGst.gst_percent;
+              i = i + 1;
+            }
+            total_gst_amount = sgst1 + cgst1 + igst1 + sgst2 + cgst2 + igst2 + sgst3 + cgst3 + igst3;
+          }))
+
+          let amountInWords = await inWords(parseInt(total_price));
 
           let data = {
             cust_name: customer_name,
@@ -25,7 +102,32 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             state_code: state_code,
             email_id: email,
             phone: phone,
-            city: city
+            city: city,
+            productInfo: productInfo,
+            totalGross: totalGross.toFixed(2),
+            gst_details: gst_details,
+            sgst1: sgst1,
+            cgst1: cgst1,
+            igst1: igst1,
+            sgst2: sgst2,
+            cgst2: cgst2,
+            igst2: igst2,
+            cgst3: cgst3,
+            sgst3: sgst3,
+            igst3: igst3,
+            cgst1_perc: cgst1_perc,
+            sgst1_perc: sgst1_perc,
+            igst1_perc: igst1_perc,
+            cgst2_perc: cgst2_perc,
+            sgst2_perc: sgst2_perc,
+            igst2_perc: igst2_perc,
+            cgst3_perc: cgst3_perc,
+            sgst3_perc: sgst3_perc,
+            igst3_perc: igst3_perc,
+            total_gst_amount: parseFloat(total_gst_amount).toFixed(2),
+            shipping_charges: shipping_charges,
+            total_price: parseFloat(total_price).toFixed(2),
+            amountInWords: amountInWords
         };
 
         let htmlToSend = template(data);
@@ -83,20 +185,16 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
     }
 }
 
-async function pdfCreating(htmlData,pdfName) {
- return new Promise((resolve,reject) => {
-    pdf.create(htmlData, {"format": "A4" }).toFile('./uploads/'+pdfName+".pdf", function (err, pdf) {
-
-        if(err) {
-            console.log("error occured while generating")
-            pdfName = "";
-            reject(pdfName)
-        }
-        else {
-            console.log("uploaded successfully"+pdf.filename)
-            fs.existsSync('/uploads'+pdf.filename);
-            resolve(pdfName);
-        }
-    })
- })
+async function inWords (num) {
+  var a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
+  var b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+    if ((num = num.toString()).length > 9) return 'overflow';
+    let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+    if (!n) return; var str = '';
+    str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+    str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+    str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+    str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+    str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
+    return str;
 }
