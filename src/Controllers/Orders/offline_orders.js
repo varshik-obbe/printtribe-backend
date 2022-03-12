@@ -40,7 +40,7 @@ export const add_order = async (req,res) => {
                 let zipcode = saveddata.customerShipping_details[0].zip_code;
                 let city = saveddata.customerShipping_details[0].city;
                 let shipping_charges = 0.00;
-                if(orderData.shipping_charges != "")
+                if(orderData.shipping_charges != "" || orderData.shipping_charges == undefined)
                 {
                     shipping_charges = parseFloat(saveddata.shipping_charges).toFixed(2);
                 }
@@ -179,7 +179,7 @@ export const add_order = async (req,res) => {
             let zipcode = saveddata.customerShipping_details[0].zip_code;
             let city = saveddata.customerShipping_details[0].city;
             let shipping_charges = 0.00;
-            if(orderData.shipping_charges != "")
+            if(orderData.shipping_charges != "" || orderData.shipping_charges == undefined)
             {
                 shipping_charges = parseFloat(saveddata.shipping_charges).toFixed(2);
             }
