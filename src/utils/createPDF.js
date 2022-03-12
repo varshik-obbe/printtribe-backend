@@ -87,7 +87,7 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
               igst2_perc = itemGst.gst_percent;
               i = i + 1;
             }
-            total_gst_amount = sgst1 + cgst1 + igst1 + sgst2 + cgst2 + igst2 + sgst3 + cgst3 + igst3;
+            total_gst_amount = total_gst_amount + sgst1 + cgst1 + igst1 + sgst2 + cgst2 + igst2 + sgst3 + cgst3 + igst3;
           }))
 
           let amountInWords = await inWords(parseInt(total_price));
