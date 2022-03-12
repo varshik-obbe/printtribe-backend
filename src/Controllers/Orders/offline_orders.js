@@ -164,21 +164,9 @@ export const add_order = async (req,res) => {
             courier_id: orderData.courier_id,
             shipment_status: "",
             shiprocket_awb: "",
-            cgst1_amount: orderData.cgst1_amount,
-            sgst1_amount: orderData.sgst1_amount,
-            igst1_amount: orderData.igst1_amount,
-            cgst2_amount: orderData.cgst2_amount,
-            sgst2_amount: orderData.sgst2_amount,
-            igst2_amount: orderData.igst2_amount,
-            cgst3_amount: orderData.cgst3_amount,
-            sgst3_amount: orderData.sgst3_amount,
-            igst3_amount: orderData.igst3_amount,
-            cgst4_amount: orderData.cgst4_amount,
-            sgst4_amount: orderData.sgst4_amount,
-            igst4_amount: orderData.igst4_amount,
-            cgst5_amount: orderData.cgst5_amount,
-            sgst5_amount: orderData.sgst5_amount,
-            igst5_amount: orderData.igst5_amount,
+            gst_details: orderData.gst_details,
+            total_weight: orderData.total_weight,
+            dimensions: orderData.dimensions
         })
         newOrder.save().then(async saveddata => {
             
