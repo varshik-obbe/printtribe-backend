@@ -133,6 +133,14 @@ export const add_order = async (req,res) => {
                     .then(async function (response) {
                     await offlineorderModel.updateOne({'_id': saveddata._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id, 'pdf_link': link} })
                     .then((updateData) => {
+                        let newinvoice_no = parseInt(invoice_no) + 1
+                        printribeSettingsModel.updateOne({ 'company_name': 'printribe' }, { $set: { 'invoice_no': newinvoice_no.toString() }} )
+                        .then((data) => {
+                            console.log("updated invoice successfully")
+                        })
+                        .catch((err) => {
+                            console.log("error while updating")
+                        })
                         res.status(201).jsonp({ savedData: saveddata });
                     })
                     .catch((err) => {
@@ -212,6 +220,15 @@ export const add_order = async (req,res) => {
             })
             .catch((err) => {
                 console.log("error occured while updating")
+            })
+
+            let newinvoice_no = parseInt(invoice_no) + 1
+            printribeSettingsModel.updateOne({ 'company_name': 'printribe' }, { $set: { 'invoice_no': newinvoice_no.toString() }} )
+            .then((data) => {
+                console.log("updated invoice successfully")
+            })
+            .catch((err) => {
+                console.log("error while updating invoice no")
             })
 
             res.status(201).jsonp({ savedData: saveddata });
