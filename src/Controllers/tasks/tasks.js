@@ -22,7 +22,7 @@ export const addTasks = (req,res) => {
         actual_completion_date: "",
         time_taken: "",
         remarks: "",
-        status: "ongoing",
+        status: "planned",
         last_status_update: ""
     })
 
