@@ -19,6 +19,7 @@ import quantProducts from './routes/products/product_quantity';
 import pickupShiprocketOrder from "./routes/shipment/shiprocketShipment";
 import pickupWixorder from "./routes/shipment/shiprocketWixOrders";
 import shiprocketwebhhok from "./routes/shipment/webhookAuth";
+import tasks from './routes/tasks/tasks';
 import users from './routes/users/users';
 import vendors from './routes/vendors/vendors';
 import testToken from "./routes/wix_config/wix_config";
@@ -75,6 +76,7 @@ mongoose
   app.use('/api/adminInvoice', adminInvoice);
   app.use('/api/shiprocketWixOrders', pickupWixorder);
   app.use('/api/printribeSettings', printribeSettings);
+  app.use('/api/tasks', tasks)
 
 app.listen(500, function() {
     console.log('listening on 500')
