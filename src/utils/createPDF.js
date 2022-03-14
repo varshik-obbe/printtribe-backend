@@ -15,6 +15,15 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             return total.toFixed(2);
           });
 
+          Handlebars.registerHelper('ifCond', function(sgst2, igst2, options) {
+            if(sgst2 != 0.00 || igst2 != 0.00) {
+              return options.fn(this);
+            }
+            else {
+              return options.inverse(this);
+            }
+          });
+
           let template = Handlebars.compile(html);
 
           const nDate = new Date();
@@ -51,44 +60,53 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
 
           let i = 0;
           Promise.all(gst_details.map((itemGst,keyGst) => {
-            if(itemGst.gst_type == "cgst" || itemGst.gst_type == "sgst" && i == 0) {
-              cgst1 = parseFloat(itemGst.gst_amount).toFixed(2);
-              sgst1 = parseFloat(itemGst.gst_amount).toFixed(2);
-              cgst1_perc = itemGst.gst_percent;
-              sgst1_perc = itemGst.gst_percent;
-              i = i + 2;
+            if(state_code == "29") {
+              if(i == 0 && keyGst == 0) {
+                cgst1 = parseFloat(itemGst.gst_amount).toFixed(2);
+                sgst1 = parseFloat(itemGst.gst_amount).toFixed(2);
+                cgst1_perc = itemGst.gst_percent;
+                sgst1_perc = itemGst.gst_percent;
+                i = i + 2;
+              }
+              else if(i == 2 && keyGst == 2) {
+                cgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+                sgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+                cgst2_perc = itemGst.gst_percent;
+                sgst2_perc = itemGst.gst_percent;
+                i = i + 2;
+              }
+              else if(i == 4 && keyGst == 4) {
+                cgst3 = parseFloat(itemGst.gst_amount).toFixed(2);
+                sgst3 = parseFloat(itemGst.gst_amount).toFixed(2);
+                cgst3_perc = itemGst.gst_percent;
+                sgst3_perc = itemGst.gst_percent;
+                i = i + 2;
+              }
             }
-            else if(itemGst.gst_type == "igst" && i == 0) {
-              igst1 = parseFloat(itemGst.gst_amount).toFixed(2);
-              igst1_perc = itemGst.gst_percent;
-              i = i + 1;
+            else {
+              if(i == 0 && keyGst == 0) {
+                igst1 = parseFloat(itemGst.gst_amount).toFixed(2);
+                igst1_perc = itemGst.gst_percent;
+                i = i + 1;
+              }
+              else if (i == 1 && keyGst == 1) {
+                igst2 = parseFloat(itemGst.gst_amount).toFixed(2);
+                igst2_perc = itemGst.gst_percent;
+                i = i + 1;
+              }
+              else if (i == 2 && keyGst == 2) {
+                igst3 = parseFloat(itemGst.gst_amount).toFixed(2);
+                igst3_perc = itemGst.gst_percent;
+                i = i + 1;
+              }
             }
-            else if(itemGst.gst_type == "cgst" || itemGst.gst_type == "sgst" && i == 1) {
-              cgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
-              sgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
-              cgst2_perc = itemGst.gst_percent;
-              sgst2_perc = itemGst.gst_percent;
-              i = i + 2;
-            }
-            else if (itemGst.gst_type == "igst" && i == 1) {
-              igst2 = parseFloat(itemGst.gst_amount).toFixed(2);
-              igst2_perc = itemGst.gst_percent;
-              i = i + 1;
-            }
-            else if(itemGst.gst_type == "cgst" || itemGst.gst_type == "sgst" && i == 2 && keyGst == 2) {
-              cgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
-              sgst2 = parseFloat(itemGst.gst_amount).toFixed(2);
-              cgst2_perc = itemGst.gst_percent;
-              sgst2_perc = itemGst.gst_percent;
-              i = i + 2;
-            }
-            else if (itemGst.gst_type == "igst" && i == 2 && keyGst == 2) {
-              igst2 = parseFloat(itemGst.gst_amount).toFixed(2);
-              igst2_perc = itemGst.gst_percent;
-              i = i + 1;
-            }
-            total_gst_amount = total_gst_amount + sgst1 + cgst1 + igst1 + sgst2 + cgst2 + igst2 + sgst3 + cgst3 + igst3;
           }))
+
+          console.log("sgst 1 value is: "+sgst1+" cgst 1 is "+ cgst1 + " sgst 2 is "+sgst2+" cgst 2 is "+cgst2);
+
+          total_gst_amount = parseFloat(sgst1) + parseFloat(cgst1) + parseFloat(igst1) + parseFloat(sgst2) + parseFloat(cgst2) + parseFloat(igst2) + parseFloat(sgst3) + parseFloat(cgst3) + parseFloat(igst3);
+
+          console.log("total gst amount is "+total_gst_amount);
 
           let amountInWords = await inWords(parseInt(total_price));
 
