@@ -15,7 +15,7 @@ const vendorSchema = new mongoose.Schema({
     website: {type: String},
     products: {type: Array},
     buisness_type: {type: String},
-    gst: {type: String, required: true},
+    gst: {type: String},
     pan: {type: String},
     account_number: {type: String},
     ifsc: {type: String},
