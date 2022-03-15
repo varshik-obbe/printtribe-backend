@@ -64,6 +64,47 @@ export const getVendors = (req,res) => {
     }); 
 }
 
+export const getVendorsByPage = async (req,res) => {
+    const index = parseInt(req.query.index);
+    const limit = parseInt(req.query.limit);
+    
+    let totalCount = await Vendor.countDocuments().exec();
+
+    Vendor.find()
+    .skip(index)
+    .limit(limit)
+    .exec()
+    .then((vendordata)=>{
+        const response = {
+            count:totalCount,
+            vendordata: vendordata.map((vendor)=>({
+                    id:vendor._id,
+                    companyname:vendor.companyname,
+                    address1: vendor.address1,
+                    address2: vendor.address2,
+                    address3: vendor.address3,
+                    city: vendor.city,
+                    state: vendor.state,
+                    pincode: vendor.pincode,
+                    phone: vendor.phone,
+                    products: vendor.products,
+                    email: vendor.email,
+                    website: vendor.website,
+                    buisness_type: vendor.buisness_type,
+                    gst: vendor.gst,
+                    pan: vendor.pan,
+                    account_number: vendor.account_number,
+                    ifsc: vendor.ifsc,
+                    bank_name: vendor.bank_name
+                }))
+        }
+        res.status(200).json({vendordata:response});
+    })
+    .catch(()=>{
+        res.status(500).json({error:{global:"something went wrong"}});
+    }); 
+}
+
 export const getVendorById = (req,res)=>{
     const id = req.query.id;
     Vendor.findById(id).exec().then((vendorRecordData)=>{
@@ -119,4 +160,4 @@ export const search_vendors = (req,res) => {
     })
 }
 
-export default { add_vendor, getVendors, getVendorById, updateVendor, delete_Vendor, search_vendors }
+export default { add_vendor, getVendors, getVendorById, updateVendor, delete_Vendor, search_vendors, getVendorsByPage }

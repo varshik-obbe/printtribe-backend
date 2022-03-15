@@ -9,6 +9,8 @@ router.post('/addVendor', Authentication , VendorController.add_vendor);
 
 router.get('/getVendors', VendorController.getVendors);
 
+router.get('/getVendorsByPage', VendorController.getVendorsByPage);
+
 router.get('/getVendorsById', Authentication, VendorController.getVendorById);
 
 router.put("/updatevendor",Authentication, VendorController.updateVendor);
