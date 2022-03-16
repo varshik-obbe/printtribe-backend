@@ -152,8 +152,28 @@ export const search_vendors = (req,res) => {
         ]
     })
     .exec()
-    .then((data) => {
-        res.status(200).json({ vendors: data })
+    .then(async (data) => {
+        let vendordata = await Promise.all(data.map((vendor)=>({
+            id:vendor._id,
+            companyname:vendor.companyname,
+            address1: vendor.address1,
+            address2: vendor.address2,
+            address3: vendor.address3,
+            city: vendor.city,
+            state: vendor.state,
+            pincode: vendor.pincode,
+            phone: vendor.phone,
+            products: vendor.products,
+            email: vendor.email,
+            website: vendor.website,
+            buisness_type: vendor.buisness_type,
+            gst: vendor.gst,
+            pan: vendor.pan,
+            account_number: vendor.account_number,
+            ifsc: vendor.ifsc,
+            bank_name: vendor.bank_name
+        })))
+        res.status(200).json({ vendors: vendordata })
     })
     .catch((err) => {
         res.status(400).json({error:{global:"could not find the products"}});
