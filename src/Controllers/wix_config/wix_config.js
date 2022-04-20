@@ -34,12 +34,13 @@ export const testToken = async (req,res) => {
             data : data
           };
 
-          token = await axios(config)
+
+          let saveddata = await axios(config)
           .then(async function (response) {
               CustomerModel.updateOne({ '_id': tokenData.customer_id }, { $set: { 'customer_wix': 'active' } })
               .then((updateData) => {
                 console.log("success response is"+response.data)
-                res.status(200).json({ global: { success: "finished setup" } })
+                res.status(200).json({ global: { success: "finished setup", token: token } })
               })
               .catch((err) => {
                 console.log("error occured while updating customer"+err)
