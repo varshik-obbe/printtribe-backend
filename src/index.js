@@ -9,6 +9,7 @@ import customers from './routes/customers/customers';
 import customerInventory from './routes/customers/products';
 import walletInfo from './routes/customers/wallet';
 import customerShipping from './routes/customer_shipping/customer_shipping';
+import fabricProducts from "./routes/fabricjs/fabricProducts";
 import adminInvoice from './routes/orders/offline_orders';
 import orders from "./routes/orders/orders";
 import payment_methods from './routes/payment_methods/payment_methods';
@@ -77,6 +78,7 @@ mongoose
   app.use('/api/shiprocketWixOrders', pickupWixorder);
   app.use('/api/printribeSettings', printribeSettings);
   app.use('/api/tasks', tasks)
+  app.use('/api/fabric', fabricProducts);
 
 app.listen(500, function() {
     console.log('listening on 500')
