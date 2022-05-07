@@ -12,33 +12,33 @@ const fabricProductInfoSchema = new mongoose.Schema({
             frontImgDimensions:
                 {
                     top: {type: Number},
-                    bottom: {type: Number},
                     left: {type: Number},
-                    right: {type: Number}
+                    width: {type: Number},
+                    height: {type: Number}
                 }
             ,
             backImgDimensions: 
                 {
                     top: {type: Number},
-                    bottom: {type: Number},
                     left: {type: Number},
-                    right: {type: Number}
+                    width: {type: Number},
+                    height: {type: Number}
                 },
             leftImgURL: {type: String},
             rightImgURL: {type: String},
             rightImgDimensions:
                 {
                     top: {type: Number},
-                    bottom: {type: Number},
                     left: {type: Number},
-                    right: {type: Number}
+                    width: {type: Number},
+                    height: {type: Number}
                 },
             leftImgDimensions: 
                 {
                     top: {type: Number},
-                    bottom: {type: Number},
                     left: {type: Number},
-                    right: {type: Number}
+                    width: {type: Number},
+                    height: {type: Number}
                 },
         }
     ]
