@@ -42,6 +42,23 @@ export const add_ProductInfo = async (req,res)=>{
     .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
 }
 
+export const getProductById = (req,res) => {
+    const id = req.params.id;
+    fabricProducts.findOne({'productId': id})
+    .exec()
+    .then((data) => {
+        if(data) {
+            res.status(200).json({productData: data})
+        }
+        else {
+            res.status(400).json({error:{global:{error: "something went wrong" }}});    
+        }
+    })
+    .catch((err) => {
+        res.status(400).json({error:{global:"something went wrong"}});
+    })    
+}
+
 export const get_isFabricProduct = (req,res) => {
     const id = req.params.id;
     fabricProducts.findOne({'productId': id})
@@ -103,4 +120,4 @@ export const deleteFabricProduct = (req,res) => {
     });   
 }
 
-export default { add_ProductInfo, getProducts, updateFabricProducts,deleteFabricProduct, get_isFabricProduct }
+export default { add_ProductInfo, getProducts, getProductById, updateFabricProducts,deleteFabricProduct, get_isFabricProduct }

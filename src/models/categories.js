@@ -23,6 +23,7 @@ const categoriesSchema = new mongoose.Schema({
             sidename: {type: String}
         }
     ],
+    position:{type:Number}, 
     maincat: {type:String,required:true, ref: "categories"},
     subcat: {type:String,required:true, ref: "categories"}
 },{ timestamps:true });

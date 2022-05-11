@@ -11,6 +11,8 @@ router.get('/getFabricProducts', FabricProducts.getProducts);
 
 router.get("/isFabricProduct/:id", Authentication, FabricProducts.get_isFabricProduct);
 
+router.get("/getFabricProductById/:id", Authentication, FabricProducts.getProductById);
+
 router.put("/updateFabricProducts",Authentication, FabricProducts.updateFabricProducts);
 
 router.delete('/deleteFabricProduct/:id', Authentication, FabricProducts.deleteFabricProduct);
