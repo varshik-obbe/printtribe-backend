@@ -39,7 +39,7 @@ export const add_Categories = async (req, res) => {
                     sizes: result_display.sizes,
                     maincat: result_display.maincat,
                     subcat: result_display.subcat,
-                    position: data.position,
+                    position: result_display.position,
                     zakekeSides: result_display.zakekeSides,                    
                 };
                 res.status(201).json({ categoriesValue });
@@ -68,7 +68,7 @@ export const get_Categories = async (req, res) => {
                     zakekeSides: categoriesdata.zakekeSides,
                     maincat: categoriesdata.maincat,
                     subcat: categoriesdata.subcat,
-                    position: data.position,
+                    position: categoriesdata.position,
                     subCategories: []
                 }))
             }
@@ -92,7 +92,7 @@ export const get_Categories = async (req, res) => {
                             zakekeSides: subcategoriesdata.zakekeSides,
                             maincat: subcategoriesdata.maincat,
                             subcat: subcategoriesdata.subcat,
-                            position: data.position
+                            position: subcategoriesdata.position
                         }))
                     }
                     maincat.categories[key]["subCategories"] = response.subcategories;
@@ -115,7 +115,7 @@ export const get_Categories = async (req, res) => {
                                     zakekeSides: subsubcategoriesdata.zakekeSides,
                                     maincat: subsubcategoriesdata.maincat,
                                     subcat: subsubcategoriesdata.subcat,
-                                    position: data.position
+                                    position: subsubcategoriesdata.position
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["subsubCategories"] = responsesub.subsubcategories;                          
@@ -143,7 +143,7 @@ export const get_CategoryById = async (req,res) => {
                 zakekeSides: categoryrecord.zakekeSides,
                 maincat: categoryrecord.maincat,
                 subcat: categoryrecord.subcat,
-                position: data.position,
+                position: categoryrecord.position,
                 subCategories: [],
                 subsubCategories: []
             }))
@@ -175,7 +175,7 @@ export const get_CategoryById = async (req,res) => {
                                 zakekeSides: subcategoriesdata.zakekeSides,
                                 maincat: subcategoriesdata.maincat,
                                 subcat: subcategoriesdata.subcat,
-                                position: data.position
+                                position: subcategoriesdata.position
                             }))
                         }
                         category.categorydata[key]["subCategories"] = response.subcategories;
@@ -198,7 +198,7 @@ export const get_CategoryById = async (req,res) => {
                                         zakekeSides: subsubcategoriesdata.zakekeSides,
                                         maincat: subsubcategoriesdata.maincat,
                                         subcat: subsubcategoriesdata.subcat,
-                                        position: data.position
+                                        position: subsubcategoriesdata.position
                                     }))
                                 }
                                 category.categorydata[key].subCategories[keysub]["subsubCategories"] = responsesub.subsubcategories;                          
@@ -227,7 +227,7 @@ export const get_CategoryById = async (req,res) => {
                             zakekeSides: subsubcategoriesdata.zakekeSides,
                             maincat: subsubcategoriesdata.maincat,
                             subcat: subsubcategoriesdata.subcat,
-                            position: data.position
+                            position: subsubcategoriesdata.position
                         }))
                     }
                     category.categorydata[key]["subsubCategories"] = responsesub.subsubcategories;                          
