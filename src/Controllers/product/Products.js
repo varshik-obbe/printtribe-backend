@@ -57,6 +57,8 @@ export const add_Products = async (req, res, err) => {
                 hsn_code: data.hsn_code,
                 gst: data.gst,
                 weight: data.weight,
+                position: data.position,
+                active: "true",
                 dimensions: data.dimensions
             });
             categories.save().then((productsValue) => {
@@ -144,6 +146,8 @@ export const get_products = async (req,res) => {
                                     gst: subproductsData.gst,
                                     quantities_updated: subproductsData.quantities_updated,
                                     weight: subproductsData.weight,
+                                    position: subproductsData.position,
+                                    active: subproductsData.active,
                                     dimensions: subproductsData.dimensions
                                 }))
                             }
@@ -172,6 +176,8 @@ export const get_products = async (req,res) => {
                                             gst: subsubProductsData.gst,
                                             quantities_updated: subsubProductsData.quantities_updated,
                                             weight: subsubProductsData.weight,
+                                            position: subsubProductsData.position,
+                                            active: subsubProductsData.active,
                                             dimensions: subsubProductsData.dimensions
                                         }))
                                     }
@@ -207,7 +213,10 @@ export const get_SingleProduct = async (req,res) => {
                 hsn_code: productrecord.hsn_code,
                 gst: productrecord.gst,
                 quantities_updated: productrecord.quantities_updated,
+                position: productrecord.position,
+                active: productrecord.active,
                 weight: productrecord.weight,
+                
                 dimensions: productrecord.dimensions
             
             }))

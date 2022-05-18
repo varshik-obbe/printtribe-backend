@@ -17,6 +17,8 @@ const productsSchema = new mongoose.Schema({
     gst: {type: String},
     quantities_updated: { type: Boolean, default: false },
     weight: {type: String},
+    position: { type: Number },
+    active: {type: String},
     dimensions: {
         height: { type: String },
         width: { type: String },
