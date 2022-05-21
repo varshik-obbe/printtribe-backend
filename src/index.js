@@ -9,6 +9,7 @@ import customers from './routes/customers/customers';
 import customerInventory from './routes/customers/products';
 import walletInfo from './routes/customers/wallet';
 import customerShipping from './routes/customer_shipping/customer_shipping';
+import fabricDesigns from './routes/fabricjs/fabricDesigns';
 import fabricProducts from "./routes/fabricjs/fabricProducts";
 import adminInvoice from './routes/orders/offline_orders';
 import orders from "./routes/orders/orders";
@@ -79,6 +80,7 @@ mongoose
   app.use('/api/printribeSettings', printribeSettings);
   app.use('/api/tasks', tasks)
   app.use('/api/fabric', fabricProducts);
+  app.use('/api/fabricDesigns', fabricDesigns);
 
 app.listen(500, function() {
     console.log('listening on 500')
