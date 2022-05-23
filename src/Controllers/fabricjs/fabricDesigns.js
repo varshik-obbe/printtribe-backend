@@ -8,9 +8,11 @@ export const add_Desing = async (req, res) => {
     const fabricDesign = new FabricDesignModel({
         _id: mongoose.Types.ObjectId(),
         productId: data.productId,
+        customerId: data.customerId,
         color: data.color,
         side: data.side,
-        data: data.data
+        data: data.data,
+        url: data.url
     });
 
     fabricDesign.save().then((savedData) => {
@@ -35,6 +37,7 @@ export const get_FabricDesignByfilter = async (req,res) => {
     let product_id = req.params.id;
     let color = req.params.color;
     let side = req.params.side;
+    let customerId = req.params.customerId;
 
     FabricDesignModel.findOne({ 'productId': product_id, 'color': color, 'side': side })
     .exec()
@@ -43,7 +46,7 @@ export const get_FabricDesignByfilter = async (req,res) => {
             res.status(200).json({ fabricData: data })
         }
         else {
-            res.status(400).json({ global: { error: "could not find the fabric design" } })
+            res.status(200).json({ })
         }
     })
     .catch((err) => res.status(400).json({ global: { error: "error occured while fetching" } }))
