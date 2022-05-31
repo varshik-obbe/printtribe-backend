@@ -18,6 +18,7 @@ const productsSchema = new mongoose.Schema({
     quantities_updated: { type: Boolean, default: false },
     weight: {type: String},
     position: { type: Number },
+    design_base_price: {type: Number},
     active: {type: String},
     dimensions: {
         height: { type: String },
