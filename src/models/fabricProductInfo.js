@@ -44,28 +44,40 @@ const fabricProductInfoSchema = new mongoose.Schema({
                     {
                         width: {type: Number},
                         height: {type: Number},
-                        price: {type: Number}
+                        price: {type: Number},
+                        widthInches: {type: Number},
+                        heightInches: {type: Number},
+                        garment_price: {type: Number}
                     }
                 ],
             backCanvasPricing: [
                     {
                         width: {type: Number},
                         height: {type: Number},
-                        price: {type: Number}
+                        price: {type: Number},
+                        widthInches: {type: Number},
+                        heightInches: {type: Number},
+                        garment_price: {type: Number}
                     }
                 ],
             leftCanvasPricing: [
                     {
                         width: {type: Number},
                         height: {type: Number},
-                        price: {type: Number}
+                        price: {type: Number},
+                        widthInches: {type: Number},
+                        heightInches: {type: Number},
+                        garment_price: {type: Number}
                     }
                 ],
             rightCanvasPricing: [
                     {
                         width: {type: Number},
                         height: {type: Number},
-                        price: {type: Number}
+                        price: {type: Number},
+                        widthInches: {type: Number},
+                        heightInches: {type: Number},
+                        garment_price: {type: Number}
                     }
                 ]                                                
         }

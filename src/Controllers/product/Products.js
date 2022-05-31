@@ -57,6 +57,7 @@ export const add_Products = async (req, res, err) => {
                 hsn_code: data.hsn_code,
                 gst: data.gst,
                 weight: data.weight,
+                design_base_price: data.design_base_price,
                 position: data.position,
                 active: "true",
                 dimensions: data.dimensions
@@ -146,6 +147,7 @@ export const get_products = async (req,res) => {
                                     gst: subproductsData.gst,
                                     quantities_updated: subproductsData.quantities_updated,
                                     weight: subproductsData.weight,
+                                    design_base_price: subproductsData.design_base_price,
                                     position: subproductsData.position,
                                     active: subproductsData.active,
                                     dimensions: subproductsData.dimensions
@@ -176,6 +178,7 @@ export const get_products = async (req,res) => {
                                             gst: subsubProductsData.gst,
                                             quantities_updated: subsubProductsData.quantities_updated,
                                             weight: subsubProductsData.weight,
+                                            design_base_price: subsubProductsData.design_base_price,
                                             position: subsubProductsData.position,
                                             active: subsubProductsData.active,
                                             dimensions: subsubProductsData.dimensions
@@ -214,6 +217,7 @@ export const get_SingleProduct = async (req,res) => {
                 gst: productrecord.gst,
                 quantities_updated: productrecord.quantities_updated,
                 position: productrecord.position,
+                design_base_price: productrecord.design_base_price,
                 active: productrecord.active,
                 weight: productrecord.weight,
                 
