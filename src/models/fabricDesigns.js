@@ -8,7 +8,8 @@ const fabricDesignSchema = new mongoose.Schema({
     color: {type: String},
     side: {type: String},
     data: {type: String},
-    url: {type: String}
+    url: {type: String},
+    imgUrl: {type: String}
 },{ timestamps:true });
 
 

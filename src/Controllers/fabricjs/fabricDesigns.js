@@ -12,7 +12,8 @@ export const add_Desing = async (req, res) => {
         color: data.color,
         side: data.side,
         data: data.data,
-        url: data.url
+        url: data.url,
+        imgUrl: data.imgUrl
     });
 
     fabricDesign.save().then((savedData) => {
