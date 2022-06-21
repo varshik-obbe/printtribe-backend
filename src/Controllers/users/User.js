@@ -8,24 +8,16 @@ import ParseErrors from "../../utils/ParseErrors";
 export const add_user = (req,res)=>{
     const { userRegisterdata } = req.body;
     console.log(userRegisterdata);
-    User.findOne({ email: userRegisterdata.email }).exec().then((userData) => {
-        if(userData) {
-            res.status(400).json({errors: "user already exists"})
-        }
-        else {
-            const user = new User({
-                _id:mongoose.Types.ObjectId(),
-                email:userRegisterdata.email,
-                username:userRegisterdata.username,
-                role:userRegisterdata.role,
-                modules: userRegisterdata.modules
-            })
-            user.setPassword(userRegisterdata.password)
-            user.save().then((userRecord)=>res.status(201).json({userRecord}))
-            .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
-        }
+    const user = new User({
+        _id:mongoose.Types.ObjectId(),
+        email:userRegisterdata.email,
+        username:userRegisterdata.username,
+        role:userRegisterdata.role,
+        modules: userRegisterdata.modules
     })
-    .catch((err) => res.status(400).json({errors: "error while fetching users"}))
+    user.setPassword(userRegisterdata.password)
+    user.save().then((userRecord)=>res.status(201).json({userRecord}))
+    .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
 }
 
 export const login = (req,res) => {

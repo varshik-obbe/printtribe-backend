@@ -17,39 +17,48 @@ export const add_customer = async (req,res)=>{
         imagUrl = '/uploads/'+ dateVal.toString() + "customer"+".jpg";
     }
 
-    const customer = new Customer({
-        _id:mongoose.Types.ObjectId(),
-        email:customerRegisterdata.email,
-        username:customerRegisterdata.username,
-        role:customerRegisterdata.role,
-        mobile: customerRegisterdata.mobile,
-        buisness_name: customerRegisterdata.buisness_name,
-        brand_name: customerRegisterdata.brand_name,
-        country: customerRegisterdata.country,
-        address1: customerRegisterdata.address1,
-        address2: customerRegisterdata.address2,
-        address3: customerRegisterdata.address3,
-        city: customerRegisterdata.city,
-        state: customerRegisterdata.state,
-        pincode: customerRegisterdata.pincode,
-        gst: customerRegisterdata.gst,
-        website: customerRegisterdata.website,
-        account_number: customerRegisterdata.account_number,
-        ifsc_code: customerRegisterdata.ifsc_code,
-        bank_name: customerRegisterdata.bank_name,
-        customer_img: imagUrl
+    Customer.findOne({ 'email': customerRegisterdata.email })
+    .exec()
+    .then((data) => {
+        if(data) {
+            res.status(400).json({ errors: "email already exists"});
+        }
+        else {
+            const customer = new Customer({
+                _id:mongoose.Types.ObjectId(),
+                email:customerRegisterdata.email,
+                username:customerRegisterdata.username,
+                role:customerRegisterdata.role,
+                mobile: customerRegisterdata.mobile,
+                buisness_name: customerRegisterdata.buisness_name,
+                brand_name: customerRegisterdata.brand_name,
+                country: customerRegisterdata.country,
+                address1: customerRegisterdata.address1,
+                address2: customerRegisterdata.address2,
+                address3: customerRegisterdata.address3,
+                city: customerRegisterdata.city,
+                state: customerRegisterdata.state,
+                pincode: customerRegisterdata.pincode,
+                gst: customerRegisterdata.gst,
+                website: customerRegisterdata.website,
+                account_number: customerRegisterdata.account_number,
+                ifsc_code: customerRegisterdata.ifsc_code,
+                bank_name: customerRegisterdata.bank_name,
+                customer_img: imagUrl
+            });
+            customer.setPassword(customerRegisterdata.password)
+            customer.save().then((customerRecord)=> {
+                let title = "printribe mail"
+                let hello = "hello fellow dropshipper"
+                let message = "thank you for registering with us, please find the partner panel link below."
+                let second_message = "for any further assistance please reach out to us."
+                let link = "https://printribe-partner.web.app/#/login";
+                SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
+                res.status(201).json({customerRecord})
+            })
+            .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
+        }
     });
-    customer.setPassword(customerRegisterdata.password)
-    customer.save().then((customerRecord)=> {
-        let title = "printribe mail"
-        let hello = "hello fellow dropshipper"
-        let message = "thank you for registering with us, please find the partner panel link below."
-        let second_message = "for any further assistance please reach out to us."
-        let link = "https://printribe-partner.web.app/#/login";
-        SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
-        res.status(201).json({customerRecord})
-    })
-    .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
 }
 
 export const login = (req,res) => {
