@@ -7,6 +7,8 @@ const router = express.Router()
 
 router.post('/addCustomer', CustomerController.add_customer);
 
+router.post('/verifyMail', CustomerController.verifyMail);
+
 router.post('/customerGoogleSign', CustomerController.google_signinUp);
 
 router.post('/login', CustomerController.login);

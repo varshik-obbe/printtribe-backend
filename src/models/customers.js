@@ -25,6 +25,8 @@ const customerSchema = new mongoose.Schema({
     ifsc_code: {type: String},
     bank_name: {type: String},
     customer_img: {type: String},
+    verify_mail: {type: String},
+    active: {type: String},
     customer_wix: {type: String}
 },{ timestamps:true });
 

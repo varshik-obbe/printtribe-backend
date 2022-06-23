@@ -44,17 +44,25 @@ export const add_customer = async (req,res)=>{
                 account_number: customerRegisterdata.account_number,
                 ifsc_code: customerRegisterdata.ifsc_code,
                 bank_name: customerRegisterdata.bank_name,
-                customer_img: imagUrl
+                customer_img: imagUrl,
+                active: "no"
             });
             customer.setPassword(customerRegisterdata.password)
             customer.save().then((customerRecord)=> {
-                let title = "printribe mail"
-                let hello = "hello fellow dropshipper"
-                let message = "thank you for registering with us, please find the partner panel link below."
-                let second_message = "for any further assistance please reach out to us."
-                let link = "https://printribe-partner.web.app/#/login";
-                SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
-                res.status(201).json({customerRecord})
+                const min = 100000;
+                const max = 999999;
+                const rand = min + Math.random() * (max - min);
+                Customer.updateOne({_id: customerRecord._id}, {$set: {'verify_mail': rand.toFixed(0)}})
+                .then((updatedData) => {
+                    let title = "printribe mail"
+                    let hello = "hello fellow dropshipper"
+                    let message = "thank you for registering with us, your Verification Code is :"+rand.toFixed(0)+"<br /> please find the partner panel link below."
+                    let second_message = "for any further assistance please reach out to us."
+                    let link = "https://printribe-partner.web.app/#/login";
+                    SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
+                    res.status(201).json({customerRecord})  
+                })
+                .catch((err)=>res.status(400).json({errors:"could not update the table"}))
             })
             .catch((err)=>res.status(400).json({errors:ParseErrors(err.errors)}));
         }
@@ -79,6 +87,26 @@ export const login = (req,res) => {
 
     }
     );
+}
+
+export const verifyMail = (req,res) => {
+    const { data } = req.body;
+
+    Customer.findOne({email: data.email, verify_mail: data.verificationId})
+    .exec()
+    .then((returnData) => {
+        if(returnData) {
+            Customer.updateOne({email: data.email}, {$set: {'active': 'yes'}}).exec()
+            .then((updatedData) => {
+                res.status(200).json({success:"updated successfully"});
+            })
+            .catch((err) => res.status(400).json({errors:"error occured while updating"}))
+        }
+        else {
+            res.status(400).json({errors:"verification failed"})
+        }
+    })
+    .catch((err) => res.status(400).json({errors:"error occured while fetching data"}))
 }
 
 export const getCustomers = (req,res) => {
@@ -107,7 +135,8 @@ export const getCustomers = (req,res) => {
                     account_number: customer.account_number,
                     ifsc_code: customer.ifsc_code,
                     bank_name: customer.bank_name,
-                    customer_img: customer.customer_img
+                    customer_img: customer.customer_img,
+                    active: customer.active
                 }))
         }
         res.status(200).json({customerdata:response});
@@ -298,4 +327,4 @@ export const google_signinUp = (req,res) => {
 
 }
 
-export default { add_customer, login, getCustomers, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass, google_signinUp }
+export default { add_customer, login, getCustomers, verifyMail, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass, google_signinUp }
