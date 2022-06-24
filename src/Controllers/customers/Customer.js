@@ -56,8 +56,8 @@ export const add_customer = async (req,res)=>{
                 .then((updatedData) => {
                     let title = "printribe mail"
                     let hello = "hello fellow dropshipper"
-                    let message = "thank you for registering with us, your Verification Code is :"+rand.toFixed(0)+"<br /> please find the partner panel link below."
-                    let second_message = "for any further assistance please reach out to us."
+                    let message = "thank you for registering with us, your Verification Code is :"+rand.toFixed(0)
+                    let second_message = "for any further assistance please reach out to us. please find the partner panel link below."
                     let link = "https://printribe-partner.web.app/#/login";
                     SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
                     res.status(201).json({customerRecord})  
