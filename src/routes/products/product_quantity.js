@@ -11,6 +11,10 @@ router.get('/getQuantityByProductId/:id', Authentication, productQuantController
 
 router.get('/getQuantBySizeColor/:product_id/:size/:color', Authentication, productQuantController.getQuantByColorSize);
 
+router.put('/updateQuantProduct', Authentication, productQuantController.updateProductsQuant);
+
+router.patch('/updateQuantProduct', Authentication, productQuantController.updateProductsQuant);
+
 router.patch('/updateQuantData', Authentication, productQuantController.updateQuant);
 
 router.put('/updateQuantData', Authentication, productQuantController.updateQuant);

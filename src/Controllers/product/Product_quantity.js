@@ -28,6 +28,18 @@ export const add_quantities = (req,res) => {
     .catch((err) => res.status(400).json({ errors: ParseErrors(err.errors) }))
 }
 
+export const updateProductsQuant = (req,res) => {
+    const prod_id = req.query.id;
+    const data = req.body;
+
+
+    productQuantModel.updateOne({'product_id': prod_id}, {$set: {"variants": data.productsData.variants}}).exec().then((productRecord)=>{
+        res.status(201).json({success:{global:"updated successfully"}});
+    }).catch((err)=>{
+        res.status(400).json({error:{global:"something went wrong while updating colors and sizes"}});
+    })                        
+}
+
 export const getQuantById = (req,res) => {
     const prod_id = req.params.id;
 
@@ -173,4 +185,4 @@ export const deleteQuantItem = (req,res) => {
     });
 }
 
-export default { add_quantities, getQuantById, getQuantByColorSize, updateQuant, deleteQuantItem, getAllQuantLogs }
+export default { add_quantities, getQuantById, getQuantByColorSize, updateProductsQuant, updateQuant, deleteQuantItem, getAllQuantLogs }
