@@ -280,13 +280,13 @@ export const update_product = async (req,res) => {
                 res.status(400).json({error:{global:"something went wrong while updating sizes"+err}});
             })
         }
-        else if(!data.sizes || data.colors) {
+        else if(!data.sizes && data.colors) {
             await Products.updateOne({_id: id}, {$set: {"productcolors": data.colors}}).exec().then((productRecord)=>{
             }).catch((err)=>{
                 res.status(400).json({error:{global:"something went wrong while updating colors"}});
             })            
         }
-        else if(data.sizes || data.colors) {
+        else if(data.sizes && data.colors) {
             await Products.updateOne({_id: id}, {$set: {"productcolors": data.colors, "productsizes": data.sizes}}).exec().then((productRecord)=>{
             }).catch((err)=>{
                 res.status(400).json({error:{global:"something went wrong while updating colors and sizes"}});
