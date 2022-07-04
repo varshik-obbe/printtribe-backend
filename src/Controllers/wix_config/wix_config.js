@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import util from "util";
 import CustomerModel from "../../models/customers";
 import customerProductsModel from "../../models/customer_inventory_products";
+import fabricdesignModel from "../../models/fabricDesigns";
 import wixOrderModel from "../../models/wix_orders";
 import getShipToken from "../../utils/GetShiprocketToken";
 import getToken from "../../utils/getWixToken";
@@ -173,37 +174,76 @@ export const uploadMedia = async (req,res) => {
         .exec()
         .then(async (prodData) => {
             if(prodData) {
-
-                console.log("wix product id is"+prodData.wix_product_id)
-                console.log("product image is"+prodData.product_img)
-                let dataMedia = {
-                    "media": [
-                      {
-                        "url": prodData.product_img
-                      }                      
-                    ]
-                  }
-
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                  }
-           
-                  var config = {
-                    method: 'POST',
-                    url: 'https://www.wixapis.com/stores/v1/products/'+prodData.wix_product_id+'/media',
-                    headers: headers,
-                    data: dataMedia
-                  };
+                fabricdesignModel.findOne({ 'productId': productData.product_id, 'color': prodData.productcolor, 'side': "one", 'customerId': productData.customer_id })
+                .exec()
+                .then(async (designData) => {
+                    if(designData) {
+                        console.log("wix product id is"+prodData.wix_product_id)
+                        console.log("product image is"+designData.url)
+                        let dataMedia = {
+                            "media": [
+                              {
+                                "url": designData.url
+                              }                      
+                            ]
+                          }
         
-                  await axios(config)
-                  .then( async function (resp) {
-                      res.status(200).json({ global: { success: "uploaded media successfully" } })
-                  })
-                  .catch((err) => {
-                      console.log("error occured while getting wix product"+err)
-                      res.status(400).json({ global: { error: "error occured while getting product from wix" } });                  
-                  })
+                        const headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
+                          }
+                   
+                          var config = {
+                            method: 'POST',
+                            url: 'https://www.wixapis.com/stores/v1/products/'+prodData.wix_product_id+'/media',
+                            headers: headers,
+                            data: dataMedia
+                          };
+                
+                          await axios(config)
+                          .then( async function (resp) {
+                              res.status(200).json({ global: { success: "uploaded media successfully" } })
+                          })
+                          .catch((err) => {
+                              console.log("error occured while getting wix product"+err)
+                              res.status(400).json({ global: { error: "error occured while getting product from wix" } });                  
+                          })
+                    }
+                    else {
+                        console.log("wix product id is"+prodData.wix_product_id)
+                        console.log("product image is"+prodData.product_img)
+                        let dataMedia = {
+                            "media": [
+                              {
+                                "url": prodData.product_img
+                              }                      
+                            ]
+                          }
+        
+                        const headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
+                          }
+                   
+                          var config = {
+                            method: 'POST',
+                            url: 'https://www.wixapis.com/stores/v1/products/'+prodData.wix_product_id+'/media',
+                            headers: headers,
+                            data: dataMedia
+                          };
+                
+                          await axios(config)
+                          .then( async function (resp) {
+                              res.status(200).json({ global: { success: "uploaded media successfully" } })
+                          })
+                          .catch((err) => {
+                              console.log("error occured while getting wix product"+err)
+                              res.status(400).json({ global: { error: "error occured while getting product from wix" } });                  
+                          })
+                    }
+                })
+                .catch((err) => res.status(400).json({ global: { error: "error occured while fetching design data" } }))
+
             }
             else {
                 res.status(400).json({ global: { error: "could not find the product" } });

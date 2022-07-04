@@ -40,7 +40,7 @@ export const get_FabricDesignByfilter = async (req,res) => {
     let side = req.params.side;
     let customerId = req.params.customerId;
 
-    FabricDesignModel.findOne({ 'productId': product_id, 'color': color, 'side': side })
+    FabricDesignModel.findOne({ 'productId': product_id, 'color': color, 'side': side, 'customerId': customerId })
     .exec()
     .then((data) => {
         if(data) {
