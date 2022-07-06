@@ -20,38 +20,73 @@ export const testToken = async (req,res) => {
     console.log("token is"+token)
     if(token != "")
     {
-        var data = {
-            "eventName": "APP_FINISHED_CONFIGURATION"
-        };
+        let check = false;
 
-          const headers = {
+        const headersGet = {
             'Authorization': token
-          }
-   
-          var config = {
-            method: 'post',
-            url: 'https://www.wixapis.com/apps/v1/bi-event',
-            headers: headers,
-            data : data
-          };
+        }
+        var configGet = {
+            method: 'GET',
+            url: "https://www.wixapis.com/apps/v1/instance",
+            headers: headersGet
+        }
+        let checkAppExist = await axios(configGet)
+        .then((response) => {
+            if(response.data) {
+                console.log("")
+                if(response.data.site.installedWixApps && response.data.site.installedWixApps !== "") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        })
+        .catch((err) => {
+            console.log("error occured while checking if wix app installable ")
+            return false;
+        })
 
-
-          let saveddata = await axios(config)
-          .then(async function (response) {
-              CustomerModel.updateOne({ '_id': tokenData.customer_id }, { $set: { 'customer_wix': 'active' } })
-              .then((updateData) => {
-                console.log("success response is"+response.data)
-                res.status(200).json({ global: { success: "finished setup", token: token } })
+        if(checkAppExist) {
+            var data = {
+                "eventName": "APP_FINISHED_CONFIGURATION"
+            };
+    
+              const headers = {
+                'Authorization': token
+              }
+       
+              var config = {
+                method: 'post',
+                url: 'https://www.wixapis.com/apps/v1/bi-event',
+                headers: headers,
+                data : data
+              };
+    
+    
+              let saveddata = await axios(config)
+              .then(async function (response) {
+                  CustomerModel.updateOne({ '_id': tokenData.customer_id }, { $set: { 'customer_wix': 'active' } })
+                  .then((updateData) => {
+                    console.log("success response is"+response.data)
+                    res.status(200).json({ global: { success: "finished setup", token: token } })
+                  })
+                  .catch((err) => {
+                    console.log("error occured while updating customer"+err)
+                    res.status(400).json({ global: {error: "error occured while updating customer"} })                  
+                  })
               })
               .catch((err) => {
-                console.log("error occured while updating customer"+err)
-                res.status(400).json({ global: {error: "error occured while updating customer"} })                  
-              })
-          })
-          .catch((err) => {
-              console.log("error occured while finishing set up"+err)
-              res.status(400).json({ global: {error: "error occured while finishing set up"} })
-          })
+                  console.log("error occured while finishing set up"+err)
+                  res.status(400).json({ global: {error: "error occured while finishing set up"} })
+              })   
+        }
+        else {
+            res.status(400).json({ global: {error: "wix store is missing"} })
+        }
     }
     else {
         res.status(400).json({ error: "error" })

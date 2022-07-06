@@ -1,5 +1,6 @@
 import axios from "axios";
 import mongoose from "mongoose";
+import categoriesModel from "../../models/categories";
 import orderModel from "../../models/orders";
 import addProductsInventory from "../../utils/addProductsToCustomer";
 import deleteQuant from "../../utils/deleteProductQuantity";
@@ -613,7 +614,134 @@ export const getOrdersReport = async (req,res) => {
   else {
     res.status(500).json({error:{global:"orders could not be found"}})
   }
-} 
+}
+
+export const productsChartData = async (req,res) => {
+  
+  let orders = await orderModel.find({ 'shipment_status': 'processed'})
+  .exec()
+  .then((data) => {
+    let newData = data.map((orderData) => ({
+      _id: orderData._id,
+      customerShipping_id: orderData.customerShipping_id,
+      product_info: orderData.product_info.map((productData) => ({
+        product_id: productData.product_id,
+        title: productData.title,
+        description: productData.description,
+        price: productData.price,
+        productsize: productData.productsize,
+        productcolor: productData.productcolor,
+        product_img: productData.product_img,
+        category_id: productData.category_id,
+        quantity: productData.quantity,
+        maincat: "",
+        zakeke_price: productData.zakeke_price,
+        designID: productData.designID
+      })),
+      total_quantity: orderData.total_quantity,
+      total_price: orderData.total_price,
+      shipping_charges: orderData.shipping_charges,
+      payment_type: orderData.payment_type,
+      payment_ref_id: orderData.payment_ref_id,
+      shipment_status: orderData.shipment_status,
+      customer_email: orderData.customer_email,
+      customer_id: orderData.customer_id,
+      courier_id: orderData.courier_id,
+      visitor_id: orderData.visitor_id,
+      createdAt: orderData.createdAt,
+      updatedAt: orderData.updatedAt,
+      __v: orderData.__v,
+      shipment_ord_id: orderData.shipment_ord_id,
+      shipment_ref_id: orderData.shipment_ref_id,
+      gst_details: orderData.gst_details
+    }))
+    return newData;
+  })
+  .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+  if(orders) {
+    await Promise.all(orders.map(async(val, key) => {
+      await Promise.all(val.product_info.map(async(valProd, valKey) => {
+        let mainCatData = await categoriesModel.findOne({ '_id': valProd.category_id }).exec()
+        .then((categorieData) => {
+          return categorieData;
+        })
+        .catch((err) => res.status(500).json({error:{global:"categorie couldn't be found"}}))
+
+        if(mainCatData.maincat !== "0") {
+          orders[key]["product_info"][valKey].maincat = mainCatData.maincat;
+        }
+        else {
+          orders[key]["product_info"][valKey].maincat = valProd.category_id;
+        }
+      }))
+    }))
+
+    res.status(201).json({ data: orders })
+  }
+}
+
+export const productsSubChartData = async (req,res) => {
+  let orders = await orderModel.find({ 'shipment_status': 'processed'})
+  .exec()
+  .then((data) => {
+    let newData = data.map((orderData) => ({
+      _id: orderData._id,
+      customerShipping_id: orderData.customerShipping_id,
+      product_info: orderData.product_info.map((productData) => ({
+        product_id: productData.product_id,
+        title: productData.title,
+        description: productData.description,
+        price: productData.price,
+        productsize: productData.productsize,
+        productcolor: productData.productcolor,
+        product_img: productData.product_img,
+        category_id: productData.category_id,
+        quantity: productData.quantity,
+        subcat: "",
+        zakeke_price: productData.zakeke_price,
+        designID: productData.designID
+      })),
+      total_quantity: orderData.total_quantity,
+      total_price: orderData.total_price,
+      shipping_charges: orderData.shipping_charges,
+      payment_type: orderData.payment_type,
+      payment_ref_id: orderData.payment_ref_id,
+      shipment_status: orderData.shipment_status,
+      customer_email: orderData.customer_email,
+      customer_id: orderData.customer_id,
+      courier_id: orderData.courier_id,
+      visitor_id: orderData.visitor_id,
+      createdAt: orderData.createdAt,
+      updatedAt: orderData.updatedAt,
+      __v: orderData.__v,
+      shipment_ord_id: orderData.shipment_ord_id,
+      shipment_ref_id: orderData.shipment_ref_id,
+      gst_details: orderData.gst_details
+    }))
+    return newData;
+  })
+  .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+  if(orders) {
+    await Promise.all(orders.map(async(val, key) => {
+      await Promise.all(val.product_info.map(async(valProd, valKey) => {
+        let mainCatData = await categoriesModel.findOne({ '_id': valProd.category_id }).exec()
+        .then((categorieData) => {
+          return categorieData;
+        })
+        .catch((err) => res.status(500).json({error:{global:"categorie couldn't be found"}}))
+
+        if(mainCatData.subcat !== "0") {
+          orders[key]["product_info"][valKey].subcat = mainCatData.subcat;
+        }
+        else {
+          orders[key]["product_info"][valKey].subcat = valProd.category_id;
+        }
+      }))
+    }))
+
+    res.status(201).json({ data: orders })
+  }
+}
 
 export const getCustomerOngoing = (req,res) => {
   const customer_id = req.params.id
@@ -658,4 +786,4 @@ export const getAdminOtherOrders = (req,res) => {
   })
 }
 
-export default { add_order, getCustomer_orders, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing }
+export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing }

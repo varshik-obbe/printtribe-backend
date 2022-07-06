@@ -14,6 +14,10 @@ router.get('/getOngoingOrders', Authentication, OrdersController.getAdminOngoing
 
 router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
 
+router.get('/getProductsChartReport', CustomerAuthentication, OrdersController.productsChartData);
+
+router.get('/getProductsSubChartReport', CustomerAuthentication, OrdersController.productsSubChartData);
+
 router.get('/getCustomerSalesProducts/:month/:year/:quarter/:semester/:week', CustomerAuthentication, OrdersController.getSalesProducts);
 
 router.get('/getCustomerOrdersReport/:month/:year/:quarter/:semester/:week', CustomerAuthentication, OrdersController.getOrdersReport);
