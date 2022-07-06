@@ -424,6 +424,197 @@ export const getSalesProducts = async(req,res) => {
   }
 }
 
+export const getOrdersReport = async (req,res) => {
+  let month = req.params.month;
+  let year = req.params.year;
+  let quarterly = req.params.quarter;
+  let semester = req.params.semester;
+  let week = req.params.week;
+  console.log("WEEK IS", week);
+  console.log("month IS", month);
+  console.log("quarter IS", quarterly);
+  console.log("semester IS", semester);
+  let orders;
+  if(parseInt(quarterly, 10) !== 0) {
+    if(quarterly == "1st") {
+      let first_date = year.toString() + "-" + "01" + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), 3 + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(quarterly == "2nd") {
+      let first_date = year.toString() + "-" + "04" + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), 6 + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(quarterly == "3rd") {
+      let first_date = year.toString() + "-" + "07" + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), 9 + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(quarterly == "4th") {
+      let first_date = year.toString() + "-" + "10" + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), 12 + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+  }
+  else if(parseInt(semester, 10) !== 0) {
+    if(semester == "1st") {
+      let first_date = year.toString() + "-" + "01" + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), 6 + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(semester == "2nd") {
+      let first_date = year.toString() + "-" + "07" + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), 12 + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+  }
+  else if(parseInt(month, 10) !== 0) {
+   if(parseInt(week, 10) !== 0) {
+    if(week == "1st") {
+      let first_date = year.toString() + "-" + month.toString() + "-" + "01"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(last_date);
+      orders = await orderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+      { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(week == "2nd") {
+      let first_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "15"
+      let dategenLast = new Date(last_date);
+      orders = await orderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+      { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(week == "3rd") {
+      let first_date = year.toString() + "-" + month.toString() + "-" + "15"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "22"
+      let dategenLast = new Date(last_date);
+      orders = await orderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+      { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+    else if(week == "4th") {
+      let first_date = year.toString() + "-" + month.toString() + "-" + "22"
+      let dategenFirst = new Date(first_date);
+      let last_date = year.toString() + "-" + month.toString() + "-" + "08"
+      let dategenLast = new Date(parseInt(year, 10), parseInt(month) + 1, 0);
+      orders = await orderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+      { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+      { "$expr": {"$eq": [ "$shipment_status", "processed" ]} },
+      { "$expr": {"$gte": [ "$createdAt", dategenFirst ]} },
+      { "$expr": {"$lte": [ "$createdAt", dategenLast ]} }]})
+      .exec()
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+    }
+   }
+   else {
+    orders = await orderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+    { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} },
+    { "$expr": {"$eq": [ "$shipment_status", "processed" ]} }]})
+    .exec()
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => res.status(500).json({error:{global:"orders could not be found"}}))
+   }
+  }
+  if(orders) {
+    res.status(200).json({data: { "total_orders": orders.length, "orders": orders }});
+  }
+  else {
+    res.status(500).json({error:{global:"orders could not be found"}})
+  }
+} 
+
 export const getCustomerOngoing = (req,res) => {
   const customer_id = req.params.id
 
@@ -467,4 +658,4 @@ export const getAdminOtherOrders = (req,res) => {
   })
 }
 
-export default { add_order, getCustomer_orders, getSalesProducts, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing }
+export default { add_order, getCustomer_orders, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing }
