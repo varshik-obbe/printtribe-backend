@@ -20,6 +20,7 @@ export const add_Categories = async (req, res) => {
             maincat: data.maincat,
             subcat: data.subcat,
             position: data.position,
+            visible: data.visible,
             zakekeSides: data.zakekeSides
         });
         let result_display = ""
@@ -40,6 +41,7 @@ export const add_Categories = async (req, res) => {
                     maincat: result_display.maincat,
                     subcat: result_display.subcat,
                     position: result_display.position,
+                    visible: result_display.visible,
                     zakekeSides: result_display.zakekeSides,                    
                 };
                 res.status(201).json({ categoriesValue });
@@ -69,6 +71,7 @@ export const get_Categories = async (req, res) => {
                     maincat: categoriesdata.maincat,
                     subcat: categoriesdata.subcat,
                     position: categoriesdata.position,
+                    visible: categoriesdata.visible,
                     subCategories: []
                 }))
             }
@@ -92,7 +95,8 @@ export const get_Categories = async (req, res) => {
                             zakekeSides: subcategoriesdata.zakekeSides,
                             maincat: subcategoriesdata.maincat,
                             subcat: subcategoriesdata.subcat,
-                            position: subcategoriesdata.position
+                            position: subcategoriesdata.position,
+                            visible: subcategoriesdata.visible
                         }))
                     }
                     maincat.categories[key]["subCategories"] = response.subcategories;
@@ -115,7 +119,8 @@ export const get_Categories = async (req, res) => {
                                     zakekeSides: subsubcategoriesdata.zakekeSides,
                                     maincat: subsubcategoriesdata.maincat,
                                     subcat: subsubcategoriesdata.subcat,
-                                    position: subsubcategoriesdata.position
+                                    position: subsubcategoriesdata.position,
+                                    visible: subsubcategoriesdata.visible
                                 }))
                             }
                             maincat.categories[key].subCategories[keysub]["subsubCategories"] = responsesub.subsubcategories;                          
@@ -144,6 +149,7 @@ export const get_CategoryById = async (req,res) => {
                 maincat: categoryrecord.maincat,
                 subcat: categoryrecord.subcat,
                 position: categoryrecord.position,
+                visible: categoryrecord.visible,
                 subCategories: [],
                 subsubCategories: []
             }))
@@ -175,7 +181,8 @@ export const get_CategoryById = async (req,res) => {
                                 zakekeSides: subcategoriesdata.zakekeSides,
                                 maincat: subcategoriesdata.maincat,
                                 subcat: subcategoriesdata.subcat,
-                                position: subcategoriesdata.position
+                                position: subcategoriesdata.position,
+                                visible: categoryrecord.visible
                             }))
                         }
                         category.categorydata[key]["subCategories"] = response.subcategories;
@@ -198,7 +205,8 @@ export const get_CategoryById = async (req,res) => {
                                         zakekeSides: subsubcategoriesdata.zakekeSides,
                                         maincat: subsubcategoriesdata.maincat,
                                         subcat: subsubcategoriesdata.subcat,
-                                        position: subsubcategoriesdata.position
+                                        position: subsubcategoriesdata.position,
+                                        visible: categoryrecord.visible
                                     }))
                                 }
                                 category.categorydata[key].subCategories[keysub]["subsubCategories"] = responsesub.subsubcategories;                          
@@ -227,7 +235,8 @@ export const get_CategoryById = async (req,res) => {
                             zakekeSides: subsubcategoriesdata.zakekeSides,
                             maincat: subsubcategoriesdata.maincat,
                             subcat: subsubcategoriesdata.subcat,
-                            position: subsubcategoriesdata.position
+                            position: subsubcategoriesdata.position,
+                            visible: categoryrecord.visible
                         }))
                     }
                     category.categorydata[key]["subsubCategories"] = responsesub.subsubcategories;                          
