@@ -14,7 +14,9 @@ const fabricProductInfoSchema = new mongoose.Schema({
                     top: {type: Number},
                     left: {type: Number},
                     width: {type: Number},
-                    height: {type: Number}
+                    height: {type: Number},
+                    scaleWidth: {type: Number},
+                    scaleHeight: {type: Number}
                 }
             ,
             backImgDimensions: 
@@ -22,7 +24,9 @@ const fabricProductInfoSchema = new mongoose.Schema({
                     top: {type: Number},
                     left: {type: Number},
                     width: {type: Number},
-                    height: {type: Number}
+                    height: {type: Number},
+                    scaleWidth: {type: Number},
+                    scaleHeight: {type: Number}
                 },
             leftImgURL: {type: String},
             rightImgURL: {type: String},
@@ -31,14 +35,18 @@ const fabricProductInfoSchema = new mongoose.Schema({
                     top: {type: Number},
                     left: {type: Number},
                     width: {type: Number},
-                    height: {type: Number}
+                    height: {type: Number},
+                    scaleWidth: {type: Number},
+                    scaleHeight: {type: Number}
                 },
             leftImgDimensions: 
                 {
                     top: {type: Number},
                     left: {type: Number},
                     width: {type: Number},
-                    height: {type: Number}
+                    height: {type: Number},
+                    scaleWidth: {type: Number},
+                    scaleHeight: {type: Number}
                 },
             frontCanvasPricing: [
                     {
@@ -47,7 +55,9 @@ const fabricProductInfoSchema = new mongoose.Schema({
                         price: {type: Number},
                         widthInches: {type: Number},
                         heightInches: {type: Number},
-                        garment_price: {type: Number}
+                        garment_price: {type: Number},
+                        scaleWidth: {type: Number},
+                        scaleHeight: {type: Number}
                     }
                 ],
             backCanvasPricing: [
@@ -57,7 +67,9 @@ const fabricProductInfoSchema = new mongoose.Schema({
                         price: {type: Number},
                         widthInches: {type: Number},
                         heightInches: {type: Number},
-                        garment_price: {type: Number}
+                        garment_price: {type: Number},
+                        scaleWidth: {type: Number},
+                        scaleHeight: {type: Number}
                     }
                 ],
             leftCanvasPricing: [
@@ -67,7 +79,9 @@ const fabricProductInfoSchema = new mongoose.Schema({
                         price: {type: Number},
                         widthInches: {type: Number},
                         heightInches: {type: Number},
-                        garment_price: {type: Number}
+                        garment_price: {type: Number},
+                        scaleWidth: {type: Number},
+                        scaleHeight: {type: Number}
                     }
                 ],
             rightCanvasPricing: [
@@ -77,7 +91,9 @@ const fabricProductInfoSchema = new mongoose.Schema({
                         price: {type: Number},
                         widthInches: {type: Number},
                         heightInches: {type: Number},
-                        garment_price: {type: Number}
+                        garment_price: {type: Number},
+                        scaleWidth: {type: Number},
+                        scaleHeight: {type: Number}
                     }
                 ]                                                
         }
