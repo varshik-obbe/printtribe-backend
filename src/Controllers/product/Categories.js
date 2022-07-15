@@ -182,7 +182,7 @@ export const get_CategoryById = async (req,res) => {
                                 maincat: subcategoriesdata.maincat,
                                 subcat: subcategoriesdata.subcat,
                                 position: subcategoriesdata.position,
-                                visible: categoryrecord.visible
+                                visible: subcategoriesdata.visible
                             }))
                         }
                         category.categorydata[key]["subCategories"] = response.subcategories;
@@ -206,7 +206,7 @@ export const get_CategoryById = async (req,res) => {
                                         maincat: subsubcategoriesdata.maincat,
                                         subcat: subsubcategoriesdata.subcat,
                                         position: subsubcategoriesdata.position,
-                                        visible: categoryrecord.visible
+                                        visible: subsubcategoriesdata.visible
                                     }))
                                 }
                                 category.categorydata[key].subCategories[keysub]["subsubCategories"] = responsesub.subsubcategories;                          
@@ -236,7 +236,7 @@ export const get_CategoryById = async (req,res) => {
                             maincat: subsubcategoriesdata.maincat,
                             subcat: subsubcategoriesdata.subcat,
                             position: subsubcategoriesdata.position,
-                            visible: categoryrecord.visible
+                            visible: subsubcategoriesdata.visible
                         }))
                     }
                     category.categorydata[key]["subsubCategories"] = responsesub.subsubcategories;                          
