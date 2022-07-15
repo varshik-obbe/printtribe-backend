@@ -257,7 +257,10 @@ export const getPdfInvoice = (req,res) => {
 }
 
 export const get_orders = (req,res) => {
-    offlineorderModel.find().exec()
+    let month = req.params.month;
+    let year = req.params.year;
+    offlineorderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+    { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} }]}).exec()
     .then((data) => {
         res.status(200).json({ resultData: data })
     })

@@ -9,7 +9,7 @@ router.post('/addOrder', Authentication , OfflineOrdersController.add_order);
 
 // router.get('/getOrders/:id', CustomerAuthentication, OrdersController.getCustomer_orders);
 
-router.get('/getOrders', Authentication, OfflineOrdersController.get_orders);
+router.get('/getOrders/:month/:year', Authentication, OfflineOrdersController.get_orders);
 
 // router.get('/createPdf', Authentication, OfflineOrdersController.create_pdf);
 
