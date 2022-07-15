@@ -20,7 +20,7 @@ export const add_Categories = async (req, res) => {
             maincat: data.maincat,
             subcat: data.subcat,
             position: data.position,
-            visible: data.visible,
+            visible: "true",
             zakekeSides: data.zakekeSides
         });
         let result_display = ""
