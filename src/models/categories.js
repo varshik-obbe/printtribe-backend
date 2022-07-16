@@ -24,6 +24,7 @@ const categoriesSchema = new mongoose.Schema({
         }
     ],
     position:{type:Number}, 
+    visible: {type: String},
     maincat: {type:String,required:true, ref: "categories"},
     subcat: {type:String,required:true, ref: "categories"}
 },{ timestamps:true });
