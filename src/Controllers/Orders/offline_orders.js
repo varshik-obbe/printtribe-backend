@@ -1,4 +1,6 @@
 import axios from "axios";
+import fs from "fs";
+import JSZip from 'jszip';
 import mongoose from "mongoose";
 import offlineorderModel from "../../models/offline_invoice_orders";
 import printribeSettingsModel from "../../models/printribe_settings";
@@ -7,6 +9,7 @@ import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
 import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
+var zip = new JSZip();
 
 export const add_order = async (req,res) => {
     const { orderData } = req.body;
@@ -256,6 +259,76 @@ export const getPdfInvoice = (req,res) => {
     })
 }
 
+export const downloadAllPDF = (req,res) => {
+    let month = req.params.month;
+    let year = req.params.year;
+    offlineorderModel.find({ "$and": [{ "$expr": { "$eq": [{ "$month": "$createdAt" }, parseInt(month, 10)]  } }, 
+    { "$expr": {"$eq": [{"$year": "$createdAt"}, parseInt(year, 10)]} }]}).exec()
+    .then(async (data) => {
+          await Promise.all(data.map(async (val, key) => {
+            let url = val.pdf_link.replace(process.env.PROJ_DEV_HOST, '.');
+            console.log("new url link is :", url)
+            var contentPromise = new JSZip.external.Promise(function (resolve, reject) {
+                fs.readFile(url, function(err, data) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+              });
+            //   let nameZip = val.customerShipping_details[0].fullname + Date.now().toString();
+              zip.file(url.replace('./uploads/', ''), contentPromise);
+          }))
+
+
+          let dateString = Date.now().toString();
+
+          try {
+            zip
+            .generateNodeStream({type:'nodebuffer',streamFiles:true})
+            .pipe(fs.createWriteStream('./uploads/'+dateString+'.zip'))
+            .on('finish', async function () {
+                // JSZip generates a readable stream with a "end" event,
+                // but is piped here in a writable stream which emits a "finish" event.
+                console.log("zip file written.");
+  
+                res.status(200).json({ zip_link: process.env.PROJ_DEV_HOST+'/uploads/'+dateString+'.zip' })
+  
+  
+      
+                //  let dataFile = qs.stringify({
+                //   'data': process.env.PROJ_DEV_HOST+'ZakekeFiles/csv-data.zip'
+                // });
+                //  const headersZip = {
+                //   'Accept': 'application/json',
+                //   'Content-Type': 'multipart/form-data',
+                //   'Authorization': 'Bearer ' + bearerObject.access_token
+                // }
+                //  const zipUploaded = await axios({
+                //   url: 'https://api.zakeke.com/v2/csv/import', 
+                //   method: "POST",
+                //   data: dataFile,
+                //   headers: headersZip
+                //  })
+                //  .catch((err) => {
+                //    console.log("error while zip post request :"+err)
+                //  })
+      
+      
+                //  console.log("response :"+zipUploaded.LastError)
+            });
+          }
+          catch (err) {
+            res.status(400).json({global: { error: err }})
+          }
+    })
+    .catch((err) => {
+        console.log("error occured while fetching"+err)
+        res.status(400).json({ global: { error: "could not fetch data" } })
+    })
+}
+
 export const get_orders = (req,res) => {
     let month = req.params.month;
     let year = req.params.year;
@@ -270,4 +343,4 @@ export const get_orders = (req,res) => {
     })
 }
 
-export default { add_order, get_orders, getPdfInvoice }
+export default { add_order, downloadAllPDF, get_orders, getPdfInvoice }

@@ -15,6 +15,8 @@ router.get('/getOrders/:month/:year', Authentication, OfflineOrdersController.ge
 
 router.get('/getPDFinvoice/:id', Authentication, OfflineOrdersController.getPdfInvoice);
 
+router.get('/getAllPDFinvoices/:month/:year', Authentication, OfflineOrdersController.downloadAllPDF);
+
 // router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
 
 // router.get('/getAdminOtherOrders', Authentication, OrdersController.getAdminOtherOrders);
