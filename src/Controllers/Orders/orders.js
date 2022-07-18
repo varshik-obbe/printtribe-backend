@@ -26,6 +26,7 @@ export const add_order = async (req,res) => {
             visitor_id: orderData.visitor_id,
             customer_id: orderData.customer_id,
             courier_id: orderData.courier_id,
+            design_price: orderData.design_price,
             gst_details: orderData.gst_details,
             shipment_status: "processing",
             shiprocket_awb: ""
@@ -640,6 +641,7 @@ export const productsChartData = async (req,res) => {
       })),
       total_quantity: orderData.total_quantity,
       total_price: orderData.total_price,
+      design_price: orderData.design_price,
       shipping_charges: orderData.shipping_charges,
       payment_type: orderData.payment_type,
       payment_ref_id: orderData.payment_ref_id,
@@ -703,6 +705,7 @@ export const productsSubChartData = async (req,res) => {
       })),
       total_quantity: orderData.total_quantity,
       total_price: orderData.total_price,
+      design_price: orderData.design_price,
       shipping_charges: orderData.shipping_charges,
       payment_type: orderData.payment_type,
       payment_ref_id: orderData.payment_ref_id,

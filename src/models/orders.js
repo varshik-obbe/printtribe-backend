@@ -30,6 +30,7 @@ const orderSchema = new mongoose.Schema({
     total_quantity: {type: String,required: true},
     total_price: {type:String,required:true},
     shipping_charges: {type:String,required:true},
+    design_price: {type:String},
     payment_type: {type: String, required: true, lowercase: true},
     payment_ref_id: {type: String},
     payment_status: {type: String},
