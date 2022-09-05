@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import ProductColor_link from "../../Controllers/product/ProductColor_link";
 import ProductsController from "../../Controllers/product/Products";
 import Authentication from "../../middleware/Authentication";
 
@@ -50,5 +51,7 @@ router.get('/getSearchProducts/:text', Authentication, ProductsController.search
 
 
 router.delete('/deleteProduct/:id', Authentication, ProductsController.delete_Products);
+
+router.post('/productcolorAdd', Authentication, ProductColor_link.add_ProductColorLink);
 
 export default router
