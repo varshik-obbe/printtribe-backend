@@ -54,4 +54,12 @@ router.delete('/deleteProduct/:id', Authentication, ProductsController.delete_Pr
 
 router.post('/productcolorAdd', Authentication, ProductColor_link.add_ProductColorLink);
 
+router.get('/getProductColorLink', ProductColor_link.getColorLinkProducts);
+
+router.get("/getProductColorLinkById/:id", Authentication, ProductColor_link.getProductColorLinkById);
+
+router.put("/updateProductColor",Authentication, ProductColor_link.updateProductColorLinks);
+
+router.delete('/deleteProductColor/:id', Authentication, ProductColor_link.deleteProductColorLink);
+
 export default router
