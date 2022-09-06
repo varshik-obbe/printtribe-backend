@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import ProductColor_link from "../../Controllers/product/ProductColor_link";
 import ProductsController from "../../Controllers/product/Products";
+import ProductSizeChart from "../../Controllers/product/ProductSizeChart";
 import Authentication from "../../middleware/Authentication";
 
 const router = express.Router();
@@ -61,5 +62,15 @@ router.get("/getProductColorLinkById/:id", Authentication, ProductColor_link.get
 router.put("/updateProductColor",Authentication, ProductColor_link.updateProductColorLinks);
 
 router.delete('/deleteProductColor/:id', Authentication, ProductColor_link.deleteProductColorLink);
+
+router.post('/productsizeChartAdd', Authentication, ProductSizeChart.add_ProductSizeChart);
+
+router.get('/getProductsizeChartById/:id', Authentication, ProductSizeChart.getProductSizeChartById);
+
+router.get('/getProductSizeCharts', ProductSizeChart.getSizeChartProducts);
+
+router.put("/updateProductSizeChart",Authentication, ProductSizeChart.updateProductSizeChart);
+
+router.delete('/deleteProductSizeChart/:id', Authentication, ProductSizeChart.deleteProductSizeChart);
 
 export default router
