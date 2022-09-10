@@ -43,7 +43,7 @@ router.get('/getProducts', Authentication, ProductsController.get_products);
 router.get('/getproduct/:id', Authentication, ProductsController.get_SingleProduct);
 
 
-router.put('/updateProduct', Authentication, upload.fields([ { name: 'cover_img', maxCount: 1 }, { name: 'img', maxCount: 1 }]), ProductsController.update_product)
+router.put('/updateProduct', Authentication, upload.fields([ { name: 'cover_img', maxCount: 1 }, { name: 'img', maxCount: 1 }, { name: 'extra_imgs', maxCount: 12 }]), ProductsController.update_product)
 
 
 router.patch('/updateProduct', Authentication, ProductsController.update_product);

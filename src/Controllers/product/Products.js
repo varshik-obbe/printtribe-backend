@@ -272,6 +272,22 @@ export const update_product = async (req,res) => {
         data.colors = JSON.parse(data.colors);
     }
 
+    let product_extraImgsArr = [];
+
+    try {
+        if(req.files.extra_imgs.length > 0)
+        {
+            await Promise.all(req.files.extra_imgs.map((item,key) => {
+                product_extraImgsArr.push(item.path.toString());
+            }))
+        }
+    }
+    catch(err) {
+        console.log("extra images not entered");
+    }
+
+    data.extra_imgs = product_extraImgsArr;
+
     if(data.sizes || data.colors) {
         if(data.sizes && !data.colors) {
             console.log("entered sizes part")
