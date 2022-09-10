@@ -61,9 +61,20 @@ export const getColorLinkProducts = (req,res) => {
     }); 
 }
 
-export const updateProductColorLinks = (req,res) => {
+export const updateProductColorLinks = async (req,res) => {
     const id = req.query.id;
     const { data } = req.body;
+    let dateVal = Date.now();
+    if(Array.isArray(data.color_links) && data.color_links.length > 0) {
+        await Promise.all(data.color_links.map(async (item,key) => {
+            if(Array.isArray(item.imgs) && item.imgs.length > 0) {
+                await Promise.all(item.imgs.map(async (itemImg,keyImg) => {
+                    await decode(itemImg, { fname: './uploads/'+ dateVal + keyImg + data.product_id, ext: 'jpg' });
+                    data.color_links[key].imgs[keyImg] = '/uploads/'+ dateVal + keyImg + data.product_id +".jpg";       
+                }))
+            }
+        }))
+    }
     productsColorLink.updateOne({product_id: data.product_id}, {$set: data}).exec().then((fabricProductsData)=>{
         res.status(200).json({success:{global:"Product Color Links is updated successfully"}})
     }).catch((err)=>{
