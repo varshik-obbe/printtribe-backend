@@ -29,7 +29,7 @@ export default async function (title,hello,message,second_message,email,link) {
         let htmlToSend = template(data);
     
           let info = await transporter.sendMail({
-            from: '"Varshik HN" <'+process.env.EMAIL_USERNAME+'>', // sender address
+            from: '"Printribe" <'+process.env.EMAIL_USERNAME+'>', // sender address
             to: email, // list of receivers
             subject: "Hello ✔", // Subject line
             html: htmlToSend, // html body
