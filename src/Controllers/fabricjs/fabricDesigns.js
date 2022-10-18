@@ -28,8 +28,8 @@ export const addSaved_Design = async (req, res) => {
 
     let dateVal = Date.now();
     await Promise.all(data.imgsArr.map(async (item, key) => {
-            await decode(item, { fname: './uploads/'+ dateVal + data.productId + key, ext: 'jpg' });
-            data.imgsArr[key] = '/uploads/'+ dateVal + data.productId + key +".jpg";
+            await decode(item, { fname: './uploads/'+ dateVal + data.productId + key, ext: 'png' });
+            data.imgsArr[key] = '/uploads/'+ dateVal + data.productId + key +".png";
     }))
     const fabricSavedDesign = new fabricSavedDesigns({
         _id: mongoose.Types.ObjectId(),
