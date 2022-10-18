@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { decode } from 'node-base64-image';
 import FabricDesignModel from "../../models/fabricDesigns";
+import fabricSavedDesigns from "../../models/fabricSavedDesigns";
 
 
 export const add_Desing = async (req, res) => {
@@ -17,6 +18,27 @@ export const add_Desing = async (req, res) => {
     });
 
     fabricDesign.save().then((savedData) => {
+        res.status(201).json({ data: savedData })
+    })
+    .catch((err) => res.status(400).json({global: {error: "could not add the data"} }))
+}
+
+export const addSaved_Design = async (req, res) => {
+    let { data } = req.body;
+
+    let dateVal = Date.now();
+    await Promise.all(data.imgsArr.map(async (item, key) => {
+            await decode(item, { fname: './uploads/'+ dateVal + data.productId + key, ext: 'jpg' });
+            data.imgsArr[key] = '/uploads/'+ dateVal + data.productId + key +".jpg";
+    }))
+    const fabricSavedDesign = new fabricSavedDesigns({
+        _id: mongoose.Types.ObjectId(),
+        productId: data.productId,
+        customerId: data.customerId,
+        imgsArr: data.imgsArr
+    });
+
+    fabricSavedDesign.save().then((savedData) => {
         res.status(201).json({ data: savedData })
     })
     .catch((err) => res.status(400).json({global: {error: "could not add the data"} }))
@@ -86,5 +108,5 @@ export const delete_Category = (req,res) => {
     });
 }
 
-export default { add_Desing, get_FabricDesigns, get_FabricDesignByfilter }
+export default { add_Desing, addSaved_Design, get_FabricDesigns, get_FabricDesignByfilter }
 
