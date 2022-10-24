@@ -21,6 +21,7 @@ const customerSchema = new mongoose.Schema({
     pincode: {type: String},
     gst: {type: String},
     website: {type: String},
+    remittance_type: {type: String},
     account_number: {type: String},
     ifsc_code: {type: String},
     bank_name: {type: String},
