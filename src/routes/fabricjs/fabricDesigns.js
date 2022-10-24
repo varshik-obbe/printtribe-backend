@@ -12,4 +12,6 @@ router.get('/getDesigns', Authentication, FabricDesignController.get_FabricDesig
 
 router.get('/getFabricDesign/:id/:color/:side/:customerId', Authentication, FabricDesignController.get_FabricDesignByfilter);
 
+router.get('/getSavedDesign/:id', Authentication, FabricDesignController.getAllsaved_design);
+
 export default router;
