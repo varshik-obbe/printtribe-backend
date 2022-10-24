@@ -29,6 +29,8 @@ const orderSchema = new mongoose.Schema({
     ],
     total_quantity: {type: String,required: true},
     total_price: {type:String,required:true},
+    retail_price: {type:String},
+    shipping_type: {type: String},
     shipping_charges: {type:String,required:true},
     design_price: {type:String},
     payment_type: {type: String, required: true, lowercase: true},

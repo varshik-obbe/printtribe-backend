@@ -16,4 +16,6 @@ router.delete('/deleteShipping/:id', Authentication, customerShippingController.
 
 router.get('/getShipRocketCharges/:pincode/:weight', Authentication, shiprocketController.get_charges);
 
+router.get('/getShipRocketCountries', Authentication, shiprocketController.get_supportedCountries);
+
 export default router

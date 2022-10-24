@@ -29,6 +29,8 @@ router.put("/updatecustomer",CustomerAuthentication, CustomerController.updateCu
 
 router.put("/updatePass",CustomerAuthentication, CustomerController.updatePass);
 
+router.put("/checkupdatePass",CustomerAuthentication, CustomerController.checkUpdPass);
+
 router.delete('/deleteCustomer/:id', CustomerAuthentication, CustomerController.delete_Customer);
 
 export default router

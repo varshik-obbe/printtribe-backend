@@ -19,6 +19,8 @@ export const add_order = async (req,res) => {
             product_info: orderData.product_info,
             total_quantity: orderData.total_quantity,
             total_price: orderData.total_price,
+            retail_price: orderData.retail_price,
+            shipping_type: orderData.shipping_type,
             shipping_charges: orderData.shipping_charges,
             payment_type: orderData.payment_type,
             payment_ref_id: orderData.payment_ref_id,
@@ -103,80 +105,85 @@ export const add_order = async (req,res) => {
               //         'Authorization': 'Bearer ' + returndata.access_token
               //       }
 
-              const nDate = new Date().toISOString('en-US', {
-                timeZone: 'Asia/Calcutta'
-              }).slice(0, 10);
-  
-              let shippingProductsArr = [];
-  
-              await Promise.all(orderData.product_info.map((item, key) => {
-                  let data = {
-                      "name": item.title,
-                      "sku": item.title+item.productsize+item.productcolor,
-                      "units": parseInt(item.quantity, 10),
-                      "selling_price": parseInt(item.price, 10),
-                      }
-  
-                      shippingProductsArr.push(data);
-              }))
-  
-              const weightTotal = parseInt(orderData.total_quantity) * 0.1; 
-  
-  
-              let shipRockData = {
-                "order_id": savedDataPopulate._id,
-                "order_date": nDate,
-                "pickup_location": process.env.SHIPROCKET_PICKUP_NAME,
-                "billing_customer_name": savedDataPopulate.customerShipping_id.fullname,
-                "billing_last_name": savedDataPopulate.customerShipping_id.fullname,
-                "billing_address": savedDataPopulate.customerShipping_id.address1,
-                "billing_address_2": savedDataPopulate.customerShipping_id.address2,
-                "billing_city": savedDataPopulate.customerShipping_id.city,
-                "billing_pincode": savedDataPopulate.customerShipping_id.zip_code,
-                "billing_state": savedDataPopulate.customerShipping_id.state,
-                "billing_country": "India",
-                "billing_email": orderData.customer_email,
-                "billing_phone": savedDataPopulate.customerShipping_id.phone,
-                "shipping_is_billing": true,
-                "order_items": shippingProductsArr,
-                "payment_method": "Prepaid",
-                "shipping_charges": parseInt(orderData.shipping_charges),
-                "giftwrap_charges": 0,
-                "transaction_charges": 0,
-                "total_discount": 0,
-                "sub_total": parseInt(orderData.total_price, 10),
-                "length": 10,
-                "breadth": 10,
-                "height": 10,
-                "weight": weightTotal
+              if(orderData.shipping_type == "shiprocket") {
+                  const nDate = new Date().toISOString('en-US', {
+                    timeZone: 'Asia/Calcutta'
+                  }).slice(0, 10);
+      
+                  let shippingProductsArr = [];
+      
+                  await Promise.all(orderData.product_info.map((item, key) => {
+                      let data = {
+                          "name": item.title,
+                          "sku": item.title+item.productsize+item.productcolor,
+                          "units": parseInt(item.quantity, 10),
+                          "selling_price": parseInt(item.price, 10),
+                          }
+      
+                          shippingProductsArr.push(data);
+                  }))
+      
+                  const weightTotal = parseInt(orderData.total_quantity) * 0.1; 
+      
+      
+                  let shipRockData = {
+                    "order_id": savedDataPopulate._id,
+                    "order_date": nDate,
+                    "pickup_location": process.env.SHIPROCKET_PICKUP_NAME,
+                    "billing_customer_name": savedDataPopulate.customerShipping_id.fullname,
+                    "billing_last_name": savedDataPopulate.customerShipping_id.fullname,
+                    "billing_address": savedDataPopulate.customerShipping_id.address1,
+                    "billing_address_2": savedDataPopulate.customerShipping_id.address2,
+                    "billing_city": savedDataPopulate.customerShipping_id.city,
+                    "billing_pincode": savedDataPopulate.customerShipping_id.zip_code,
+                    "billing_state": savedDataPopulate.customerShipping_id.state,
+                    "billing_country": "India",
+                    "billing_email": orderData.customer_email,
+                    "billing_phone": savedDataPopulate.customerShipping_id.phone,
+                    "shipping_is_billing": true,
+                    "order_items": shippingProductsArr,
+                    "payment_method": "Prepaid",
+                    "shipping_charges": parseInt(orderData.shipping_charges),
+                    "giftwrap_charges": 0,
+                    "transaction_charges": 0,
+                    "total_discount": 0,
+                    "sub_total": parseInt(orderData.total_price, 10),
+                    "length": 10,
+                    "breadth": 10,
+                    "height": 10,
+                    "weight": weightTotal
+                  }
+      
+      
+              const Shippingheaders = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                  }
+                var config = {
+                method: 'POST',
+                url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
+                data: shipRockData,
+                headers: Shippingheaders
+                };
+                
+                await axios(config)
+                .then(async function (response) {
+                  await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id} })
+                  .then((updateData) => {
+                    res.status(201).jsonp({ savedData: savedDataPopulate });
+                  })
+                  .catch((err) => {
+                    console.log("couldn't update the order database "+err)
+                  })
+                })
+                .catch(function (error) {
+                console.log("error occured while creating shipping order"+error);
+                res.status(400).json({ errors: error })
+                });
               }
-  
-  
-          const Shippingheaders = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-              }
-            var config = {
-            method: 'POST',
-            url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
-            data: shipRockData,
-            headers: Shippingheaders
-            };
-            
-            await axios(config)
-            .then(async function (response) {
-              await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id} })
-              .then((updateData) => {
-                res.status(201).jsonp({ savedData: savedDataPopulate });
-              })
-              .catch((err) => {
-                console.log("couldn't update the order database "+err)
-              })
-            })
-            .catch(function (error) {
-            console.log("error occured while creating shipping order"+error);
-            res.status(400).json({ errors: error })
-            });
+              else {
+                res.status(201).jsonp({ savedData: saveddata });
+              } 
 
 
 

@@ -34,5 +34,30 @@ export const get_charges = async (req,res) => {
     }
 }
 
+export const get_supportedCountries = async (req,res) => {
+    const token = await getShipToken();
+    if(token != "") {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
+        var config = {
+        method: 'get',
+        url: 'https://apiv2.shiprocket.in/v1/external/countries',
+        headers: headers
+        };
+        
+        axios(config)
+        .then(function (response) {
+            console.log("status from shiprocket"+response.status)
+            res.status(201).jsonp( response.data );
+        })
+        .catch(function (error) {
+        console.log("error occured while fetching info"+error);
+        res.status(400).json({ errors: error })
+        });
+    }
+}
 
-export default { get_charges }
+
+export default { get_charges, get_supportedCountries }

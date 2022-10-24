@@ -276,6 +276,32 @@ export const updatePass = async (req,res) => {
     // })
 }
 
+export const checkUpdPass = (req,res) => {
+    const { restData } = req.body
+
+    Customer.findOne({_id: restData.id}).exec().then((customerRecord)=>{
+        if(customerRecord && customerRecord.isValidPassword(restData.old_password)){
+            Customer.findOneAndUpdate(
+                { _id: restData.id },
+                { password: restData.password },
+                { useFindAndModify: false }
+            )
+            .exec()
+            .then((data) => {
+                            res.status(200).json({success:{global:"password updated successfully"}})
+            })
+            .catch((err) => res.status(200).json({success:{global:"could not find data"}}))      
+        }else{
+            res.status(400).json({errors:{global:"invalid old password"}});
+        }
+    }).catch((err) => 
+    {
+        console.log(err)
+        res.status(400).json({errors:{global:"invalid credentials"}})
+    }
+    );
+}
+
 export const delete_Customer = (req,res) => {
     const id = req.params.id;
     Customer.deleteOne({_id: id},function(err,data){
@@ -327,4 +353,4 @@ export const google_signinUp = (req,res) => {
 
 }
 
-export default { add_customer, login, getCustomers, verifyMail, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass, google_signinUp }
+export default { add_customer, login, getCustomers, verifyMail, getCustomerById, updateCustomer, delete_Customer, forgotPassword, resetPass, updatePass, checkUpdPass, google_signinUp }
