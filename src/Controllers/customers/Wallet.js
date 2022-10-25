@@ -102,7 +102,7 @@ export const add_credits = (req,res) => {
 export const getWalletHistory = (req,res) => {
     const custId = req.params.id;
 
-    paymentHistoryModel.findOne({ 'customer_id': custId })
+    paymentHistoryModel.find({ 'customer_id': custId })
     .exec()
     .then((historyData) => {
         res.status(200).json({ historyData: historyData })
