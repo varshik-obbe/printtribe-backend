@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import razorpay from "razorpay";
+import { v4 as uuidv4 } from 'uuid';
 import paymentHistoryModel from "../../models/payment_history";
 import walletModel from "../../models/wallet";
 
@@ -169,12 +170,30 @@ export const debitWallet = (req,res) => {
     .then((data) => {
         if(data) {
             let newAmount = parseInt(data.amount) - parseInt(customer_data.amount)
-            walletModel.findOneAndUpdate({ 'customer_id': customer_data.customer_id }, { $set: { 'amount': newAmount } }, { new: true })
-            .then((updated) => {
-                res.status(200).json({ global: { success: updated } })
+            let nowDate = new Date();
+            let randomstring = uuidv4();
+            const paymentHistoryData = new paymentHistoryModel({
+                _id:mongoose.Types.ObjectId(),
+                customer_id: customer_data.customer_id,
+                currency: "INR",
+                amount: customer_data.amount,
+                reference_id: randomstring,
+                payment_order_id: randomstring,
+                payment_date: nowDate,
+                payment_status: "debited"
+            })
+            paymentHistoryData.save().then((savedHistoryData) => {
+                walletModel.findOneAndUpdate({ 'customer_id': customer_data.customer_id }, { $set: { 'amount': newAmount } }, { new: true })
+                .then((updated) => {
+                    res.status(200).json({ global: { success: updated } })
+                })
+                .catch((err) => {
+                    res.status(400).json({ global: { error: "error occured while updating" } })
+                })
             })
             .catch((err) => {
-                res.status(400).json({ global: { error: "error occured while updating" } })
+                console.log("error saving payment history"+err)
+                res.status(500).json({error:{global:"could not save debit history"}})
             })
         }
         else {
