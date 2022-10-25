@@ -99,6 +99,20 @@ export const add_credits = (req,res) => {
     })
 }
 
+export const getWalletHistory = (req,res) => {
+    const custId = req.params.id;
+
+    paymentHistoryModel.findOne({ 'customer_id': custId })
+    .exec()
+    .then((historyData) => {
+        res.status(200).json({ historyData: historyData })
+    })
+    .catch((err) => {
+        console.log("failed fetching wallet history data"+err)
+        res.status(400).json({errors:{ global: "could not fetch data" }})
+    })
+}
+
 export const instantiateRazorpay = (req,res) => {
     const { insdata } = req.body;
 
@@ -187,4 +201,4 @@ export const updateByWebhook = (req,res) => {
     
 }
 
-export default { add_credits, get_walletByID, instantiateRazorpay, debitWallet }
+export default { add_credits, get_walletByID, instantiateRazorpay, debitWallet, getWalletHistory }
