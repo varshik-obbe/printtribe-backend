@@ -2,7 +2,9 @@ import axios from "axios";
 import mongoose from "mongoose";
 import categoriesModel from "../../models/categories";
 import orderModel from "../../models/orders";
+import printribeSettingsModel from "../../models/printribe_settings";
 import addProductsInventory from "../../utils/addProductsToCustomer";
+import createPDF from "../../utils/createPDF";
 import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
 import ParseErrors from "../../utils/ParseErrors";
@@ -41,12 +43,17 @@ export const add_order = async (req,res) => {
             deleteQuant(orderData.product_info,orderData.customer_id,orderData.customer_email)
 
             let addCustomerInventory = addProductsInventory(savedDataPopulate.product_info, savedDataPopulate.customer_id)
+            
+            let random = "";
+            let state_code = "KA";
+            let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
+            random = await createPDF(savedDataPopulate.customerShipping_id.fullname,savedDataPopulate.customerShipping_id.address1,savedDataPopulate.customerShipping_id.zip_code,orderData.shipping_charges,savedDataPopulate.customerShipping_id.state,state_code,orderData.customer_email,savedDataPopulate.customerShipping_id.phone,invoice_no,savedDataPopulate.customerShipping_id.city,orderData.product_info,orderData.gst_details,orderData.total_price);
 
             let title = "printribe mail"
             let hello = "hello fellow dropshipper"
-            let message = "thank you for ordering with us, please find the order in partner panel link below."
+            let message = "thank you for ordering with us, your order will be shipped to you soon.Please click the link below to download your invoice."
             let second_message = "for any further assistance please reach out to us."
-            let link = "https://printribe-partner.web.app/#/login";
+            let link = process.env.PROJ_DEV_HOST+"/uploads/"+random+".pdf";
             SendMail(title,hello,message,second_message,orderData.customer_email,link);
 
             if(addCustomerInventory) {
@@ -168,7 +175,7 @@ export const add_order = async (req,res) => {
                 
                 await axios(config)
                 .then(async function (response) {
-                  await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id} })
+                  await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id, 'pdf_link': link} })
                   .then((updateData) => {
                     res.status(201).jsonp({ savedData: savedDataPopulate });
                   })
@@ -182,7 +189,13 @@ export const add_order = async (req,res) => {
                 });
               }
               else {
-                res.status(201).jsonp({ savedData: saveddata });
+                await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'pdf_link': link} })
+                .then((updateData) => {
+                  res.status(201).jsonp({ savedData: savedDataPopulate });
+                })
+                .catch((err) => {
+                  console.log("couldn't update the order database "+err)
+                })
               } 
 
 
