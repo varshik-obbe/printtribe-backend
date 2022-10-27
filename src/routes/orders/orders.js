@@ -12,6 +12,8 @@ router.post('/orderReturn', CustomerAuthentication , OrdersController.generateCu
 
 router.get('/getOrders/:id', CustomerAuthentication, OrdersController.getCustomer_orders);
 
+router.get('/getCustomerStatement/:id', CustomerAuthentication, OrdersController.getcustomerStatement);
+
 router.get('/getOngoingOrders', Authentication, OrdersController.getAdminOngoingOrders);
 
 router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);

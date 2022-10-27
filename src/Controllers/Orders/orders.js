@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import categoriesModel from "../../models/categories";
 import customerShippingModel from "../../models/customer_shipping";
 import orderModel from "../../models/orders";
+import paymentHistoryModel from "../../models/payment_history";
 import printribeSettingsModel from "../../models/printribe_settings";
 import addProductsInventory from "../../utils/addProductsToCustomer";
 import createPDF from "../../utils/createPDF";
@@ -951,4 +952,24 @@ export const generateCustomerReturn = (req,res) => {
   .catch((err) => res.status(404).json({error:{global:"orders could not be fetched"+err}}))
 }
 
-export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing, generateCustomerReturn }
+export const getcustomerStatement = async (req,res) => {
+  const customer_id = req.params.id
+
+  let orders = await orderModel.find({'customer_id': customer_id})
+  .exec()
+  .then((orderData) => {
+    return orderData
+  })
+  .catch((err) => res.status(400).json({error:{global:"error occured while fetching orders"}}))
+
+  let walletHistory = await paymentHistoryModel.find({ 'customer_id': customer_id, $or: [{ payment_status: "debited" }, { payment_status: "success" }] })
+  .exec()
+  .then((walletHistory) => {
+    return walletHistory
+  })
+  .catch((err) => res.status(400).json({error:{global:"error occured while fetching wallet history"}}))
+
+  res.status(200).json({ statement: { "orders": orders, "walletHistory": walletHistory } })
+}
+
+export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing, generateCustomerReturn, getcustomerStatement }
