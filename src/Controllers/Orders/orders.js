@@ -1,6 +1,7 @@
 import axios from "axios";
 import mongoose from "mongoose";
 import categoriesModel from "../../models/categories";
+import customerShippingModel from "../../models/customer_shipping";
 import orderModel from "../../models/orders";
 import printribeSettingsModel from "../../models/printribe_settings";
 import addProductsInventory from "../../utils/addProductsToCustomer";
@@ -33,6 +34,8 @@ export const add_order = async (req,res) => {
             design_price: orderData.design_price,
             gst_details: orderData.gst_details,
             shipment_status: "processing",
+            return_status: "",
+            returned_awb: "",
             shiprocket_awb: ""
         })
         newOrder.save().then(async saveddata => {
@@ -47,6 +50,13 @@ export const add_order = async (req,res) => {
             let random = "";
             let state_code = "KA";
             let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
+            .exec()
+            .then((settingsData) => {
+                return settingsData.invoice_no;
+            })
+            .catch((err) => {
+                console.log("could not get the invoice no");
+            })
             random = await createPDF(savedDataPopulate.customerShipping_id.fullname,savedDataPopulate.customerShipping_id.address1,savedDataPopulate.customerShipping_id.zip_code,orderData.shipping_charges,savedDataPopulate.customerShipping_id.state,state_code,orderData.customer_email,savedDataPopulate.customerShipping_id.phone,invoice_no,savedDataPopulate.customerShipping_id.city,orderData.product_info,orderData.gst_details,orderData.total_price);
 
             let title = "printribe mail"
@@ -809,4 +819,136 @@ export const getAdminOtherOrders = (req,res) => {
   })
 }
 
-export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing }
+export const generateCustomerReturn = (req,res) => {
+  let { data } = req.body;
+  orderModel.findOne({ '_id': data.id, 'shipment_status': "processed" })
+  .exec()
+  .then(async (orderdata) => {
+    if(orderdata) {
+      const savedDataPopulate = await customerShippingModel.findOne({'_id': orderdata.customerShipping_id})
+      .exec()
+      .then((shipdata) => {
+        return shipdata;
+      })
+      .catch((err) => res.status(404).json({error:{global:"shpiment info could not be found"+err}}))
+      const weightTotal = parseInt(orderdata.total_quantity) * 0.1; 
+      const pincode = savedDataPopulate.zip_code;
+      const weight = weightTotal;
+  
+  
+      const token = await getShipToken();
+      if(token != "") {
+          const headers = {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            }
+          var config = {
+          method: 'get',
+          url: 'https://apiv2.shiprocket.in/v1/external/courier/serviceability?pickup_postcode='+pincode+'&delivery_postcode='+process.env.SHIPROCKET_PICKUP_PIN+'&cod=0&weight='+weight+'&is_return='+1,
+          headers: headers
+          };
+          
+          axios(config)
+          .then( async function (response) {
+            if(response.status = 200) {
+                const nDate = new Date().toISOString('en-US', {
+                  timeZone: 'Asia/Calcutta'
+                }).slice(0, 10);
+    
+                let shippingProductsArr = [];
+    
+                await Promise.all(orderdata.product_info.map((item, key) => {
+                    let data = {
+                        "name": item.title,
+                        "sku": item.title+item.productsize+item.productcolor,
+                        "units": parseInt(item.quantity, 10),
+                        "selling_price": parseInt(item.price, 10),
+                        }
+    
+                        shippingProductsArr.push(data);
+                }))
+    
+                const weightTotal = parseInt(orderdata.total_quantity) * 0.1; 
+                let orderNo = orderdata._id + "1";
+    
+                let shipRockData = {
+                  "order_id": orderNo,
+                  "order_date": nDate,
+                  "channel_id": 147857,
+                  "pickup_customer_name": savedDataPopulate.fullname,
+                  "pickup_last_name": "",
+                  "pickup_address": savedDataPopulate.address1,
+                  "pickup_address_2": savedDataPopulate.address2,
+                  "pickup_city": savedDataPopulate.city,
+                  "pickup_state": savedDataPopulate.state,
+                  "pickup_country": "India",
+                  "pickup_pincode": savedDataPopulate.zip_code,
+                  "pickup_email": orderdata.customer_email,
+                  "pickup_phone": savedDataPopulate.phone,
+                  "pickup_isd_code": "91",
+                  "shipping_customer_name": "PRINTRIBE",
+                  "shipping_last_name": "",
+                  "shipping_address": "1, Mallayya Industrial Area, Opposite Maruti Solar System",
+                  "shipping_address_2": "Kereguddadahalli, Chikkabanavara",
+                  "shipping_city": "Bangalore Rural",
+                  "shipping_country": "India",
+                  "shipping_pincode": 560090,
+                  "shipping_state": "Karnataka",
+                  "shipping_email": "theprintribe@gmail.com",
+                  "shipping_isd_code": "91",
+                  "shipping_phone": 8951205960,
+                  "order_items": shippingProductsArr,
+                  "payment_method": "PREPAID",
+                  "total_discount": "0",
+                  "sub_total": parseInt(orderdata.total_price, 10),
+                  "length": 10,
+                  "breadth": 10,
+                  "height": 10,
+                  "weight": weightTotal
+                }
+    
+    
+            const Shippingheaders = {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token
+                }
+              var config = {
+              method: 'POST',
+              url: 'https://apiv2.shiprocket.in/v1/external/orders/create/return',
+              data: shipRockData,
+              headers: Shippingheaders
+              };
+              
+              await axios(config)
+              .then(async function (responseReturn) {
+                await orderModel.updateOne({'_id': orderdata._id}, { $set: {'return_status': 'created'} })
+                .then((updateData) => {
+                  res.status(201).jsonp({ shiprocketData: responseReturn });
+                })
+                .catch((err) => {
+                  console.log("couldn't update the order database "+err)
+                })
+              })
+              .catch(function (error) {
+              console.log("error occured while creating shipping order"+error);
+              res.status(400).json({ errors: error })
+              });
+            }
+          })
+          .catch(function (error) {
+          console.log("error occured while fetching info"+error);
+          res.status(400).json({ errors: error })
+          });
+      }
+      else {
+          res.status(400).json({error:{global:"token could not be generated"}});
+      }
+    }
+    else {
+      res.status(400).json({error:{global:"no order found"}});
+    }
+  })
+  .catch((err) => res.status(404).json({error:{global:"orders could not be fetched"+err}}))
+}
+
+export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing, generateCustomerReturn }
