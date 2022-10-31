@@ -86,6 +86,21 @@ export const updateUser = async (req,res) => {
     })
 }
 
+export const sendBulkMail = async (req,res) => {
+    let { mailData } = req.body;
+    let name = mailData.name;
+    let emailId = mailData.emailId;
+    let message_received = mailData.message_received;
+
+    let title = "Bulk Purchase Notification"
+    let hello = "a bulk order request has been placed"
+    let message = "customer "+name+" has requested information regarding bulk order. His mail id is "+ emailId +" and his message is : "+message_received;
+    let second_message = "";
+    let link = "theprintribe.com";
+    await SendMail(title,hello,message,second_message,process.env.EMAIL_USERNAME,link);
+    res.status(200).json({success:{global:"mail sent successfully"}})
+}
+
 export const changePass = (req,res) => {
  
     let { updateData } = req.body;
@@ -132,4 +147,4 @@ export const delete_User = (req,res) => {
     });
 }
 
-export default { add_user, login, getUsers, getUserById, updateUser, delete_User, changePass }
+export default { add_user, login, getUsers, getUserById, updateUser, delete_User, changePass, sendBulkMail }

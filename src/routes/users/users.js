@@ -9,6 +9,8 @@ router.post('/addUser', Authentication , UserController.add_user);
 
 router.post('/changePass', Authentication, UserController.changePass);
 
+router.post('/sendBulkMail', Authentication, UserController.sendBulkMail);
+
 router.post('/login', UserController.login);
 
 router.get('/getUsers', UserController.getUsers);
