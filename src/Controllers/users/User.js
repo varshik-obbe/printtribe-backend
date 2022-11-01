@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { decode } from 'node-base64-image';
 import User from "../../models/user";
 import ParseErrors from "../../utils/ParseErrors";
+import SendMail from "../../utils/SendMail";
 
 
 export const add_user = (req,res)=>{
