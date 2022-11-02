@@ -9,7 +9,16 @@ const fabricDesignSchema = new mongoose.Schema({
     side: {type: String},
     data: {type: String},
     url: {type: String},
-    imgUrl: {type: String}
+    imgUrl: {type: String},
+    uploadedImgsArr: {type: Array},
+    savedImgsInfo: [
+        {
+            "width": {type: Number},
+            "height": {type: Number},
+            "left": {type: Number},
+            "top": {type: Number}
+        }
+    ]
 },{ timestamps:true });
 
 

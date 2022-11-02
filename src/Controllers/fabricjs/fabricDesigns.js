@@ -6,6 +6,11 @@ import fabricSavedDesigns from "../../models/fabricSavedDesigns";
 
 export const add_Desing = async (req, res) => {
     let { data } = req.body;
+    let dateVal = Date.now();
+    await Promise.all(data.imgsArr.map(async (item, key) => {
+        await decode(item, { fname: './uploads/'+ dateVal + data.productId + key, ext: 'jpg' });
+        data.imgsArr[key] = '/uploads/'+ dateVal + data.productId + key +".jpg";
+    }))
     const fabricDesign = new FabricDesignModel({
         _id: mongoose.Types.ObjectId(),
         productId: data.productId,
@@ -14,7 +19,9 @@ export const add_Desing = async (req, res) => {
         side: data.side,
         data: data.data,
         url: data.url,
-        imgUrl: data.imgUrl
+        imgUrl: data.imgUrl,
+        uploadedImgsArr: data.imgsArr,
+        savedImgsInfo: data.savedImgsInfo
     });
 
     fabricDesign.save().then((savedData) => {
