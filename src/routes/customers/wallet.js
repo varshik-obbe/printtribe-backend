@@ -15,6 +15,8 @@ router.post('/razorPayInstantiate', CustomerAuthentication , walletController.in
 
 router.post('/debitWallet', CustomerAuthentication, walletController.debitWallet);
 
+router.post('/remitWallet', CustomerAuthentication, walletController.remitAccount);
+
 // router.patch("/updateWallet",CustomerAuthentication, CustomerController.updateCustomer);
 
 // router.put("/updatecustomer",CustomerAuthentication, CustomerController.updateCustomer);
