@@ -515,7 +515,8 @@ export const ordersPaid = async (req,res) => {
         "total_weight": parsedOrderData.order.totals.weight,
         "total_quantity": parsedOrderData.order.totals.quantity.toString(),
         "total_tax": parsedOrderData.order.totals.tax,
-        "customer_email": parsedOrderData.order.buyerInfo.email
+        "customer_email": parsedOrderData.order.buyerInfo.email,
+        "payment_method": parsedOrderData.order.billingInfo.paymentMethod
     }
 
     let customer_id = "";
@@ -578,6 +579,7 @@ export const ordersPaid = async (req,res) => {
              total_price: orderDet.total_price,
              total_tax: orderDet.total_tax,
              customer_email: orderDet.customer_email,
+             payment_type: orderDet.payment_method, 
              partner_status: "processing"
          })
 
