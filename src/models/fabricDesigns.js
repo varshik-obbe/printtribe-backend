@@ -16,7 +16,9 @@ const fabricDesignSchema = new mongoose.Schema({
             "width": {type: Number},
             "height": {type: Number},
             "left": {type: Number},
-            "top": {type: Number}
+            "top": {type: Number},
+            "scaleX": {type: Number},
+            "scaleY": {type: Number}
         }
     ]
 },{ timestamps:true });
