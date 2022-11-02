@@ -81,7 +81,8 @@ const fabricProductInfoSchema = new mongoose.Schema({
                         heightInches: {type: Number},
                         garment_price: {type: Number},
                         scaleWidth: {type: Number},
-                        scaleHeight: {type: Number}
+                        scaleHeight: {type: Number},
+                        notification: {type: String}
                     }
                 ],
             rightCanvasPricing: [
@@ -93,7 +94,8 @@ const fabricProductInfoSchema = new mongoose.Schema({
                         heightInches: {type: Number},
                         garment_price: {type: Number},
                         scaleWidth: {type: Number},
-                        scaleHeight: {type: Number}
+                        scaleHeight: {type: Number},
+                        notification: {type: String}
                     }
                 ]                                                
         }
