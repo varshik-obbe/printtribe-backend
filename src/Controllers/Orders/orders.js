@@ -49,7 +49,7 @@ export const add_order = async (req,res) => {
             let addCustomerInventory = addProductsInventory(savedDataPopulate.product_info, savedDataPopulate.customer_id)
             
             let random = "";
-            let state_code = "KA";
+            let state_code = "29";
             let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
             .exec()
             .then((settingsData) => {
