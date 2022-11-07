@@ -11,6 +11,8 @@ router.post('/addShipping', Authentication,  customerShippingController.add_ship
 
 router.get('/getShippingById/:id', Authentication, customerShippingController.getSingle_shipping);
 
+router.get('/getStatesAndCity/:id', Authentication, shiprocketController.get_statesCity);
+
 
 router.delete('/deleteShipping/:id', Authentication, customerShippingController.delete_shipping);
 

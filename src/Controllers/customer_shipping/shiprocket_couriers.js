@@ -59,5 +59,26 @@ export const get_supportedCountries = async (req,res) => {
     }
 }
 
+export const get_statesCity = (req,res) => {
+    const pincode = req.params.id;
+    const headers = {
+        'Content-Type': 'application/json'
+      }
+    var config = {
+    method: 'get',
+    url: 'http://www.postalpincode.in/api/pincode/'+pincode,
+    headers: headers
+    };
+    
+    axios(config)
+    .then(function (response) {
+        res.status(201).jsonp( response.data );
+    })
+    .catch(function (error) {
+    console.log("error occured while fetching info"+error);
+    res.status(400).json({ errors: error })
+    });
+}
 
-export default { get_charges, get_supportedCountries }
+
+export default { get_charges, get_supportedCountries, get_statesCity }
