@@ -321,12 +321,12 @@ export const update_product = async (req,res) => {
          }
 }
 
-export const search_products = (req,res) => {
+export const search_products = async (req,res) => {
     const text = req.params.text
 
     let title = new RegExp(text)
 
-    Products.find({
+    let ProductsArr = await Products.find({
         "$or": [
             { title: { '$regex':  title, '$options': 'i'} },
             { description: { '$regex':  title, '$options': 'i'} }
@@ -334,11 +334,26 @@ export const search_products = (req,res) => {
     })
     .exec()
     .then((data) => {
-        res.status(200).json({ products: data })
+        return data;
     })
     .catch((err) => {
         res.status(400).json({error:{global:"could not find the products"}});
     })
+
+    let CategoriesArr = await Categories.find({ category: { '$regex':  title, '$options': 'i'} })
+    .exec()
+    .then((data) => {
+        return data;
+    })
+    .catch((err) => {
+        res.status(400).json({error:{global:"could not find the products"}});
+    })
+    if(res.headersSent) {
+
+    }
+    else {
+        res.status(200).json({ products: ProductsArr, categories: CategoriesArr })
+    }
 }
 
 export const delete_Products = (req,res) => {
