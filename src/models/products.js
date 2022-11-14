@@ -15,6 +15,8 @@ const productsSchema = new mongoose.Schema({
     extra_imgs: {type: Array},
     hsn_code: {type: String},
     gst: {type: String},
+    design_gst: {type: String},
+    handling_gst: {type: String},
     quantities_updated: { type: Boolean, default: false },
     weight: {type: String},
     position: { type: Number },
