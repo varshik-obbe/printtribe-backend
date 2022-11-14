@@ -29,6 +29,8 @@ export const add_order = async (req,res) => {
                 shiprocket_awb: "",
                 shipping_charges: orderData.shipping_charges,
                 gst_details: orderData.gst_details,
+                design_gst: orderData.design_gst,
+                handling_gst: orderData.handling_gst,
                 total_weight: orderData.total_weight,
                 dimensions: orderData.dimensions,
                 shiprocket_order: true
@@ -60,7 +62,7 @@ export const add_order = async (req,res) => {
                     console.log("could not get the invoice no");
                 })
                 let random = "";
-                random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,orderData.product_info,orderData.gst_details,orderData.total_price);
+                random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,orderData.product_info,orderData.gst_details,orderData.total_price,orderData.design_gst,orderData.handling_gst);
 
     
                 let title = "printribe mail"

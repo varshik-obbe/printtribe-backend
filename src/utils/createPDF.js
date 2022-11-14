@@ -4,7 +4,7 @@ import puppeteer from "puppeteer";
 import { promisify } from "util";
 
 
-export default async function(customer_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,productInfo,gst_details,total_price) {
+export default async function(customer_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,productInfo,gst_details,total_price,design_gst,handling_gst) {
     try {
         const readFile = promisify(fs.readFile);
 
@@ -55,6 +55,19 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
           let cgst3_perc = "";
           let sgst3_perc = "";
           let igst3_perc = "";
+          let design_sgst = 0.00;
+          let design_cgst = 0.00;
+          let design_igst = 0.00;
+          let handle_cgst = 0.00;
+          let handle_sgst = 0.00;
+          let handle_igst = 0.00;
+          let design_sgst_perc = "";
+          let design_cgst_perc = "";
+          let design_igst_perc = "";
+          let handle_cgst_perc = "";
+          let handle_sgst_perc = "";
+          let handle_igst_perc = "";
+          
 
           let total_gst_amount = 0.00;
 
@@ -102,6 +115,32 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             }
           }))
 
+          Promise.all(design_gst.map((itemGst,keyGst) => {
+            if(state_code == "29") {
+              design_cgst = parseFloat(itemGst.gst_amount).toFixed(2);
+              design_sgst = parseFloat(itemGst.gst_amount).toFixed(2);
+              design_sgst_perc = itemGst.gst_percent;
+              design_cgst_perc = itemGst.gst_percent;
+            }
+            else {
+              design_igst = parseFloat(itemGst.gst_amount).toFixed(2);
+              design_igst_perc = itemGst.gst_percent;
+            }
+          }))
+
+          Promise.all(handling_gst.map((itemGst,keyGst) => {
+            if(state_code == "29") {
+              handle_cgst = parseFloat(itemGst.gst_amount).toFixed(2);
+              handle_sgst = parseFloat(itemGst.gst_amount).toFixed(2);
+              handle_sgst_perc = itemGst.gst_percent;
+              handle_cgst_perc = itemGst.gst_percent;
+            }
+            else {
+              handle_igst = parseFloat(itemGst.gst_amount).toFixed(2);
+              handle_igst_perc = itemGst.gst_percent;
+            }
+          }))
+
           console.log("sgst 1 value is: "+sgst1+" cgst 1 is "+ cgst1 + " sgst 2 is "+sgst2+" cgst 2 is "+cgst2);
 
           total_gst_amount = parseFloat(sgst1) + parseFloat(cgst1) + parseFloat(igst1) + parseFloat(sgst2) + parseFloat(cgst2) + parseFloat(igst2) + parseFloat(sgst3) + parseFloat(cgst3) + parseFloat(igst3);
@@ -124,6 +163,8 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             productInfo: productInfo,
             totalGross: totalGross.toFixed(2),
             gst_details: gst_details,
+            design_gst: design_gst,
+            handling_gst: handling_gst,
             sgst1: sgst1,
             cgst1: cgst1,
             igst1: igst1,
@@ -133,6 +174,12 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             cgst3: cgst3,
             sgst3: sgst3,
             igst3: igst3,
+            design_cgst: design_cgst,
+            design_sgst: design_sgst,
+            design_igst: design_igst,
+            handle_cgst: handle_cgst,
+            handle_sgst: handle_sgst,
+            handle_igst: handle_igst,
             cgst1_perc: cgst1_perc,
             sgst1_perc: sgst1_perc,
             igst1_perc: igst1_perc,
@@ -142,6 +189,12 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             cgst3_perc: cgst3_perc,
             sgst3_perc: sgst3_perc,
             igst3_perc: igst3_perc,
+            design_cgst_perc: design_cgst_perc,
+            design_sgst_perc: design_sgst_perc,
+            design_igst_perc: design_igst_perc,
+            handle_cgst_perc: handle_cgst_perc,
+            handle_sgst_perc: handle_sgst_perc,
+            handle_igst_perc: handle_igst_perc,
             total_gst_amount: parseFloat(total_gst_amount).toFixed(2),
             shipping_charges: shipping_charges,
             total_price: parseFloat(total_price).toFixed(2),

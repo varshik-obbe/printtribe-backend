@@ -40,6 +40,20 @@ const orderOfflineSchema = new mongoose.Schema({
             gst_type: {type: String, required: true}
         }
     ],
+    design_gst: [
+        {
+            gst_percent: {type: String},
+            gst_amount: {type: String},
+            gst_type: {type: String}
+        }
+    ],
+    handling_gst: [
+        {
+            gst_percent: {type: String},
+            gst_amount: {type: String},
+            gst_type: {type: String}
+        }
+    ],
     total_weight: {type: String},
     dimensions: {
         height: { type: String },
