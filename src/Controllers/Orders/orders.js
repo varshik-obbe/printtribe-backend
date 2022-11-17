@@ -34,6 +34,8 @@ export const add_order = async (req,res) => {
             courier_id: orderData.courier_id,
             design_price: orderData.design_price,
             gst_details: orderData.gst_details,
+            design_gst: orderData.design_gst,
+            handling_gst: orderData.handling_gst,
             shipment_status: "processing",
             return_status: "",
             returned_awb: "",
@@ -58,7 +60,7 @@ export const add_order = async (req,res) => {
             .catch((err) => {
                 console.log("could not get the invoice no");
             })
-            random = await createPDF(savedDataPopulate.customerShipping_id.fullname,savedDataPopulate.customerShipping_id.address1,savedDataPopulate.customerShipping_id.zip_code,orderData.shipping_charges,savedDataPopulate.customerShipping_id.state,state_code,orderData.customer_email,savedDataPopulate.customerShipping_id.phone,invoice_no,savedDataPopulate.customerShipping_id.city,orderData.product_info,orderData.gst_details,orderData.total_price);
+            random = await createPDF(savedDataPopulate.customerShipping_id.fullname,savedDataPopulate.customerShipping_id.address1,savedDataPopulate.customerShipping_id.zip_code,orderData.shipping_charges,savedDataPopulate.customerShipping_id.state,state_code,orderData.customer_email,savedDataPopulate.customerShipping_id.phone,invoice_no,savedDataPopulate.customerShipping_id.city,orderData.product_info,orderData.gst_details,orderData.total_price,orderData.design_gst,orderData.handling_gst);
 
             let title = "printribe mail"
             let hello = "hello fellow dropshipper"

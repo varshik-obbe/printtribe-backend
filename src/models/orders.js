@@ -27,6 +27,20 @@ const orderSchema = new mongoose.Schema({
             gst_type: {type: String}
         }
     ],
+    design_gst: [
+        {
+            gst_percent: {type: String},
+            gst_amount: {type: String},
+            gst_type: {type: String}
+        }
+    ],
+    handling_gst: [
+        {
+            gst_percent: {type: String},
+            gst_amount: {type: String},
+            gst_type: {type: String}
+        }
+    ],
     total_quantity: {type: String,required: true},
     total_price: {type:String,required:true},
     retail_price: {type:String},
