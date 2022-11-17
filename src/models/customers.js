@@ -24,6 +24,7 @@ const customerSchema = new mongoose.Schema({
     remittance_type: {type: String},
     account_number: {type: String},
     ifsc_code: {type: String},
+    bank_account_name: {type: String},
     bank_name: {type: String},
     customer_img: {type: String},
     verify_mail: {type: String},

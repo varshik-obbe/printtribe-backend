@@ -43,6 +43,7 @@ export const add_customer = async (req,res)=>{
                 website: customerRegisterdata.website,
                 account_number: customerRegisterdata.account_number,
                 ifsc_code: customerRegisterdata.ifsc_code,
+                bank_account_name: "",
                 bank_name: customerRegisterdata.bank_name,
                 customer_img: imagUrl,
                 active: "no"
@@ -134,6 +135,7 @@ export const getCustomers = (req,res) => {
                     website: customer.website,
                     account_number: customer.account_number,
                     ifsc_code: customer.ifsc_code,
+                    bank_account_name: customer.bank_account_name,
                     bank_name: customer.bank_name,
                     customer_img: customer.customer_img,
                     active: customer.active
