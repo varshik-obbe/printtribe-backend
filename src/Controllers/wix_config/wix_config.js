@@ -580,7 +580,11 @@ export const ordersPaid = async (req,res) => {
              total_tax: orderDet.total_tax,
              customer_email: orderDet.customer_email,
              payment_type: orderDet.payment_method, 
-             partner_status: "processing"
+             partner_status: "processing",
+             return_status: "",
+             returned_awb: "",
+             refund_wix_id: "",
+             refund_reason: ""
          })
 
          ordersSave.save().then((savedData) => {
@@ -690,6 +694,41 @@ export const setOrderStatus = async (req,res) => {
 
 }
 
+export const setRefund = (req,res) => {
+    const data = req.body;
+
+    console.log("list of headers "
+    +JSON.stringify(req.headers));
+
+    var decoded = jwt.verify(data, fs.readFileSync('./ZakekeFiles/public.pem'), { algorithms: ['RS256'] });
+
+
+    let ordersData = decoded.data;
+
+    ordersData = JSON.parse(ordersData);
+
+    let parsedOrderData = JSON.parse(ordersData.data);
+
+    wixOrderModel.findOne({ 'wix_order_id': parsedOrderData.order.id })
+    .exec()
+    .then((data) => {
+        if(data) {
+            wixOrderModel.updateOne({'_id': data._id}, { $set: {'refund_wix_id': parsedOrderData.order.refunds.id, 'refund_reason': parsedOrderData.order.refunds.reason } })
+            .then((updateData) => {
+              res.status(200).json({ global: { success: "updated successfully" } });
+            })
+            .catch((err) => {
+              res.status(400).json({ global: { error: "could not fetch orders" } })                
+              console.log("couldn't update the order database "+err)
+            })
+        }
+        else {
+            res.status(400).json({ global: { error: "no data found" } })
+        }
+    })
+    .catch((error) =>  res.status(400).json({ global: { error: "could not fetch orders" } }))
+}
+
 export const getWixOrders = (req,res) => {
     const id = req.params.id;
 
@@ -727,4 +766,4 @@ export const getAllOrders = (req,res) => {
 }
 
 
-export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders, setOrderStatus, getAllOrders }
+export default { testToken, tokenWebhook, addProduct, uploadMedia, addQuantity, removeProd, getOrders, ordersPaid, getWixOrders, setOrderStatus, getAllOrders, setRefund }

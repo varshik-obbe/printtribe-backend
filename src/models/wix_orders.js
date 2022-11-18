@@ -47,7 +47,11 @@ const wixOrders = new mongoose.Schema({
     shiprocket_awb: {type:String},
     payment_type: {type: String},
     shiprocket_order: {type: Boolean, default: false},
-    partner_status: {type: String}
+    partner_status: {type: String},
+    return_status: {type: String},
+    returned_awb: {type: String},
+    refund_wix_id: {type: String},
+    refund_reason: {type: String}
 },{ timestamps:true });
 
 wixOrders.plugin(uniqueValidator)

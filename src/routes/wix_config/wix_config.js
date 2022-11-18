@@ -27,4 +27,6 @@ router.get('/getwixAllOrders', CustomerAuthentication, wixController.getAllOrder
 
 router.post('/setOrderStatus', CustomerAuthentication, wixController.setOrderStatus);
 
+router.post('/refundOrder', wixController.setRefund);
+
 export default router
