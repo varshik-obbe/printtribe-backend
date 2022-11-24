@@ -21,6 +21,7 @@ export const add_Desing = async (req, res) => {
         url: data.url,
         imgUrl: data.imgUrl,
         uploadedImgsArr: data.imgsArr,
+        textDesign: data.textDesign,
         savedImgsInfo: data.savedImgsInfo
     });
 
