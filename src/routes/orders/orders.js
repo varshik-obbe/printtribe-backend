@@ -16,6 +16,14 @@ router.get('/getCustomerStatement/:id', CustomerAuthentication, OrdersController
 
 router.get('/getOngoingOrders', Authentication, OrdersController.getAdminOngoingOrders);
 
+router.get('/getThirdPartyOrders', Authentication, OrdersController.getThirdParty_orders);
+
+router.get('/getAdminThirdPartyApprovedOrders', Authentication, OrdersController.getAdminThirdPartyApproved_orders);
+
+router.post('/addThirdpartyOrder', Authentication, OrdersController.addThirdparty_order);
+
+router.post('/setThirdPartyOrderStatus', Authentication, OrdersController.setThirdPartyOrder_Status);
+
 router.get('/getCustomerOngoingOrders/:id', CustomerAuthentication, OrdersController.getCustomerOngoing);
 
 router.get('/getProductsChartReport', CustomerAuthentication, OrdersController.productsChartData);
