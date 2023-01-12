@@ -5,6 +5,7 @@ import wixorderModel from "../../models/wix_orders";
 import createAwb from "../../utils/createShiprocketAWB";
 import getShipToken from "../../utils/GetShiprocketToken";
 import pickupShiprocketOrder from "../../utils/pickupShiprocketOrder";
+import thirdpartyOrdersModel from "../../models/thirdparty_orders";
 
 
 export const assignAWB = async(req,res) => {
@@ -175,4 +176,37 @@ export const shiprocketWebhookAuth = (req,res) => {
     }
 }
 
-export default { assignAWB, generatePickup, getPickupDetails, getOrderTrack, shiprocketWebhookAuth }
+export const pickupThirdParty_orders = (req,res) => {
+    const order_id = req.params.order_id
+
+    thirdpartyOrdersModel.findOne({_id: order_id})
+    .exec()
+    .then(async (orderdata) => {
+        if(orderdata)
+        {
+            if(orderdata.shiprocket_awb) {
+                const pickupData = await pickupShiprocketOrder(orderdata)
+                if(pickupData) {
+                    thirdpartyOrdersModel.updateOne({ '_id': orderdata._id }, { $set: { 'shipment_status': "picking up order" } })
+                    .then((updatedData) => {
+                        res.status(200).json({ success: { global: "pick up api success" } })
+                    })
+                    .catch((err) => {
+                        console.log("could not update orders status"+err)
+                    })
+                }
+                else {
+                    res.status(500).json({error:{global:"something went wrong while pickup API"}});                                    
+                }
+            }
+            else {
+                res.status(500).json({error:{global:"awb is not generated yet"}});                
+            }
+        }
+        else {
+            res.status(500).json({error:{global:"no orders found"}});
+        }
+    })
+}
+
+export default { assignAWB, generatePickup, getPickupDetails, getOrderTrack, shiprocketWebhookAuth, pickupThirdParty_orders }

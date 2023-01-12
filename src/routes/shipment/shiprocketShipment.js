@@ -13,4 +13,6 @@ router.get("/getPickupDetails/:id",Authentication, shiprocketPickupAwbController
 
 router.get("/trackOrderShip/:id",Authentication, shiprocketPickupAwbController.getOrderTrack);
 
+router.get("/pickupThirdPartyOrder/:order_id",Authentication, shiprocketPickupAwbController.pickupThirdParty_orders);
+
 export default router

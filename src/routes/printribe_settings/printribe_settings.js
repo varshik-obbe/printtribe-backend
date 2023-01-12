@@ -10,5 +10,7 @@ router.post('/addSettings', Authentication,  printribeSettingsController.addSett
 
 router.get('/getSettings', Authentication, printribeSettingsController.getSettings);
 
+router.put('/updateSetting/:id', Authentication, printribeSettingsController.updateSettings);
+
 
 export default router

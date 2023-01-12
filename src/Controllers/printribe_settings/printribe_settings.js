@@ -32,4 +32,14 @@ export const getSettings = (req,res) => {
     })
 }
 
-export default { addSettings, getSettings }
+export const updateSettings = (req,res) => {
+    const id = req.params.id
+    const { data } = req.body
+    printribeSettingsModel.updateOne({_id: id}, {$set: data}).exec().then((settingrecord)=>{
+        res.status(200).json({success:{global:"Setting is updated successfully"}})
+    }).catch((err)=>{
+        res.status(400).json({error:{global:"something went wrong"}});
+    })
+}
+
+export default { addSettings, getSettings, updateSettings }
