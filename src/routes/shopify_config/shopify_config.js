@@ -6,5 +6,6 @@ import CustomerAuthentication from "../../middleware/CustomerAuthentication";
 const router = express.Router();
 
 router.post('/addProducts', CustomerAuthentication, shopifyController.addProduct);
+router.post('/removeProduct', CustomerAuthentication, shopifyController.removeProduct);
 
 export default router;

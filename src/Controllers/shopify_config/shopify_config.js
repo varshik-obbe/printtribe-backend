@@ -13,5 +13,18 @@ export const addProduct = (req,res) => {
     })
 }
 
+export const removeProduct = (req,res) => {
+  const { productData } = req.body;
 
-export default { addProduct }
+  customerProductsModel.updateOne({ 'product_id': productData.id }, { $set: { 'shopify_prod': 'no' } })
+  .then((updateData) => {
+    res.status(200).json({ global: { success: "updated data" } })
+  })
+  .catch((err) => {
+    console.log("error occured while updating product"+err)
+    res.status(400).json({ global: {error: "error occured while updating product"} })                  
+  })
+}
+
+
+export default { addProduct, removeProduct }
