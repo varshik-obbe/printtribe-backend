@@ -5,7 +5,6 @@ export const addProduct = (req,res) => {
 
     customerProductsModel.updateOne({ 'product_id': productData.id }, { $set: { 'shopify_prod': 'yes' } })
     .then((updateData) => {
-      console.log("success response is"+response.data)
       res.status(200).json({ global: { success: "updated data" } })
     })
     .catch((err) => {
