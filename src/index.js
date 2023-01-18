@@ -29,6 +29,7 @@ import zakekeConfig from './routes/zakeke/zakekeConfig';
 import zakekeCSV from './routes/zakeke/zakekeCSV';
 import zakekeCustomize from './routes/zakeke/zakekeCustomize';
 import zakekeproducts from './routes/zakeke/zakekeProducts';
+import shopifyData from './routes/shopify_config/shopify_config';
 
 dotenv.config();
 const app = express();
@@ -75,6 +76,7 @@ mongoose
   app.use('/api/shiprocketGenrate', pickupShiprocketOrder);
   app.use('/api/shippingWebhook', shiprocketwebhhok);
   app.use('/api/wix', testToken);
+  app.use('/api/shopify', shopifyData);
   app.use('/api/adminInvoice', adminInvoice);
   app.use('/api/shiprocketWixOrders', pickupWixorder);
   app.use('/api/printribeSettings', printribeSettings);
