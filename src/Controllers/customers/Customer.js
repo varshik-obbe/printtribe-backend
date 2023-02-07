@@ -12,16 +12,22 @@ export const add_customer = async (req,res)=>{
     console.log(customerRegisterdata);
     let dateVal = Date.now();
     let imagUrl = "";
+    let checkReg;
     if(customerRegisterdata.customer_img) {
         await decode(customerRegisterdata.customer_img, { fname: './uploads/'+ dateVal.toString() + "customer", ext: 'jpg' });
         imagUrl = '/uploads/'+ dateVal.toString() + "customer"+".jpg";
     }
+
+    checkReg = await Customer.find({ 'active': "yes" }).count();
 
     Customer.findOne({ 'email': customerRegisterdata.email })
     .exec()
     .then((data) => {
         if(data) {
             res.status(400).json({ errors: "email already exists"});
+        }
+        else if(checkReg > 25){
+            res.status(400).json({ errors: "already reached registration limit"});
         }
         else {
             const customer = new Customer({
@@ -74,7 +80,7 @@ export const login = (req,res) => {
     const { credentials } = req.body;
     const todayDate = new Date();
     
-    Customer.findOne({email: credentials.email,role: credentials.role }).exec().then((customerRecord)=>{
+    Customer.findOne({email: credentials.email,role: credentials.role, active: "yes" }).exec().then((customerRecord)=>{
         if(customerRecord && customerRecord.isValidPassword(credentials.password)){
             res.status(200).json({customer:customerRecord.toAuthJSON()});
             
@@ -333,7 +339,8 @@ export const google_signinUp = (req,res) => {
                 _id:mongoose.Types.ObjectId(),
                 email:saveData.email,
                 role:saveData.role,
-                username: saveData.username
+                username: saveData.username,
+                active: "yes"
             })
             customer.setPassword(saveData.password)
         
