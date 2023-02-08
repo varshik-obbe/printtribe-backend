@@ -101,24 +101,26 @@ export const updateFabricProducts = async (req,res) => {
     if(Array.isArray(data.variant) && data.variant.length > 0) {
         await Promise.all(data.variant.map(async (item,key) => {
             let dateVal = Date.now();
-            await Promise.all(item.variantNames.map(async (itemsSub, keySub) => {
-                if(itemsSub == "front") {
-                    await decode(item.frontImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId, ext: 'jpg' });
-                    data.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId +".jpg";
-                }
-                else if(itemsSub == "back") {
-                    await decode(item.backImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId, ext: 'jpg' });
-                    data.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId +".jpg";
-                }
-                else if(itemsSub == "left") {
-                    await decode(item.leftImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId, ext: 'jpg' });
-                    data.variant[key]['leftImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId +".jpg";                   
-                }
-                else if(itemsSub == "right") {
-                    await decode(item.rightImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId, ext: 'jpg' });
-                    data.variant[key]['rightImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId +".jpg";
-                }
-            }))
+            if(item.variantNames) {
+                await Promise.all(item.variantNames.map(async (itemsSub, keySub) => {
+                    if(itemsSub == "front") {
+                        await decode(item.frontImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId, ext: 'jpg' });
+                        data.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId +".jpg";
+                    }
+                    else if(itemsSub == "back") {
+                        await decode(item.backImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId, ext: 'jpg' });
+                        data.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId +".jpg";
+                    }
+                    else if(itemsSub == "left") {
+                        await decode(item.leftImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId, ext: 'jpg' });
+                        data.variant[key]['leftImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId +".jpg";                   
+                    }
+                    else if(itemsSub == "right") {
+                        await decode(item.rightImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId, ext: 'jpg' });
+                        data.variant[key]['rightImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId +".jpg";
+                    }
+                }))
+            }
         }))
     }
     fabricProducts.updateOne({productId: data.productId}, {$set: data}).exec().then((fabricProductsData)=>{
