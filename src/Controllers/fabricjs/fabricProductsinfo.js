@@ -104,20 +104,20 @@ export const updateFabricProducts = async (req,res) => {
             if(item.variantNames) {
                 await Promise.all(item.variantNames.map(async (itemsSub, keySub) => {
                     if(itemsSub == "front") {
-                        await decode(item.frontImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId, ext: 'jpg' });
-                        data.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + productdata.productId +".jpg";
+                        await decode(item.frontImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + data.productId, ext: 'jpg' });
+                        data.variant[key]['frontImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "front" + data.productId +".jpg";
                     }
                     else if(itemsSub == "back") {
-                        await decode(item.backImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId, ext: 'jpg' });
-                        data.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + productdata.productId +".jpg";
+                        await decode(item.backImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + data.productId, ext: 'jpg' });
+                        data.variant[key]['backImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "back" + data.productId +".jpg";
                     }
                     else if(itemsSub == "left") {
-                        await decode(item.leftImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId, ext: 'jpg' });
-                        data.variant[key]['leftImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + productdata.productId +".jpg";                   
+                        await decode(item.leftImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + data.productId, ext: 'jpg' });
+                        data.variant[key]['leftImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "left" + data.productId +".jpg";                   
                     }
                     else if(itemsSub == "right") {
-                        await decode(item.rightImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId, ext: 'jpg' });
-                        data.variant[key]['rightImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + productdata.productId +".jpg";
+                        await decode(item.rightImgEncodeURL, { fname: './uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + data.productId, ext: 'jpg' });
+                        data.variant[key]['rightImgURL'] = '/uploads/'+ dateVal + item.colorName.replace(/ |'/g,"_") + "right" + data.productId +".jpg";
                     }
                 }))
             }
