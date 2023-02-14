@@ -61,6 +61,7 @@ export const saveProductWithDesign = (req,res) => {
         _id: mongoose.Types.ObjectId(),
         productId: data.productId,
         customerId: data.customerId,
+        name: data.name,
         description: data.description,
         color: data.color,
         side: data.side,

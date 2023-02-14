@@ -5,6 +5,7 @@ const fabricSavedDesignWithProductSchema = new mongoose.Schema({
     _id:mongoose.Schema.Types.ObjectId,
     productId: {type: String},
     customerId: {type: String},
+    name: {type: String},
     description: {type: String},
     price: {type: String},
     side: {type: String},
