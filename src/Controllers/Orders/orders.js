@@ -244,6 +244,18 @@ export const add_order = async (req,res) => {
     }
 }
 
+export const getRepeatOrderInfo = async (req,res) => {
+  const id = req.params.id;
+
+  let data = await orderModel.aggregate([{$unwind: "$product_info"}, {$match:{"product_info.product_id" : id }}] )
+  if(data) {
+    res.status(201).jsonp({ orderData: data[data.length - 1] });
+  }
+  else {
+    res.status(400).json({error:{global:"could not find order"}});
+  }
+}
+
 export const addThirdparty_order = async (req,res) => {
   const { data } = req.body;
 
@@ -1207,4 +1219,4 @@ export const getcustomerStatement = async (req,res) => {
   res.status(200).json({ statement: { "orders": orders, "walletHistory": walletHistory } })
 }
 
-export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing, generateCustomerReturn, getcustomerStatement, addThirdparty_order, getThirdParty_orders, setThirdPartyOrder_Status, getAdminThirdPartyApproved_orders }
+export default { add_order, getCustomer_orders, productsSubChartData, productsChartData, getSalesProducts, getOrdersReport, getAdminOngoingOrders, getAdminOtherOrders, getCustomerOngoing, generateCustomerReturn, getcustomerStatement, addThirdparty_order, getThirdParty_orders, setThirdPartyOrder_Status, getAdminThirdPartyApproved_orders, getRepeatOrderInfo }

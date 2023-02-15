@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import ProductColor_link from "../../Controllers/product/ProductColor_link";
+import ProductSize_link from "../../Controllers/product/productSizeLink";
 import ProductsController from "../../Controllers/product/Products";
 import ProductSizeChart from "../../Controllers/product/ProductSizeChart";
 import Authentication from "../../middleware/Authentication";
@@ -55,13 +56,23 @@ router.delete('/deleteProduct/:id', Authentication, ProductsController.delete_Pr
 
 router.post('/productcolorAdd', Authentication, ProductColor_link.add_ProductColorLink);
 
+router.post('/productSizeLinkAdd', Authentication, ProductSize_link.add_ProductSizeLink);
+
 router.get('/getProductColorLink', ProductColor_link.getColorLinkProducts);
+
+router.get('/getProductSizeLink', ProductSize_link.getSizeLinkProducts);
 
 router.get("/getProductColorLinkById/:id", Authentication, ProductColor_link.getProductColorLinkById);
 
+router.get("/getProductSizeLinkById/:id", Authentication, ProductSize_link.getProductSizeLinkById);
+
 router.put("/updateProductColor",Authentication, ProductColor_link.updateProductColorLinks);
 
+router.put("/updateProductSizeLinks",Authentication, ProductSize_link.updateProductSizeLinks);
+
 router.delete('/deleteProductColor/:id', Authentication, ProductColor_link.deleteProductColorLink);
+
+router.delete('/deleteProductSizeLink/:id', Authentication, ProductSize_link.deleteProductSizeLink);
 
 router.post('/productsizeChartAdd', Authentication, ProductSizeChart.add_ProductSizeChart);
 

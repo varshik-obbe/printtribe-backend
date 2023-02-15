@@ -8,6 +8,8 @@ const router = express.Router()
 
 router.post('/addOrder', CustomerAuthentication , OrdersController.add_order);
 
+router.get('/getProductOrder/:id', CustomerAuthentication , OrdersController.getRepeatOrderInfo);
+
 router.post('/orderReturn', CustomerAuthentication , OrdersController.generateCustomerReturn);
 
 router.get('/getOrders/:id', CustomerAuthentication, OrdersController.getCustomer_orders);
