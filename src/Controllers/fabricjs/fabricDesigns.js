@@ -67,7 +67,15 @@ export const saveProductWithDesign = (req,res) => {
         side: data.side,
         size: data.size,
         price: data.price,
-        img: data.img
+        img: data.img,
+        design_price: data.design_price,
+        design_img: data.design_img,
+        gst: data.gst,
+        design_gst: data.design_gst,
+        data: data.data,
+        imgsArr: data.imgsArr,
+        savedImgsInfo: data.savedImgsInfo,
+        textDesign: data.textDesign
     });
 
     fabricDesign.save().then((savedData) => {

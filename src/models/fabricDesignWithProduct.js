@@ -11,7 +11,24 @@ const fabricSavedDesignWithProductSchema = new mongoose.Schema({
     side: {type: String},
     color: {type: String},
     size: {type: String},
-    img: {type: String}
+    img: {type: String},
+    design_price: {type: String},
+    design_img: {type: String},
+    gst: {type: String},
+    design_gst: {type: String},
+    data: {type: String},
+    imgsArr: {type: String},
+    savedImgsInfo: [
+        {
+            "width": {type: Number},
+            "height": {type: Number},
+            "left": {type: Number},
+            "top": {type: Number},
+            "scaleX": {type: Number},
+            "scaleY": {type: Number}
+        }
+    ],
+    textDesign: {type: String}
 },{ timestamps:true });
 
 
