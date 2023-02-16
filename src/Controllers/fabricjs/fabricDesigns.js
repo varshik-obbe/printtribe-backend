@@ -84,6 +84,20 @@ export const saveProductWithDesign = (req,res) => {
     .catch((err) => res.status(400).json({global: {error: "could not add the data"} }))
 }
 
+export const getProductWithDesign = (req,res) => {
+    const id = req.params.id;
+
+    fabricDesignWithProductModel.find({'customerId': id})
+    .exec()
+    .then((designsSavedWithProduct) => {
+        res.status(200).json({ designsSavedWithProduct })
+    })
+    .catch((err) => {
+        console.log("error occured while fetching"+err)
+        res.status(400).json({global: {error: "could not fetch data"} })
+    })    
+}
+
 export const getAllsaved_design = (req,res) => {
     let customer_id = req.params.id;
     fabricSavedDesigns.find({'customer_id': customer_id})
@@ -174,5 +188,5 @@ export const delete_Category = (req,res) => {
     });
 }
 
-export default { add_Desing, addSaved_Design, get_FabricDesigns, get_FabricDesignByfilter, getAllsaved_design, saveProductWithDesign, getAllproductwithDesigns }
+export default { add_Desing, addSaved_Design, get_FabricDesigns, get_FabricDesignByfilter, getAllsaved_design, saveProductWithDesign, getAllproductwithDesigns, getProductWithDesign }
 

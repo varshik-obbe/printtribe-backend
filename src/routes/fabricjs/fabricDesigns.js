@@ -12,6 +12,8 @@ router.post('/addProductWithDesign', Authentication, FabricDesignController.save
 
 router.get('/getDesigns', Authentication, FabricDesignController.get_FabricDesigns);
 
+router.get('/getProductWithDesign/:id', Authentication, FabricDesignController.getProductWithDesign);
+
 router.get('/getFabricDesign/:id/:color/:side/:customerId', Authentication, FabricDesignController.get_FabricDesignByfilter);
 
 router.get('/getSavedDesign/:id', Authentication, FabricDesignController.getAllsaved_design);
