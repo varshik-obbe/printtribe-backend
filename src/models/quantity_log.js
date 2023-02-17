@@ -11,6 +11,7 @@ const quantitySchema = new mongoose.Schema({
     updated_quant: {type:String,required:true},
     action: {type:String,lowercase:true},
     time: {type:String},
+    remarks: {type: String},
     user_type: {type: String}
 },{ timestamps:true });
 
