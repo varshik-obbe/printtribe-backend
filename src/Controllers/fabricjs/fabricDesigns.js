@@ -100,7 +100,7 @@ export const getProductWithDesign = (req,res) => {
 
 export const getAllsaved_design = (req,res) => {
     let customer_id = req.params.id;
-    fabricSavedDesigns.find({'customer_id': customer_id})
+    fabricSavedDesigns.find({'customerId': customer_id})
     .exec()
     .then((designsSaved) => {
         res.status(200).json({ designsSaved })
