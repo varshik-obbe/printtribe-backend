@@ -68,6 +68,7 @@ export const saveProductWithDesign = (req,res) => {
         size: data.size,
         price: data.price,
         img: data.img,
+        category_id: data.category_id,
         design_price: data.design_price,
         design_img: data.design_img,
         gst: data.gst,
