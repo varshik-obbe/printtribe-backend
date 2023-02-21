@@ -246,8 +246,9 @@ export const add_order = async (req,res) => {
 
 export const getRepeatOrderInfo = async (req,res) => {
   const id = req.params.id;
+  const customer_id = req.params.customer_id;
 
-  let data = await orderModel.aggregate([{$unwind: "$product_info"}, {$match:{"product_info.product_id" : id }}] )
+  let data = await orderModel.aggregate([{$unwind: "$product_info"}, {$match:{"product_info.product_id" : id, "customer_id": customer_id }}] )
   if(data) {
     res.status(201).jsonp({ orderData: data[data.length - 1] });
   }
