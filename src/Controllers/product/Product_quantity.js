@@ -142,7 +142,7 @@ async function updatedLog(updateData)  {
         email: updateData.email,
         updated_quant: updateData.updated_quant,
         action: updateData.action,
-        remarks: updateData.remarks,
+        remarks: updateData.remark,
         time: updatdeDate.toString(),
         user_type: "admin"
     })
