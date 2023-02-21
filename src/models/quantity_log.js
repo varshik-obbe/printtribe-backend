@@ -5,6 +5,7 @@ const quantitySchema = new mongoose.Schema({
     _id:mongoose.Schema.Types.ObjectId,
     product_id: {type:String,required:true, index: true},
     color: {type:String,required:true},
+    color_code: {type:String},
     size: {type:String,required:true},
     user_id: {type:String,required:true},
     email: {type:String,required:true},

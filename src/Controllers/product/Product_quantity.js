@@ -137,6 +137,7 @@ async function updatedLog(updateData)  {
         _id: mongoose.Types.ObjectId(),
         product_id: updateData.product_id,
         color: updateData.color,
+        color_code: updateData.color_code,
         size: updateData.size,
         user_id: updateData.user_id,
         email: updateData.email,
