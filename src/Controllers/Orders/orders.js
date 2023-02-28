@@ -15,6 +15,7 @@ import SendMail from "../../utils/SendMail";
 import customerProductsModel from "../../models/customer_inventory_products";
 import thirdParty_orders from "../../models/thirdparty_orders";
 import util from "util";
+import { exec } from "child_process";
 
 export const add_order = async (req,res) => {
     const { orderData } = req.body;
@@ -226,13 +227,25 @@ export const add_order = async (req,res) => {
                 
                 await axios(config)
                 .then(async function (response) {
-                  await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id, 'pdf_link': link} })
-                  .then((updateData) => {
-                    res.status(201).jsonp({ savedData: savedDataPopulate });
-                  })
-                  .catch((err) => {
-                    console.log("couldn't update the order database "+err)
-                  })
+                  if(response) {
+                    await orderModel.updateOne({'_id': savedDataPopulate._id.toString()}, { $set: {'shipment_ref_id': response.data.shipment_id.toString(), 'shipment_ord_id': response.data.order_id.toString(), 'pdf_link': link} })
+                    .exec()
+                    .then(async (updateData) => {
+                      let newinvoice_no = parseInt(invoice_no) + 1;
+                      await printribeSettingsModel.updateOne({ company_name: 'printribe'}, { $set: {'invoice_no': newinvoice_no.toString() } })
+                      .then((invoiceData) =>{
+                        console.log("invoiceno updated to ",newinvoice_no);
+                      })
+                      .catch((err) => console.log("couldn't update invoiceno "+err))
+                      res.status(201).jsonp({ savedData: savedDataPopulate });
+                    })
+                    .catch((err) => {
+                      console.log("couldn't update the order database "+err)
+                    })
+                  }
+                  else {
+                    res.status(400).json({ errors: "could not update order" })                    
+                  }
                 })
                 .catch(function (error) {
                 console.log("error occured while creating shipping order"+error);
@@ -241,7 +254,13 @@ export const add_order = async (req,res) => {
               }
               else {
                 await orderModel.updateOne({'_id': savedDataPopulate._id}, { $set: {'pdf_link': link} })
-                .then((updateData) => {
+                .then(async (updateData) => {
+                  let newinvoice_no = parseInt(invoice_no) + 1;
+                  await printribeSettingsModel.updateOne({ company_name: 'printribe'}, { $set: {'invoice_no': newinvoice_no.toString() } })
+                  .then((invoiceData) =>{
+                    console.log("invoiceno updated to ",newinvoice_no);
+                  })
+                  .catch((err) => console.log("couldn't update invoiceno "+err))
                   res.status(201).jsonp({ savedData: savedDataPopulate });
                 })
                 .catch((err) => {
