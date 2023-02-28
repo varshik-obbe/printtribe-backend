@@ -128,7 +128,7 @@ export const add_order = async (req,res) => {
               //         'Authorization': 'Bearer ' + returndata.access_token
               //       }
 
-              if(orderData.shipping_type == "shiprocket") {
+              if(orderData.shipping_type == "domestic shipping") {
                   const nDate = new Date().toISOString('en-US', {
                     timeZone: 'Asia/Calcutta'
                   }).slice(0, 10);
