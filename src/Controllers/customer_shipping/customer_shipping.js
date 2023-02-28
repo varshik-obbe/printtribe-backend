@@ -16,6 +16,7 @@ export const add_shipping = (req,res) => {
         country: shipping_data.country,
         zip_code: shipping_data.zip_code,
         state: shipping_data.state,
+        state_code: shipping_data.state_code,
         company: shipping_data.company,
         phone: shipping_data.phone,
         shipping_charges: shipping_data.shipping_charges,

@@ -3,7 +3,7 @@ import customerInventoryModel from "../models/customer_inventory_products";
 
 
 export default async function (productsArr,customer_id) {
-    await Promise.all(productsArr.map((item, key) => {
+    let res = await Promise.all(productsArr.map((item, key) => {
         customerInventoryModel.findOne()
         .where('product_id', item.product_id)
         .where('productsize', item.productsize)
@@ -54,4 +54,6 @@ export default async function (productsArr,customer_id) {
             return false;
         })
     }))
+
+    return res;
 }

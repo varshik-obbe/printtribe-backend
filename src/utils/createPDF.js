@@ -115,35 +115,39 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
             }
           }))
 
-          Promise.all(design_gst.map((itemGst,keyGst) => {
-            if(state_code == "29") {
-              design_cgst = parseFloat(itemGst.gst_amount).toFixed(2);
-              design_sgst = parseFloat(itemGst.gst_amount).toFixed(2);
-              design_sgst_perc = itemGst.gst_percent;
-              design_cgst_perc = itemGst.gst_percent;
-            }
-            else {
-              design_igst = parseFloat(itemGst.gst_amount).toFixed(2);
-              design_igst_perc = itemGst.gst_percent;
-            }
-          }))
+          if(design_gst) {
+            Promise.all(design_gst.map((itemGst,keyGst) => {
+              if(state_code == "29") {
+                design_cgst = parseFloat(itemGst.gst_amount).toFixed(2);
+                design_sgst = parseFloat(itemGst.gst_amount).toFixed(2);
+                design_sgst_perc = itemGst.gst_percent;
+                design_cgst_perc = itemGst.gst_percent;
+              }
+              else {
+                design_igst = parseFloat(itemGst.gst_amount).toFixed(2);
+                design_igst_perc = itemGst.gst_percent;
+              }
+            }))
+          }
 
-          Promise.all(handling_gst.map((itemGst,keyGst) => {
-            if(state_code == "29") {
-              handle_cgst = parseFloat(itemGst.gst_amount).toFixed(2);
-              handle_sgst = parseFloat(itemGst.gst_amount).toFixed(2);
-              handle_sgst_perc = itemGst.gst_percent;
-              handle_cgst_perc = itemGst.gst_percent;
-            }
-            else {
-              handle_igst = parseFloat(itemGst.gst_amount).toFixed(2);
-              handle_igst_perc = itemGst.gst_percent;
-            }
-          }))
+          if(handling_gst) {
+            Promise.all(handling_gst.map((itemGst,keyGst) => {
+              if(state_code == "29") {
+                handle_cgst = parseFloat(itemGst.gst_amount).toFixed(2);
+                handle_sgst = parseFloat(itemGst.gst_amount).toFixed(2);
+                handle_sgst_perc = itemGst.gst_percent;
+                handle_cgst_perc = itemGst.gst_percent;
+              }
+              else {
+                handle_igst = parseFloat(itemGst.gst_amount).toFixed(2);
+                handle_igst_perc = itemGst.gst_percent;
+              }
+            }))
+          }
 
           console.log("sgst 1 value is: "+sgst1+" cgst 1 is "+ cgst1 + " sgst 2 is "+sgst2+" cgst 2 is "+cgst2);
 
-          total_gst_amount = parseFloat(sgst1) + parseFloat(cgst1) + parseFloat(igst1) + parseFloat(sgst2) + parseFloat(cgst2) + parseFloat(igst2) + parseFloat(sgst3) + parseFloat(cgst3) + parseFloat(igst3);
+          total_gst_amount = parseFloat(sgst1) + parseFloat(cgst1) + parseFloat(igst1) + parseFloat(sgst2) + parseFloat(cgst2) + parseFloat(igst2) + parseFloat(sgst3) + parseFloat(cgst3) + parseFloat(igst3) + parseFloat(design_cgst) + parseFloat(design_sgst) + parseFloat(handle_cgst) + parseFloat(handle_sgst);
 
           console.log("total gst amount is "+total_gst_amount);
 

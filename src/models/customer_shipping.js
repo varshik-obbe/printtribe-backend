@@ -11,6 +11,7 @@ const customerShipmentSchema = new mongoose.Schema({
     country: {type:String},
     zip_code: {type:String, required: true},
     state: {type:String},
+    state_code: {type:String},
     company: {type:String},
     phone: {type:String},
     shipping_charges: {type:String},

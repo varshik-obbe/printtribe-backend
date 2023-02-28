@@ -1,5 +1,6 @@
 import axios from "axios";
 import mongoose from "mongoose";
+import Products from "../../models/products";
 import categoriesModel from "../../models/categories";
 import customerShippingModel from "../../models/customer_shipping";
 import orderModel from "../../models/orders";
@@ -51,10 +52,10 @@ export const add_order = async (req,res) => {
 
             deleteQuant(orderData.product_info,orderData.customer_id,orderData.customer_email)
 
-            let addCustomerInventory = addProductsInventory(savedDataPopulate.product_info, savedDataPopulate.customer_id)
+            let addCustomerInventory = await addProductsInventory(savedDataPopulate.product_info, savedDataPopulate.customer_id)
             
             let random = "";
-            let state_code = "29";
+            let state_code = savedDataPopulate.customerShipping_id.state_code;
             let invoice_no = await printribeSettingsModel.findOne({ 'company_name': 'printribe' })
             .exec()
             .then((settingsData) => {
@@ -134,23 +135,57 @@ export const add_order = async (req,res) => {
                   }).slice(0, 10);
       
                   let shippingProductsArr = [];
+
+                  let weightTotal = 0.00;
+
+                  let dimensionlength = 0;
+                  let dimensionbreadth = 0;
+                  let dimensionheight = 0;
       
-                  await Promise.all(orderData.product_info.map((item, key) => {
+                  await Promise.all(orderData.product_info.map( async (item, key) => {
                       let data = {
                           "name": item.title,
-                          "sku": item.title+item.productsize+item.productcolor,
+                          "sku": item.title.replace(/ |'/g,"")+item.productsize+item.productcolor,
                           "units": parseInt(item.quantity, 10),
                           "selling_price": parseInt(item.price, 10),
                           }
       
                           shippingProductsArr.push(data);
-                  }))
-      
-                  const weightTotal = parseInt(orderData.total_quantity) * 0.1; 
+
+                          let prodData = await Products.findOne({ _id: item.product_id })
+                          .exec()
+                          .then((prdouctData) => {
+                            return prdouctData;
+                          })
+                          .catch((err) => console.log("couldn't find the product",err));
+
+                          weightTotal = weightTotal + parseFloat(prodData.weight) * parseFloat(item.quantity);
+
+                          if(dimensionlength > parseInt(prodData.dimensions.length)) {
+                            dimensionlength = dimensionlength;
+                          }
+                          else {
+                            dimensionlength = parseInt(prodData.dimensions.length);
+                          }
+
+                          if(dimensionbreadth > parseInt(prodData.dimensions.width)) {
+                            dimensionbreadth = dimensionbreadth;
+                          }
+                          else {
+                            dimensionbreadth = parseInt(prodData.dimensions.width);
+                          }
+
+                          if(dimensionheight > parseInt(prodData.dimensions.height)) {
+                            dimensionheight = dimensionheight;
+                          }
+                          else {
+                            dimensionheight = parseInt(prodData.dimensions.height);
+                          }
+                  })) 
       
       
                   let shipRockData = {
-                    "order_id": savedDataPopulate._id,
+                    "order_id": savedDataPopulate._id.toString(),
                     "order_date": nDate,
                     "pickup_location": process.env.SHIPROCKET_PICKUP_NAME,
                     "billing_customer_name": savedDataPopulate.customerShipping_id.fullname,
@@ -171,9 +206,9 @@ export const add_order = async (req,res) => {
                     "transaction_charges": 0,
                     "total_discount": 0,
                     "sub_total": parseInt(orderData.total_price, 10),
-                    "length": 10,
-                    "breadth": 10,
-                    "height": 10,
+                    "length": dimensionlength,
+                    "breadth": dimensionbreadth,
+                    "height": dimensionheight,
                     "weight": weightTotal
                   }
       
