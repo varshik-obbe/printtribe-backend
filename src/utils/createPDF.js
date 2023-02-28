@@ -147,7 +147,7 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
 
           console.log("sgst 1 value is: "+sgst1+" cgst 1 is "+ cgst1 + " sgst 2 is "+sgst2+" cgst 2 is "+cgst2);
 
-          total_gst_amount = parseFloat(sgst1) + parseFloat(cgst1) + parseFloat(igst1) + parseFloat(sgst2) + parseFloat(cgst2) + parseFloat(igst2) + parseFloat(sgst3) + parseFloat(cgst3) + parseFloat(igst3) + parseFloat(design_cgst) + parseFloat(design_sgst) + parseFloat(handle_cgst) + parseFloat(handle_sgst);
+          total_gst_amount = parseFloat(sgst1) + parseFloat(cgst1) + parseFloat(igst1) + parseFloat(sgst2) + parseFloat(cgst2) + parseFloat(igst2) + parseFloat(sgst3) + parseFloat(cgst3) + parseFloat(igst3) + parseFloat(design_cgst) + parseFloat(design_sgst) + parseFloat(handle_cgst) + parseFloat(handle_sgst) + parseFloat(design_igst) + parseFloat(handle_igst);
 
           console.log("total gst amount is "+total_gst_amount);
 
