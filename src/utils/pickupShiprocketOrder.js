@@ -12,7 +12,7 @@ export default async function (orderdata) {
           }
 
         var data = {
-            shipment_id: orderdata.shipment_ref_id
+            shipment_id: parseInt(orderdata.shipment_ref_id)
         };
         var config = {
         method: 'post',
