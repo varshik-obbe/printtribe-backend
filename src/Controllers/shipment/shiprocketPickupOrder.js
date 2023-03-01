@@ -42,15 +42,15 @@ export const assignAWB = async(req,res) => {
 
 
 export const generatePickup = async (req,res) => {
-    const order_id = req.params.order_id
+    const { pickup_data } = req.body;
 
-    ordersModel.findOne({_id: order_id})
+    ordersModel.findOne({_id: pickup_data.order_id})
     .exec()
     .then(async (orderdata) => {
         if(orderdata)
         {
             if(orderdata.shiprocket_awb) {
-                const pickupData = await pickupShiprocketOrder(orderdata)
+                const pickupData = await pickupShiprocketOrder(orderdata, pickup_data.pickup_date)
                 if(pickupData) {
                     ordersModel.updateOne({ '_id': orderdata._id }, { $set: { 'shipment_status': "picking up order" } })
                     .then((updatedData) => {

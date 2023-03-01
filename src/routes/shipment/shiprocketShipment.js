@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/generateAwb/:order_id', Authentication, shiprocketPickupAwbController.assignAWB);
 
-router.get("/generateToken/:order_id",Authentication, shiprocketPickupAwbController.generatePickup);
+router.post("/generateToken",Authentication, shiprocketPickupAwbController.generatePickup);
 
 router.get("/getPickupDetails/:id",Authentication, shiprocketPickupAwbController.getPickupDetails);
 

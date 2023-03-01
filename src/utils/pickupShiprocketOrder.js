@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import shiprocketPickupModel from "../models/shiprocketPickup";
 import getShipToken from "./GetShiprocketToken";
 
-export default async function (orderdata) {
+export default async function (orderdata, pickup_date) {
     const token = await getShipToken();
     if(token != "") {
         const headers = {
@@ -12,12 +12,9 @@ export default async function (orderdata) {
           }
 
         var data = {
-            shipment_id: [parseInt(orderdata.shipment_ref_id)]
+            shipment_id: [parseInt(orderdata.shipment_ref_id)],
+            pickup_date: [pickup_date]
         };
-
-        //pickup_date: ["2023-03-07"]
-
-        
         var config = {
         method: 'post',
         url: 'https://apiv2.shiprocket.in/v1/external/courier/generate/pickup',
