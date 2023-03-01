@@ -12,8 +12,12 @@ export default async function (orderdata) {
           }
 
         var data = {
-            shipment_id: parseInt(orderdata.shipment_ref_id)
+            shipment_id: [parseInt(orderdata.shipment_ref_id)]
         };
+
+        //pickup_date: ["2023-03-07"]
+
+        
         var config = {
         method: 'post',
         url: 'https://apiv2.shiprocket.in/v1/external/courier/generate/pickup',
@@ -24,7 +28,7 @@ export default async function (orderdata) {
         let status = await axios(config)
         .then(async function (response) {
             console.log("status from shiprocket"+response.status)
-            if(response.data.pickup_status == 1) {
+            if(response.data.status == 1 || response.data.status == true) {
                 const createPickup = new shiprocketPickupModel({
                     _id:mongoose.Types.ObjectId(),
                     shiprocket_awb: orderdata.shiprocket_awb,
@@ -55,7 +59,7 @@ export default async function (orderdata) {
                     
                     let secstatus = await axios(config)
                     .then(async function (responsesecond) {
-                        if(responsesecond.data.status == 1) {
+                        if(responsesecond.data.status == 1 || responsesecond.data.status == true) {
                             let statusUpdate = await shiprocketPickupModel.updateOne({ _id: saveddata._id }, {$set: { 'manifest_url': responsesecond.data.manifest_url } })
                             .then((updatedData) => {
                                 return true;
