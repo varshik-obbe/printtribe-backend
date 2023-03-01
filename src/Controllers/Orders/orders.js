@@ -228,7 +228,7 @@ export const add_order = async (req,res) => {
                 await axios(config)
                 .then(async function (response) {
                   if(response) {
-                    await orderModel.updateOne({'_id': savedDataPopulate._id.toString()}, { $set: {'shipment_ref_id': response.data.shipment_id.toString(), 'shipment_ord_id': response.data.order_id.toString(), 'pdf_link': link} })
+                    await orderModel.updateOne({'_id': savedDataPopulate._id.toString()}, { $set: {'shipment_ref_id': response.data.shipment_id, 'shipment_ord_id': response.data.order_id, 'pdf_link': link} })
                     .exec()
                     .then(async (updateData) => {
                       let newinvoice_no = parseInt(invoice_no) + 1;
