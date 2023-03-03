@@ -11,6 +11,7 @@ const orderSchema = new mongoose.Schema({
             title: {type:String,required:true},
             description: {type:String},
             price: {type:String,required:true},
+            retail_price: {type:String},
             productsize: {type: String},
             productcolor: {type: String},
             product_img: {type:String,required:true},
