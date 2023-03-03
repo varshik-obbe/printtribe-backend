@@ -142,13 +142,15 @@ export const add_order = async (req,res) => {
                   let dimensionlength = 0;
                   let dimensionbreadth = 0;
                   let dimensionheight = 0;
+
+                  let total_price = 0;
       
                   await Promise.all(orderData.product_info.map( async (item, key) => {
                       let data = {
-                          "name": item.title,
+                          "name": item.title+"-"+item.productsize+ "-"+ item.productcolor,
                           "sku": item.title.replace(/ |'/g,"")+item.productsize+item.productcolor,
                           "units": parseInt(item.quantity, 10),
-                          "selling_price": parseInt(item.price, 10),
+                          "selling_price": parseInt(item.retail_price ? item.retail_price: item.price, 10),
                           }
       
                           shippingProductsArr.push(data);
@@ -182,7 +184,16 @@ export const add_order = async (req,res) => {
                           else {
                             dimensionheight = parseInt(prodData.dimensions.height);
                           }
-                  })) 
+
+                          if(item.retail_price) {
+                            total_price = total_price + parseInt(item.retail_price);
+                          }
+                          else {
+                            total_price = parseInt(orderData.total_price);
+                          }
+                  }))
+                  
+                  total_price = total_price - parseInt(orderData.shipping_charges);
       
       
                   let shipRockData = {
@@ -206,7 +217,7 @@ export const add_order = async (req,res) => {
                     "giftwrap_charges": 0,
                     "transaction_charges": 0,
                     "total_discount": 0,
-                    "sub_total": parseInt(orderData.total_price, 10),
+                    "sub_total": total_price,
                     "length": dimensionlength,
                     "breadth": dimensionbreadth,
                     "height": dimensionheight,
