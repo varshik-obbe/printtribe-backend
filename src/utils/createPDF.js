@@ -207,7 +207,7 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
 
         let htmlToSend = template(data);
 
-        let pdfName = customer_name + Date.now().toString();
+        let pdfName = customer_name.replace(/ |'/g,"_") + Date.now().toString();
 
           // launch a new chrome instance
   const browser = await puppeteer.launch({args: ['--no-sandbox']})
