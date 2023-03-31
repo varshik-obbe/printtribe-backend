@@ -5,6 +5,7 @@ import Customer from "../../models/customers";
 import forgotPassModel from "../../models/forgot_passwords";
 import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
+import sendWelcomeMail from "../../utils/sendWelcomeMail";
 
 
 export const add_customer = async (req,res)=>{
@@ -61,12 +62,19 @@ export const add_customer = async (req,res)=>{
                 const rand = min + Math.random() * (max - min);
                 Customer.updateOne({_id: customerRecord._id}, {$set: {'verify_mail': rand.toFixed(0)}})
                 .then((updatedData) => {
+                    let name = "";
+                    if(customerRecord.username) {
+                        name = customerRecord.username;
+                    }
+                    else {
+                        name = customerRecord.email.split('@')[0];
+                    }
                     let title = "printribe mail"
                     let hello = "hello fellow dropshipper"
                     let message = "thank you for registering with us, your Verification Code is :"+rand.toFixed(0)
                     let second_message = "for any further assistance please reach out to us. please find the partner panel link below."
                     let link = "https://printribe-partner.web.app/#/login";
-                    SendMail(title,hello,message,second_message,customerRegisterdata.email,link);
+                    sendWelcomeMail(name,customerRegisterdata.email);
                     res.status(201).json({customerRecord})  
                 })
                 .catch((err)=>res.status(400).json({errors:"could not update the table"}))
