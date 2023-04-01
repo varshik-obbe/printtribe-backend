@@ -178,10 +178,10 @@ export const forgotPassword = (req,res) => {
     const email = req.params.email
 
 
-    Customer.findOne({ 'email': email })
+    Customer.findOne({ 'email': email, "active": "yes" })
     .exec()
     .then((data) => {
-        if(data) {
+        if(data && (!data.customer_google || data.customer_google == "no")) {
             let randomstring = uuidv4();
             let exp_date = new Date();
             exp_date = addDays(exp_date, 2);
@@ -217,7 +217,10 @@ export const forgotPassword = (req,res) => {
                 res.status(400).json({error:{global:"coluld not send mail"}})
             }) 
         }
-        else {
+        else if(data.customer_google ==  "yes") {
+            res.status(400).json({error:{global:"this is a gmail id"}})
+        }
+        else if(!data) {
             res.status(400).json({error:{global:"user with this email was not found"}});
         }
     })
@@ -348,7 +351,7 @@ export const delete_Customer = (req,res) => {
 export const google_signinUp = (req,res) => {
     const { saveData } = req.body
 
-    Customer.findOne({ 'email': saveData.email }).exec()
+    Customer.findOne({ 'email': saveData.email, 'customer_google': "yes" }).exec()
     .then((data) => {
         if(data) {
             res.status(200).json({ savedData: data });
@@ -359,6 +362,7 @@ export const google_signinUp = (req,res) => {
                 email:saveData.email,
                 role:saveData.role,
                 username: saveData.username,
+                customer_google: "yes",
                 active: "yes"
             })
             let name = "";

@@ -29,6 +29,7 @@ const customerSchema = new mongoose.Schema({
     customer_img: {type: String},
     verify_mail: {type: String},
     active: {type: String},
+    customer_google: {type: String},
     customer_wix: {type: String}
 },{ timestamps:true });
 
