@@ -74,7 +74,7 @@ export const add_customer = async (req,res)=>{
                     let hello = "hello fellow dropshipper"
                     let message = "thank you for registering with us, your Verification Code is :"+rand.toFixed(0)
                     let second_message = "for any further assistance please reach out to us. please find the partner panel link below."
-                    let link = "https://theprintribe.com/verify/"+customerRegisterdata.email+"/"+rand.toString();
+                    let link = "https://theprintribe.com/verify/"+customerRegisterdata.email+"/"+rand.toFixed(0).toString();
                     sendWelcomeMail(name,customerRegisterdata.email);
                     sendVerifyMail(name,customerRegisterdata.email,link)
                     res.status(201).json({customerRecord})  
