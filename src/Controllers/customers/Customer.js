@@ -6,6 +6,7 @@ import forgotPassModel from "../../models/forgot_passwords";
 import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
 import sendWelcomeMail from "../../utils/sendWelcomeMail";
+import sendVerifyMail from "../../utils/sendVerifyMail";
 
 
 export const add_customer = async (req,res)=>{
@@ -73,8 +74,9 @@ export const add_customer = async (req,res)=>{
                     let hello = "hello fellow dropshipper"
                     let message = "thank you for registering with us, your Verification Code is :"+rand.toFixed(0)
                     let second_message = "for any further assistance please reach out to us. please find the partner panel link below."
-                    let link = "https://printribe-partner.web.app/#/login";
+                    let link = "https://theprintribe.com/verify/"+customerRegisterdata.email+"/"+rand.toString();
                     sendWelcomeMail(name,customerRegisterdata.email);
+                    sendVerifyMail(name,customerRegisterdata.email,link)
                     res.status(201).json({customerRecord})  
                 })
                 .catch((err)=>res.status(400).json({errors:"could not update the table"}))
