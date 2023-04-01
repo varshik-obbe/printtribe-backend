@@ -9,6 +9,7 @@ import deleteQuant from "../../utils/deleteProductQuantity";
 import getShipToken from "../../utils/GetShiprocketToken";
 import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
+import sendInvoice from "../../utils/sendInvoice";
 var zip = new JSZip();
 
 export const add_order = async (req,res) => {
@@ -64,13 +65,15 @@ export const add_order = async (req,res) => {
                 let random = "";
                 random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,orderData.product_info,orderData.gst_details,orderData.total_price,orderData.design_gst,orderData.handling_gst);
 
-    
+ 
+                let name = orderData.customer_email.split('@')[0];
                 let title = "printribe mail"
                 let hello = "hello fellow dropshipper"
                 let message = "thank you for ordering with us, your order will be shipped to you soon.Please click the link below to download your invoice"
                 let second_message = "for any further assistance please reach out to us."
                 let link = process.env.PROJ_DEV_HOST+"/uploads/"+random+".pdf";
-                SendMail(title,hello,message,second_message,orderData.customer_email,link);
+//                SendMail(title,hello,message,second_message,orderData.customer_email,link);
+                sendInvoice(name,orderData.customer_email,link);
     
                   let newDate = new Date();
 
@@ -214,12 +217,14 @@ export const add_order = async (req,res) => {
             random = await createPDF(cust_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,orderData.product_info,orderData.gst_details,orderData.total_price,orderData.design_gst,orderData.handling_gst);
 
 
+            let name = orderData.customer_email.split('@')[0];
             let title = "printribe mail"
             let hello = "hello fellow dropshipper"
             let message = "thank you for ordering with us, your order will be shipped to you soon.Please click the link below to download your invoice"
             let second_message = "for any further assistance please reach out to us."
             let link = process.env.PROJ_DEV_HOST+"/uploads/"+random+".pdf";
-            SendMail(title,hello,message,second_message,orderData.customer_email,link);
+//            SendMail(title,hello,message,second_message,orderData.customer_email,link);
+            sendInvoice(name,orderData.customer_email,link)
 
             offlineorderModel.updateOne({ '_id': saveddata._id}, { $set: { 'pdf_link': link } })
             .then((data) => {

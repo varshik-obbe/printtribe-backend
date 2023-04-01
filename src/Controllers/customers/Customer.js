@@ -7,6 +7,7 @@ import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
 import sendWelcomeMail from "../../utils/sendWelcomeMail";
 import sendVerifyMail from "../../utils/sendVerifyMail";
+import sendForogotPass from "../../utils/sendForogotPass";
 
 
 export const add_customer = async (req,res)=>{
@@ -195,12 +196,20 @@ export const forgotPassword = (req,res) => {
 
             forgotPassSave.save()
             .then(async (savedata) => {
+                let name = "";
+                if(data.username) {
+                    name = data.username;
+                }
+                else {
+                    name = data.email.split('@')[0];
+                }
                 let title = "printribe mail"
                 let hello = "hello customer"
                 let message = "you have opted for password reset, please click the link below to reset it."
                 let second_message = "for any further assistance please reach out to us."
                 let link = "https://theprintribe.com/forgotPass/"+randomstring;
-                await SendMail(title,hello,message,second_message,data.email,link); 
+//                await SendMail(title,hello,message,second_message,data.email,link);
+                await sendForogotPass(name,data.email,link)
 
                 res.status(201).json({success: {global: "mail sent successfully"}})
             })
@@ -352,9 +361,17 @@ export const google_signinUp = (req,res) => {
                 username: saveData.username,
                 active: "yes"
             })
+            let name = "";
+            if(saveData.username) {
+                name = saveData.username;
+            }
+            else {
+                name = saveData.email.split('@')[0];
+            }
             customer.setPassword(saveData.password)
         
             customer.save().then((data) => {
+                sendWelcomeMail(name,saveData.email);
                 res.status(201).json({ savedData: data })
             })
             .catch((err) => {

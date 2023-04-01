@@ -14,6 +14,7 @@ import ParseErrors from "../../utils/ParseErrors";
 import SendMail from "../../utils/SendMail";
 import customerProductsModel from "../../models/customer_inventory_products";
 import thirdParty_orders from "../../models/thirdparty_orders";
+import sendInvoice from "../../utils/sendInvoice";
 import util from "util";
 import { exec } from "child_process";
 
@@ -66,13 +67,15 @@ export const add_order = async (req,res) => {
                 console.log("could not get the invoice no");
             })
             random = await createPDF(savedDataPopulate.customerShipping_id.fullname,savedDataPopulate.customerShipping_id.address1,savedDataPopulate.customerShipping_id.zip_code,orderData.shipping_charges,savedDataPopulate.customerShipping_id.state,state_code,orderData.customer_email,savedDataPopulate.customerShipping_id.phone,invoice_no,savedDataPopulate.customerShipping_id.city,orderData.product_info,orderData.gst_details,orderData.total_price,orderData.design_gst,orderData.handling_gst);
+            let name = orderData.customer_email.split('@')[0];
 
             let title = "printribe mail"
             let hello = "hello fellow dropshipper"
             let message = "thank you for ordering with us, your order will be shipped to you soon.Please click the link below to download your invoice."
             let second_message = "for any further assistance please reach out to us."
             let link = process.env.PROJ_DEV_HOST+"/uploads/"+random+".pdf";
-            SendMail(title,hello,message,second_message,orderData.customer_email,link);
+//            SendMail(title,hello,message,second_message,orderData.customer_email,link);
+            sendInvoice(name,orderData.customer_email,link)
 
             if(addCustomerInventory) {
               let newDate = new Date();
