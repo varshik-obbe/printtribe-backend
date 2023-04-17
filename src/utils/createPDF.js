@@ -4,6 +4,10 @@ import puppeteer from "puppeteer";
 import { promisify } from "util";
 
 
+function convertTZ(date, tzString) {
+  return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
+}
+
 export default async function(customer_name,address,zipcode,shipping_charges,state,state_code,email,phone,invoice_no,city,productInfo,gst_details,total_price,design_gst,handling_gst) {
     try {
         const readFile = promisify(fs.readFile);
@@ -26,7 +30,9 @@ export default async function(customer_name,address,zipcode,shipping_charges,sta
 
           let template = Handlebars.compile(html);
 
-          const nDate = new Date();
+          let nowdate = new Date();
+          
+          const nDate = convertTZ(nowdate, "Asia/Calcutta");
 
           let dateAdd = nDate.getDate() + '-' + nDate.getMonth() + '-' + nDate.getFullYear();
 
