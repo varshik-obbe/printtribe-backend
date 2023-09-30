@@ -370,4 +370,4 @@ export const updateByWebhook = (req,res) => {
     
 }
 
-export default { add_credits, get_walletByID, instantiateRazorpay, instantiateCCAvenue, debitWallet, getWalletHistory, remitAccount, testwallet }
+export default { add_credits, get_walletByID, instantiateRazorpay, instantiateCCAvenue, debitWallet, getWalletHistory, remitAccount }
