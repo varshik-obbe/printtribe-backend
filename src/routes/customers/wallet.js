@@ -13,6 +13,8 @@ router.get('/getWalletHistory/:id', CustomerAuthentication, walletController.get
 
 router.post('/razorPayInstantiate', CustomerAuthentication , walletController.instantiateRazorpay);
 
+router.post('/ccAvenueSuccess', CustomerAuthentication , walletController.successCCAvenue);
+
 router.post('/ccAvenueInstantiate', CustomerAuthentication , walletController.instantiateCCAvenue);
 
 router.post('/debitWallet', CustomerAuthentication, walletController.debitWallet);

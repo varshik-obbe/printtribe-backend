@@ -215,6 +215,12 @@ export const instantiateRazorpay = (req,res) => {
       })
 }
 
+export const successCCAvenue = (req,res) => {
+    console.log("request is", req);
+
+    res.status(200).json({ success: "data saved successfully" });
+}
+
 export const instantiateCCAvenue = (req,res) => {
     const { insdata } = req.body;
 
@@ -370,4 +376,4 @@ export const updateByWebhook = (req,res) => {
     
 }
 
-export default { add_credits, get_walletByID, instantiateRazorpay, instantiateCCAvenue, debitWallet, getWalletHistory, remitAccount }
+export default { add_credits, get_walletByID, instantiateRazorpay, instantiateCCAvenue, debitWallet, getWalletHistory, remitAccount, successCCAvenue }
