@@ -30,11 +30,21 @@ import zakekeCSV from './routes/zakeke/zakekeCSV';
 import zakekeCustomize from './routes/zakeke/zakekeCustomize';
 import zakekeproducts from './routes/zakeke/zakekeProducts';
 import shopifyData from './routes/shopify_config/shopify_config';
+import ccavReqHandler from './routes/CCAvenue/ccavRequestHandler';
+import ccavResponseHandler from './routes/CCAvenue/ccavResponseHandler';
+import ejs from 'ejs'
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(morgan('dev'));
+app.set('views', __dirname + '/public');
+app.set('view engine', 'ejs');
+app.engine('html', ejs.renderFile);
 app.use('/uploads', express.static('uploads'));
 app.use('/ZakekeFiles', express.static('ZakekeFiles'));
 app.use(bodyParser.json({limit: '100mb'}));
@@ -56,6 +66,20 @@ mongoose
   .catch(err => {
     console.log(err);
   });
+
+  app.post('/ccavRequestHandler', function (request, response){
+	ccavReqHandler.postReq(request, response);
+  });
+  app.get('/CCAvenueForm', function (req, res){
+    let order_id = req.query.order_id;
+    let amount = req.query.amount;
+    res.render('dataFrom.html', {order_id: order_id, amount:amount});
+  });
+
+  app.post('/ccavResponseHandler', function (request, response){
+    ccavResponseHandler.postRes(request, response);
+  });
+
 
   app.use('/api/users/', users);
   app.use('/api/categories', categories);
