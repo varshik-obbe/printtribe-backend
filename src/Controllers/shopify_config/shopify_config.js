@@ -3,7 +3,7 @@ import customerProductsModel from "../../models/customer_inventory_products";
 export const addProduct = (req,res) => {
     const { productData } = req.body;
 
-    customerProductsModel.updateOne({ 'product_id': productData.id }, { $set: { 'shopify_prod': 'yes' } })
+    customerProductsModel.updateOne({ 'product_id': productData.id }, { $set: { 'shopify_prod': 'yes', 'shopify_prod_id': productData.shopify_product_id, 'shopify_inventory_id': productData.shopify_inventory_id } })
     .then((updateData) => {
       res.status(200).json({ global: { success: "updated data" } })
     })
