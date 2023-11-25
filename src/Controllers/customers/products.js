@@ -24,6 +24,8 @@ export const get_Products = async (req,res) => {
             customer_id: custData.customer_id,
             design_url: "",
             shopify_prod: custData.shopify_prod ? custData.shopify_prod : "",
+            shopify_inventory_id: custData.shopify_inventory_id ? custData.shopify_inventory_id : "",
+            shopify_prod_id: custData.shopify_prod_id ? custData.shopify_prod_id : "",
             createdAt: custData.createdAt,
             updatedAt: custData.updatedAt
         }))
