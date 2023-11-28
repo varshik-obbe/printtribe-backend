@@ -26,6 +26,7 @@ export const get_Products = async (req,res) => {
             shopify_prod: custData.shopify_prod ? custData.shopify_prod : "",
             shopify_inventory_id: custData.shopify_inventory_id ? custData.shopify_inventory_id : "",
             shopify_prod_id: custData.shopify_prod_id ? custData.shopify_prod_id : "",
+            authorization_code: custData.authorization_code ? custData.authorization_code : "",
             createdAt: custData.createdAt,
             updatedAt: custData.updatedAt
         }))
