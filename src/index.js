@@ -54,8 +54,8 @@ const shopify = shopifyApi({
   apiKey: '4bcce42e0a1ba102f8837e678586a8ad',
   apiSecretKey: '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',
   scopes: ['read_products,write_products'],
-  hostName: 'localhost:500',
-  hostScheme: 'http',
+  hostName: process.env.PROJ_DEV_HOST,
+  hostScheme: 'https',
   restResources,
 });
 const app = express();
@@ -97,7 +97,7 @@ mongoose
     // The library will automatically redirect the user
     await shopify.auth.begin({
       shop: shopify.utils.sanitizeShop(req.query.shop, true),
-      callbackPath: process.env.PROJ_DEV_HOST+'/auth/callback',
+      callbackPath: '/auth/callback',
       isOnline: false,
       rawRequest: req,
       rawResponse: res,
