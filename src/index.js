@@ -54,7 +54,7 @@ const shopify = shopifyApi({
   apiKey: '4bcce42e0a1ba102f8837e678586a8ad',
   apiSecretKey: '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',
   scopes: ['read_products,write_products'],
-  hostName: process.env.PROJ_DEV_HOST,
+  hostName: "api.theprintribe.com",
   hostScheme: 'https',
   restResources,
 });
