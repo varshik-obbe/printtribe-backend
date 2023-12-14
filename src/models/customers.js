@@ -30,7 +30,10 @@ const customerSchema = new mongoose.Schema({
     verify_mail: {type: String},
     active: {type: String},
     customer_google: {type: String},
-    customer_wix: {type: String}
+    customer_wix: {type: String},
+    customer_shopify: {type: String},
+    shopify_access_token: {type: Object},
+    shopify_store: {type: String}
 },{ timestamps:true });
 
 customerSchema.methods.setPassword = function setPassword(password){
