@@ -128,7 +128,7 @@ mongoose
     }
     // You can now use callback.session to make API requests
   
-    res.redirect('/my-apps-entry-page');
+    res.redirect('https://shopify.theprintribe.com/'+req.session.user.customer_id);
   });
 
   app.post('/ccavRequestHandler', function (request, response){
