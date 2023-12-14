@@ -97,7 +97,7 @@ mongoose
     // The library will automatically redirect the user
     await shopify.auth.begin({
       shop: shopify.utils.sanitizeShop(req.query.shop, true),
-      callbackPath: '/auth/callback',
+      callbackPath: process.env.PROJ_DEV_HOST+'/auth/callback',
       isOnline: false,
       rawRequest: req,
       rawResponse: res,
